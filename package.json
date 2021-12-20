@@ -1,0 +1,164 @@
+{
+  "name": "shop-cook-eat",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@mui/material": "^5.2.4",
+    "@reduxjs/toolkit": "^1.7.1",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/react-redux": "^7.1.20",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.6",
+    "react-router": "^6.2.1",
+    "react-scripts": "5.0.0",
+    "typescript": "^4.5.4",
+    "urql": "^2.0.6",
+    "web-vitals": "^0.2.4",
+    "workbox-background-sync": "^5.1.3",
+    "workbox-broadcast-update": "^5.1.3",
+    "workbox-cacheable-response": "^5.1.3",
+    "workbox-core": "^5.1.3",
+    "workbox-expiration": "^5.1.3",
+    "workbox-google-analytics": "^5.1.3",
+    "workbox-navigation-preload": "^5.1.3",
+    "workbox-precaching": "^5.1.3",
+    "workbox-range-requests": "^5.1.3",
+    "workbox-routing": "^5.1.3",
+    "workbox-strategies": "^5.1.3",
+    "workbox-streams": "^5.1.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "prepare": "husky install"
+  },
+  "prettier": {},
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest",
+      "plugin:react/recommended",
+      "plugin:react/jsx-runtime",
+      "plugin:react-hooks/recommended"
+    ],
+    "rules": {
+      "react/display-name": "off"
+    },
+    "overrides": [
+      {
+        "files": [
+          "**/*.ts?(x)"
+        ],
+        "rules": {}
+      },
+      {
+        "files": [
+          "*.graphql"
+        ],
+        "parser": "@graphql-eslint/eslint-plugin",
+        "plugins": [
+          "@graphql-eslint"
+        ],
+        "rules": {
+          "@graphql-eslint/executable-definitions": "error",
+          "@graphql-eslint/fields-on-correct-type": "error",
+          "@graphql-eslint/fragments-on-composite-type": "error",
+          "@graphql-eslint/known-argument-names": "error",
+          "@graphql-eslint/known-directives": "error",
+          "@graphql-eslint/known-type-names": "error",
+          "@graphql-eslint/lone-anonymous-operation": "error",
+          "@graphql-eslint/naming-convention": [
+            "warn",
+            {
+              "VariableDefinition": "camelCase",
+              "OperationDefinition": {
+                "style": "PascalCase",
+                "forbiddenPrefixes": [
+                  "Query",
+                  "Mutation",
+                  "Subscription",
+                  "Get"
+                ],
+                "forbiddenSuffixes": [
+                  "Query",
+                  "Mutation",
+                  "Subscription"
+                ]
+              },
+              "FragmentDefinition": {
+                "style": "PascalCase",
+                "forbiddenPrefixes": [
+                  "Fragment"
+                ],
+                "forbiddenSuffixes": [
+                  "Fragment"
+                ]
+              }
+            }
+          ],
+          "@graphql-eslint/no-anonymous-operations": "error",
+          "@graphql-eslint/no-deprecated": "warn",
+          "@graphql-eslint/no-duplicate-fields": "error",
+          "@graphql-eslint/no-fragment-cycles": "error",
+          "@graphql-eslint/no-undefined-variables": "warn",
+          "@graphql-eslint/no-unused-variables": "error",
+          "@graphql-eslint/one-field-subscriptions": "error",
+          "@graphql-eslint/overlapping-fields-can-be-merged": "warn",
+          "@graphql-eslint/possible-fragment-spread": "warn",
+          "@graphql-eslint/provided-required-arguments": "error",
+          "@graphql-eslint/scalar-leafs": "error",
+          "@graphql-eslint/unique-argument-names": "error",
+          "@graphql-eslint/unique-directive-names-per-location": "error",
+          "@graphql-eslint/unique-input-field-names": "error",
+          "@graphql-eslint/unique-variable-names": "error",
+          "@graphql-eslint/value-literals-of-correct-type": "error",
+          "@graphql-eslint/variables-are-input-types": "error",
+          "@graphql-eslint/variables-in-allowed-position": "error"
+        }
+      }
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.16.5",
+    "@graphql-codegen/cli": "^2.3.0",
+    "@graphql-codegen/typescript": "^2.4.1",
+    "@graphql-codegen/typescript-urql": "^3.4.1",
+    "@graphql-eslint/eslint-plugin": "^3.2.0",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.53",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-router": "^5.1.17",
+    "eslint": "^8.5.0",
+    "eslint-plugin-react": "^7.27.1",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "graphql": "^16.2.0",
+    "graphql-tag": "^2.12.6",
+    "graphql.macro": "^1.4.2",
+    "husky": ">=6",
+    "lint-staged": ">=10",
+    "prettier": "^2.5.1",
+    "prettier-plugin-sql": "^0.4.1"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,graphql}": "eslint --cache --fix",
+    "*.{js,ts,tsx,css,md,sql,graphql}": "prettier --write"
+  }
+}

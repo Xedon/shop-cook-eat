@@ -1,0 +1,42 @@
+// For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.128.0/containers/javascript-node-12
+{
+  "name": "SHOP-COOK-EAT-DEV",
+  "settings": {
+    "sqltools.connections": [
+      {
+        "name": "Container database",
+        "driver": "PostgreSQL",
+        "previewLimit": 50,
+        "server": "postgres",
+        "port": 5432,
+        "database": "sce",
+        "username": "postgres",
+        "password": "dev"
+      }
+    ]
+  },
+  // Add the IDs of extensions you want installed when the container is created.
+  "extensions": [
+    "dbaeumer.vscode-eslint",
+    "infeng.vscode-react-typescript",
+    "eamodio.gitlens",
+    "esbenp.prettier-vscode",
+    "ms-azuretools.vscode-docker",
+    "acr0most.ts-deporter",
+    "gamunu.vscode-yarn",
+    "mtxr.sqltools",
+    "mtxr.sqltools-driver-pg",
+    "foxundermoon.shell-format",
+    "tim-koehler.helm-intellisense",
+    "ms-kubernetes-tools.vscode-kubernetes-tools",
+    "graphql.vscode-graphql"
+  ],
+  "dockerComposeFile": [
+    "../docker-compose-dev.yml"
+  ],
+  "service": "dev_container",
+  "workspaceFolder": "/workspace",
+  // Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
+  "remoteUser": "node"
+}
