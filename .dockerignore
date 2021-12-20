@@ -1,0 +1,11 @@
+.devcontainer/
+.husky/
+.vscode/
+build/
+node_modules/
+fixtures/
+.editorconfig
+.eslintcache
+.gitignore
+docker-compose-dev.yml
+READEM.md

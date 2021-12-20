@@ -37,7 +37,6 @@
     "eject": "react-scripts eject",
     "prepare": "husky install"
   },
-  "prettier": {},
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -154,11 +153,13 @@
     "graphql.macro": "^1.4.2",
     "husky": ">=6",
     "lint-staged": ">=10",
-    "prettier": "^2.5.1",
-    "prettier-plugin-sql": "^0.4.1"
+    "prettier": "^2.5.1"
   },
   "lint-staged": {
     "*.{js,ts,tsx,graphql}": "eslint --cache --fix",
-    "*.{js,ts,tsx,css,md,sql,graphql}": "prettier --write"
+    "*.{js,ts,tsx,css,md,graphql}": [
+      "prettier --write",
+      "sed -i \"s/E '/E'/g\" migrations/**/*.sql"
+    ]
   }
 }

@@ -6,5 +6,9 @@
     "editor.formatOnSave": true,
     "[ignore]": {
         "editor.defaultFormatter": "foxundermoon.shell-format"
+    },
+    "[sql]": {
+        "editor.formatOnPaste": false,
+        "editor.formatOnSave": false
     }
 }
