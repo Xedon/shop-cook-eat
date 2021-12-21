@@ -1,0 +1,17 @@
+overwrite: true
+schema: "http://postgraphile:5000/graphql"
+documents: "src/**/*.graphql"
+generates:
+  src/types.ts:
+    plugins:
+      - "typescript"
+  src/:
+    preset: near-operation-file
+    presetConfig:
+      extension: .generated.tsx
+      baseTypesPath: types.ts
+    config:
+      gqlImport: graphql.macro#gql
+    plugins:
+      - "typescript-operations"
+      - "typescript-urql"

@@ -1,0 +1,15 @@
+query ShoppingListByNodeId($nodeId: ID!) {
+  shoppingListByNodeId(nodeId: $nodeId) {
+    name
+    itemShoppingLists {
+      nodes {
+        itemId
+        item {
+          itemId
+          name
+        }
+        additionalInformations
+      }
+    }
+  }
+}

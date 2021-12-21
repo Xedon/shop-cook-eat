@@ -1,0 +1,3 @@
+{
+  "schema": "http://postgraphile:5000/graphql"
+}

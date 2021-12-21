@@ -2,7 +2,7 @@ import { AppBar, Button, Toolbar } from "@mui/material";
 import LocalGroceryStoreOutlinedIcon from "@mui/icons-material/LocalGroceryStoreOutlined";
 import RestaurantOutlinedIcon from "@mui/icons-material/RestaurantOutlined";
 import { useDispatch } from "react-redux";
-import { appSlice, Navigation } from "./state/app";
+import { appSlice, View } from "./state/app";
 import { AppNavigation } from "./AppNavigation";
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
             startIcon={<LocalGroceryStoreOutlinedIcon />}
             key="lists"
             onClick={() =>
-              dispatch(appSlice.actions.navigate(Navigation.Lists))
+              dispatch(appSlice.actions.navigate({ view: View.Lists }))
             }
           >
             Lists
@@ -31,7 +31,7 @@ function App() {
             startIcon={<RestaurantOutlinedIcon />}
             key="cooking"
             onClick={() =>
-              dispatch(appSlice.actions.navigate(Navigation.Cooking))
+              dispatch(appSlice.actions.navigate({ view: View.Cooking }))
             }
           >
             Cooking

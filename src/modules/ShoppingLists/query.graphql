@@ -1,0 +1,8 @@
+query ShoppingLists {
+  shoppingLists {
+    nodes {
+      nodeId
+      name
+    }
+  }
+}

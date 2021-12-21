@@ -2,9 +2,11 @@
   "name": "shop-cook-eat",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://postgraphile:5000",
   "dependencies": {
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
+    "@graphql-codegen/near-operation-file-preset": "^2.2.2",
     "@mui/icons-material": "^5.2.5",
     "@mui/material": "^5.2.4",
     "@reduxjs/toolkit": "^1.7.1",
@@ -38,7 +40,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "codegen": "graphql-codegen --config codegen.yml"
   },
   "eslintConfig": {
     "extends": [
@@ -141,6 +144,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.16.5",
     "@graphql-codegen/cli": "^2.3.0",
     "@graphql-codegen/typescript": "^2.4.1",
+    "@graphql-codegen/typescript-operations": "^2.2.1",
     "@graphql-codegen/typescript-urql": "^3.4.1",
     "@graphql-eslint/eslint-plugin": "^3.2.0",
     "@types/jest": "^26.0.15",

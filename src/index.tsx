@@ -8,15 +8,19 @@ import { Provider } from "react-redux";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./theme";
+import { Provider as ClientProvider } from "urql";
+import { graphqlClient } from "./graphqlClient";
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <Provider store={store}>
-        <CssBaseline />
-        <App />
-      </Provider>
-    </ThemeProvider>
+    <ClientProvider value={graphqlClient}>
+      <ThemeProvider theme={theme}>
+        <Provider store={store}>
+          <CssBaseline />
+          <App />
+        </Provider>
+      </ThemeProvider>
+    </ClientProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

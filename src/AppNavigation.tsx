@@ -3,16 +3,16 @@ import { useSelector } from "react-redux";
 import { CookingPlan } from "./modules/CookingPlan/CookingPlan";
 import { ShoppingList } from "./modules/ShoppingList/ShoppingList";
 import { ShoppingLists } from "./modules/ShoppingLists/ShoppingLists";
-import { Navigation } from "./state/app";
+import { AppSlice, View } from "./state/app";
 import { RootState } from "./state/store";
 
-const AppContent = ({ navigation }: { navigation: Navigation }) => {
-  switch (navigation) {
-    case Navigation.List:
-      return <ShoppingList />;
-    case Navigation.Lists:
+const AppContent = (props: AppSlice["navigation"]) => {
+  switch (props.view) {
+    case View.List:
+      return <ShoppingList {...props.parameter} />;
+    case View.Lists:
       return <ShoppingLists />;
-    case Navigation.Cooking:
+    case View.Cooking:
       return <CookingPlan />;
   }
 };
@@ -23,11 +23,12 @@ export const AppNavigation = () => {
   return (
     <Paper
       sx={{
+        overflow: "scroll",
         width: "100vw",
-        minHeight: `calc(100vh - ${isAppBarBigger ? "64px" : "48px"})`,
+        maxHeight: `calc(100vh - ${isAppBarBigger ? "64px" : "48px"})`,
       }}
     >
-      <AppContent navigation={navigation} />
+      <AppContent {...navigation} />
     </Paper>
   );
 };
