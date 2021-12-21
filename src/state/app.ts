@@ -16,6 +16,8 @@ export const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    navigate: (state, action: PayloadAction<Navigation>) => {},
+    navigate: (state, action: PayloadAction<Navigation>) => {
+      state.navigation = action.payload;
+    },
   },
 });

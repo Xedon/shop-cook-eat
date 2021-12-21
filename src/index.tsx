@@ -6,13 +6,17 @@ import reportWebVitals from "./reportWebVitals";
 import { store } from "./state/store";
 import { Provider } from "react-redux";
 import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider } from "@mui/material";
+import { theme } from "./theme";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <CssBaseline />
-      <App />
-    </Provider>
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <CssBaseline />
+        <App />
+      </Provider>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

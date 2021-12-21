@@ -3,11 +3,13 @@ import LocalGroceryStoreOutlinedIcon from "@mui/icons-material/LocalGroceryStore
 import RestaurantOutlinedIcon from "@mui/icons-material/RestaurantOutlined";
 import { useDispatch } from "react-redux";
 import { appSlice, Navigation } from "./state/app";
+import { AppNavigation } from "./AppNavigation";
 
 function App() {
   const dispatch = useDispatch();
   return (
     <>
+      <AppNavigation />
       <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
         <Toolbar>
           <Button
