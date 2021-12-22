@@ -12,16 +12,18 @@ export type ShoppingListByNodeIdQuery = {
   shoppingListByNodeId?:
     | {
         __typename?: "ShoppingList";
+        nodeId: string;
+        shoppingListId: number;
         name: string;
         itemShoppingLists: {
           __typename?: "ItemShoppingListsConnection";
           nodes: Array<
             | {
                 __typename?: "ItemShoppingList";
-                itemId: any;
+                nodeId: string;
                 additionalInformations?: string | null | undefined;
                 item?:
-                  | { __typename?: "Item"; itemId: number; name: string }
+                  | { __typename?: "Item"; nodeId: string; name: string }
                   | null
                   | undefined;
               }
@@ -34,15 +36,47 @@ export type ShoppingListByNodeIdQuery = {
     | undefined;
 };
 
+export type ItemsQueryVariables = Types.Exact<{ [key: string]: never }>;
+
+export type ItemsQuery = {
+  __typename?: "Query";
+  items?:
+    | {
+        __typename?: "ItemsConnection";
+        nodes: Array<
+          | {
+              __typename?: "Item";
+              itemId: number;
+              nodeId: string;
+              name: string;
+              category?:
+                | {
+                    __typename?: "ItemCategory";
+                    nodeId: string;
+                    categroyName: string;
+                  }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined
+        >;
+      }
+    | null
+    | undefined;
+};
+
 export const ShoppingListByNodeIdDocument = gql`
   query ShoppingListByNodeId($nodeId: ID!) {
     shoppingListByNodeId(nodeId: $nodeId) {
+      nodeId
+      shoppingListId
       name
       itemShoppingLists {
         nodes {
-          itemId
+          nodeId
           item {
-            itemId
+            nodeId
             name
           }
           additionalInformations
@@ -62,4 +96,25 @@ export function useShoppingListByNodeIdQuery(
     query: ShoppingListByNodeIdDocument,
     ...options,
   });
+}
+export const ItemsDocument = gql`
+  query Items {
+    items {
+      nodes {
+        itemId
+        nodeId
+        name
+        category {
+          nodeId
+          categroyName
+        }
+      }
+    }
+  }
+`;
+
+export function useItemsQuery(
+  options: Omit<Urql.UseQueryArgs<ItemsQueryVariables>, "query"> = {}
+) {
+  return Urql.useQuery<ItemsQuery>({ query: ItemsDocument, ...options });
 }

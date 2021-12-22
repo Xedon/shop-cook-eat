@@ -7,8 +7,6 @@ const cardCss: SxProps = {
   width: "95vw",
 };
 
-const cards = Array(10).fill({ name: "Text" });
-
 export const ShoppingLists = () => {
   const dispatch = useDispatch();
   const [shoppingLists] = useShoppingListsQuery();

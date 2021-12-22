@@ -1,0 +1,23 @@
+mutation DelteItemFromShoppingList($nodeId: ID!) {
+  deleteItemShoppingListByNodeId(input: { nodeId: $nodeId }) {
+    item {
+      nodeId
+    }
+  }
+}
+
+mutation AddItemToShoppingList($itemId: BigInt!, $shoppingListId: BigInt!) {
+  createItemShoppingList(
+    input: {
+      itemShoppingList: { shoppingListId: $shoppingListId, itemId: $itemId }
+    }
+  ) {
+    itemShoppingList {
+      nodeId
+      item {
+        name
+        nodeId
+      }
+    }
+  }
+}

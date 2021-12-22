@@ -15,20 +15,25 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { appSlice, View } from "../../state/app";
 import { useDispatch } from "react-redux";
-import { useShoppingListByNodeIdQuery } from "./query.generated";
-
-const cardCss: SxProps = {
-  width: "120px",
-  height: "120px",
-};
-
-const cards = Array(30).fill({ name: "Text" });
+import { useItemsQuery, useShoppingListByNodeIdQuery } from "./query.generated";
+import { CardRenderer } from "../../components/CardRenderer";
+import {
+  useAddItemToShoppingListMutation,
+  useDelteItemFromShoppingListMutation,
+} from "./mutation.generated";
 
 export const ShoppingList = ({ nodeId }: { nodeId: string }) => {
   const disptach = useDispatch();
   const [shoppingList] = useShoppingListByNodeIdQuery({
     variables: { nodeId },
   });
+
+  const [itemQuery] = useItemsQuery();
+
+  const [_, deleteItemFromShoppingList] =
+    useDelteItemFromShoppingListMutation();
+
+  const [__, addItemToShoppingList] = useAddItemToShoppingListMutation();
 
   return (
     <Grid container flexDirection="column" spacing={1} sx={{ padding: "4px" }}>
@@ -49,29 +54,16 @@ export const ShoppingList = ({ nodeId }: { nodeId: string }) => {
           </Typography>
         </Grid>
       </Grid>
-
-      <Grid item container spacing={1} justifyContent="center">
-        {shoppingList.data?.shoppingListByNodeId?.itemShoppingLists.nodes.map(
-          (value) => (
-            <Grid key={value?.itemId} item>
-              <Card sx={cardCss}>
-                <CardHeader title={value?.item?.name} />
-                <CardContent>
-                  <Typography>{value?.additionalInformations}</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          )
-        )}
-      </Grid>
-      <Grid item container spacing={1} justifyContent="center">
-        {cards.map((value, index) => (
-          <Grid key={index} item>
-            <Card sx={cardCss}>
-              <CardHeader title={value.name} />
-            </Card>
-          </Grid>
-        ))}
+      <Grid item>
+        <CardRenderer
+          cards={
+            shoppingList.data?.shoppingListByNodeId?.itemShoppingLists.nodes ??
+            []
+          }
+          onCardClick={(cardData) =>
+            deleteItemFromShoppingList({ nodeId: cardData.nodeId })
+          }
+        />
       </Grid>
       <Grid item>
         <Accordion
@@ -90,15 +82,16 @@ export const ShoppingList = ({ nodeId }: { nodeId: string }) => {
             <Typography>Last Used</Typography>
           </AccordionSummary>
           <AccordionDetails sx={{ paddingLeft: "0px", paddingRight: "0px" }}>
-            <Grid container spacing={1} justifyContent="center">
-              {cards.map((value, index) => (
-                <Grid key={index} item>
-                  <Card sx={cardCss}>
-                    <CardHeader title={value.name} />
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
+            <CardRenderer
+              cards={itemQuery.data?.items?.nodes ?? []}
+              onCardClick={(cardData) =>
+                addItemToShoppingList({
+                  itemId: cardData.itemId,
+                  shoppingListId:
+                    shoppingList.data?.shoppingListByNodeId?.shoppingListId,
+                })
+              }
+            />
           </AccordionDetails>
         </Accordion>
       </Grid>

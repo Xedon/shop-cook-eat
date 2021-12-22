@@ -25,10 +25,11 @@ CREATE TABLE item_shopping_list(
 );
 
 CREATE TABLE item_shopping_list_history(
+  item_shopping_list_history SERIAL,
   item_id BIGINT NOT NULL REFERENCES item,
   shopping_list_id BIGINT NOT NULL REFERENCES shopping_list,
   additional_informations TEXT,
-  PRIMARY KEY(item_id, shopping_list_id)
+  PRIMARY KEY(item_shopping_list_history,item_id, shopping_list_id)
 );
 
 COMMENT ON TABLE item_shopping_list_history IS '@omit create,update,delete';

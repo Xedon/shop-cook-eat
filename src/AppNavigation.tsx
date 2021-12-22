@@ -20,14 +20,17 @@ const AppContent = (props: AppSlice["navigation"]) => {
 export const AppNavigation = () => {
   const { navigation } = useSelector((state: RootState) => state.app);
   const isAppBarBigger = useMediaQuery("(min-width: 600px)");
+
+  const workSpaceCss = {
+    overflow: "auto",
+    width: "100vw",
+    height: `calc(100vh - ${
+      navigation.view === View.List ? "81px" : isAppBarBigger ? "64px" : "56px"
+    })`,
+  };
+
   return (
-    <Paper
-      sx={{
-        overflow: "scroll",
-        width: "100vw",
-        maxHeight: `calc(100vh - ${isAppBarBigger ? "64px" : "48px"})`,
-      }}
-    >
+    <Paper sx={workSpaceCss}>
       <AppContent {...navigation} />
     </Paper>
   );
