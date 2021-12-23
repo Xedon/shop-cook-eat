@@ -39,6 +39,7 @@ export const ShoppingList = ({ nodeId }: { nodeId: string }) => {
     <Grid container flexDirection="column" spacing={1} sx={{ padding: "4px" }}>
       <Grid item>
         <Button
+          color="secondary"
           startIcon={<ArrowBackIcon />}
           title="back"
           onClick={() =>
@@ -68,7 +69,6 @@ export const ShoppingList = ({ nodeId }: { nodeId: string }) => {
       <Grid item>
         <Accordion
           sx={(theme: Theme) => ({
-            background: theme.palette.background.default,
             marginLeft: "-4px",
             marginRight: "-4px",
           })}

@@ -1,4 +1,4 @@
-import { Paper, useMediaQuery } from "@mui/material";
+import { Box, Paper, useMediaQuery } from "@mui/material";
 import { useSelector } from "react-redux";
 import { CookingPlan } from "./modules/CookingPlan/CookingPlan";
 import { ShoppingList } from "./modules/ShoppingList/ShoppingList";
@@ -30,8 +30,8 @@ export const AppNavigation = () => {
   };
 
   return (
-    <Paper sx={workSpaceCss}>
+    <Box sx={workSpaceCss}>
       <AppContent {...navigation} />
-    </Paper>
+    </Box>
   );
 };

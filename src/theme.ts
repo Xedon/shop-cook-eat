@@ -2,7 +2,7 @@ import { createTheme, ThemeOptions } from "@mui/material/styles";
 
 export const themeOptions: ThemeOptions = {
   palette: {
-    mode: "light",
+    mode: "dark",
     primary: {
       main: "#42424c",
     },
@@ -10,7 +10,16 @@ export const themeOptions: ThemeOptions = {
       main: "#bdbdbd",
     },
     background: {
-      default: "#fafafa",
+      default: "#303030",
+    },
+  },
+  components: {
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#EE0D0D",
+        },
+      },
     },
   },
 };

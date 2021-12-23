@@ -1,4 +1,13 @@
-import { AppBar, Button, Fade, Grid, Toolbar } from "@mui/material";
+import {
+  AppBar,
+  BottomNavigation,
+  BottomNavigationAction,
+  Button,
+  Fade,
+  Grid,
+  Paper,
+  Toolbar,
+} from "@mui/material";
 import LocalGroceryStoreOutlinedIcon from "@mui/icons-material/LocalGroceryStoreOutlined";
 import RestaurantOutlinedIcon from "@mui/icons-material/RestaurantOutlined";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,44 +22,52 @@ function App() {
   return (
     <>
       <AppNavigation />
-      <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
-        <Toolbar>
-          <Grid direction="column" container>
-            <Grid item>
-              <Fade unmountOnExit in={view === View.List}>
-                <InputField />
-              </Fade>
-            </Grid>
-            <Grid item>
-              <Button
-                variant="text"
-                color="inherit"
-                size="large"
-                startIcon={<LocalGroceryStoreOutlinedIcon />}
-                key="lists"
-                onClick={() =>
-                  dispatch(appSlice.actions.navigate({ view: View.Lists }))
-                }
-              >
-                Lists
-              </Button>
-              <Button
-                disabled
-                variant="text"
-                color="inherit"
-                size="large"
-                startIcon={<RestaurantOutlinedIcon />}
-                key="cooking"
-                onClick={() =>
-                  dispatch(appSlice.actions.navigate({ view: View.Cooking }))
-                }
-              >
-                Cooking
-              </Button>
-            </Grid>
+      <Paper
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          borderTopRightRadius: "4px",
+          borderTopLeftRadius: "4px",
+          backgroundImage: "none",
+        }}
+        elevation={3}
+      >
+        <Grid direction="column" container>
+          <Grid
+            item
+            sx={(theme) => ({
+              paddingLeft: theme.spacing(1),
+              paddingRight: theme.spacing(1),
+            })}
+          >
+            <Fade unmountOnExit in={view === View.List}>
+              <InputField />
+            </Fade>
           </Grid>
-        </Toolbar>
-      </AppBar>
+          <Grid item>
+            <BottomNavigation
+              showLabels
+              value={view}
+              onChange={(event, view) => {
+                dispatch(appSlice.actions.navigate({ view }));
+              }}
+            >
+              <BottomNavigationAction
+                label="Lists"
+                value={View.Lists}
+                icon={<LocalGroceryStoreOutlinedIcon />}
+              />
+              <BottomNavigationAction
+                label="Cooking"
+                value={View.Cooking}
+                icon={<RestaurantOutlinedIcon />}
+              />
+            </BottomNavigation>
+          </Grid>
+        </Grid>
+      </Paper>
     </>
   );
 }
