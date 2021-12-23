@@ -12,8 +12,8 @@ export type ShoppingListByNodeIdQuery = {
   shoppingListByNodeId?:
     | {
         __typename?: "ShoppingList";
+        id: number;
         nodeId: string;
-        shoppingListId: number;
         name: string;
         itemShoppingLists: {
           __typename?: "ItemShoppingListsConnection";
@@ -22,8 +22,14 @@ export type ShoppingListByNodeIdQuery = {
                 __typename?: "ItemShoppingList";
                 nodeId: string;
                 additionalInformations?: string | null | undefined;
+                id: string;
                 item?:
-                  | { __typename?: "Item"; nodeId: string; name: string }
+                  | {
+                      __typename?: "Item";
+                      id: number;
+                      nodeId: string;
+                      name: string;
+                    }
                   | null
                   | undefined;
               }
@@ -46,12 +52,13 @@ export type ItemsQuery = {
         nodes: Array<
           | {
               __typename?: "Item";
-              itemId: number;
+              id: number;
               nodeId: string;
               name: string;
               category?:
                 | {
                     __typename?: "ItemCategory";
+                    id: number;
                     nodeId: string;
                     categroyName: string;
                   }
@@ -69,13 +76,15 @@ export type ItemsQuery = {
 export const ShoppingListByNodeIdDocument = gql`
   query ShoppingListByNodeId($nodeId: ID!) {
     shoppingListByNodeId(nodeId: $nodeId) {
+      id
       nodeId
-      shoppingListId
       name
       itemShoppingLists {
         nodes {
           nodeId
+          id: nodeId
           item {
+            id
             nodeId
             name
           }
@@ -101,10 +110,11 @@ export const ItemsDocument = gql`
   query Items {
     items {
       nodes {
-        itemId
+        id
         nodeId
         name
         category {
+          id
           nodeId
           categroyName
         }

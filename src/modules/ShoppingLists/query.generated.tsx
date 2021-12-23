@@ -11,7 +11,12 @@ export type ShoppingListsQuery = {
     | {
         __typename?: "ShoppingListsConnection";
         nodes: Array<
-          | { __typename?: "ShoppingList"; nodeId: string; name: string }
+          | {
+              __typename?: "ShoppingList";
+              id: number;
+              nodeId: string;
+              name: string;
+            }
           | null
           | undefined
         >;
@@ -24,6 +29,7 @@ export const ShoppingListsDocument = gql`
   query ShoppingLists {
     shoppingLists {
       nodes {
+        id
         nodeId
         name
       }

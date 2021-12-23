@@ -2,6 +2,11 @@ overwrite: true
 schema: "http://postgraphile:5000/graphql"
 documents: "src/**/*.graphql"
 generates:
+  src/generated/introspection.json:
+    plugins:
+      - introspection
+    config:
+      minify: true
   src/types.ts:
     plugins:
       - "typescript"

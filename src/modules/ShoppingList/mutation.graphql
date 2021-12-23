@@ -1,7 +1,9 @@
 mutation DelteItemFromShoppingList($nodeId: ID!) {
   deleteItemShoppingListByNodeId(input: { nodeId: $nodeId }) {
     item {
+      id
       nodeId
+      name
     }
   }
 }
@@ -14,7 +16,9 @@ mutation AddItemToShoppingList($itemId: BigInt!, $shoppingListId: BigInt!) {
   ) {
     itemShoppingList {
       nodeId
+      id: nodeId
       item {
+        id
         name
         nodeId
       }

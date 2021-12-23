@@ -86,9 +86,8 @@ export const ShoppingList = ({ nodeId }: { nodeId: string }) => {
               cards={itemQuery.data?.items?.nodes ?? []}
               onCardClick={(cardData) =>
                 addItemToShoppingList({
-                  itemId: cardData.itemId,
-                  shoppingListId:
-                    shoppingList.data?.shoppingListByNodeId?.shoppingListId,
+                  itemId: cardData.id,
+                  shoppingListId: shoppingList.data?.shoppingListByNodeId?.id,
                 })
               }
             />

@@ -259,7 +259,7 @@ export type DeleteItemInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars["String"]>;
-  itemId: Scalars["Int"];
+  id: Scalars["Int"];
 };
 
 /** The output of our delete `Item` mutation. */
@@ -362,7 +362,7 @@ export type DeleteShoppingListInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars["String"]>;
-  shoppingListId: Scalars["Int"];
+  id: Scalars["Int"];
 };
 
 /** The output of our delete `ShoppingList` mutation. */
@@ -440,7 +440,7 @@ export type Item = Node & {
   /** Reads a single `ItemCategory` that is related to this `Item`. */
   category?: Maybe<ItemCategory>;
   categoryId?: Maybe<Scalars["BigInt"]>;
-  itemId: Scalars["Int"];
+  id: Scalars["Int"];
   /** Reads and enables pagination through a set of `ItemShoppingListHistory`. */
   itemShoppingListHistories: ItemShoppingListHistoriesConnection;
   /** Reads and enables pagination through a set of `ItemShoppingList`. */
@@ -599,7 +599,7 @@ export type ItemCategoryIdFkeyInput = {
 /** Input for the nested mutation of `item` in the `ItemCategoryInput` mutation. */
 export type ItemCategoryIdFkeyInverseInput = {
   /** The primary key(s) for `item` for the far side of the relationship. */
-  connectByItemId?: InputMaybe<Array<ItemItemPkeyConnect>>;
+  connectById?: InputMaybe<Array<ItemItemPkeyConnect>>;
   /** The primary key(s) for `item` for the far side of the relationship. */
   connectByName?: InputMaybe<Array<ItemItemItemNameKeyConnect>>;
   /** The primary key(s) for `item` for the far side of the relationship. */
@@ -607,7 +607,7 @@ export type ItemCategoryIdFkeyInverseInput = {
   /** A `ItemInput` object that will be created and connected to this object. */
   create?: InputMaybe<Array<ItemCategoryIdFkeyItemCreateInput>>;
   /** The primary key(s) for `item` for the far side of the relationship. */
-  deleteByItemId?: InputMaybe<Array<ItemItemPkeyDelete>>;
+  deleteById?: InputMaybe<Array<ItemItemPkeyDelete>>;
   /** The primary key(s) for `item` for the far side of the relationship. */
   deleteByName?: InputMaybe<Array<ItemItemItemNameKeyDelete>>;
   /** The primary key(s) for `item` for the far side of the relationship. */
@@ -615,7 +615,7 @@ export type ItemCategoryIdFkeyInverseInput = {
   /** Flag indicating whether all other `item` records that match this relationship should be removed. */
   deleteOthers?: InputMaybe<Scalars["Boolean"]>;
   /** The primary key(s) and patch data for `item` for the far side of the relationship. */
-  updateByItemId?: InputMaybe<
+  updateById?: InputMaybe<
     Array<ItemOnItemForItemCategoryIdFkeyUsingItemPkeyUpdate>
   >;
   /** The primary key(s) and patch data for `item` for the far side of the relationship. */
@@ -637,10 +637,10 @@ export type ItemCategoryIdFkeyItemCategoryCreateInput = {
 
 /** The `item` to be created by this mutation. */
 export type ItemCategoryIdFkeyItemCreateInput = {
+  id?: InputMaybe<Scalars["Int"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
-  itemId?: InputMaybe<Scalars["Int"]>;
-  itemShoppingListHistoriesUsingItemId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
-  itemShoppingListsUsingItemId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
+  itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
+  itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
   name: Scalars["String"];
 };
 
@@ -700,8 +700,8 @@ export type ItemCategoryPatch = {
 export type ItemCondition = {
   /** Checks for equality with the object’s `categoryId` field. */
   categoryId?: InputMaybe<Scalars["BigInt"]>;
-  /** Checks for equality with the object’s `itemId` field. */
-  itemId?: InputMaybe<Scalars["Int"]>;
+  /** Checks for equality with the object’s `id` field. */
+  id?: InputMaybe<Scalars["Int"]>;
   /** Checks for equality with the object’s `name` field. */
   name?: InputMaybe<Scalars["String"]>;
 };
@@ -712,8 +712,8 @@ export type ItemFilter = {
   and?: InputMaybe<Array<ItemFilter>>;
   /** Filter by the object’s `categoryId` field. */
   categoryId?: InputMaybe<BigIntFilter>;
-  /** Filter by the object’s `itemId` field. */
-  itemId?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<IntFilter>;
   /** Filter by the object’s `name` field. */
   name?: InputMaybe<StringFilter>;
   /** Negates the expression. */
@@ -725,10 +725,10 @@ export type ItemFilter = {
 /** An input for mutations affecting `Item` */
 export type ItemInput = {
   categoryId?: InputMaybe<Scalars["BigInt"]>;
+  id?: InputMaybe<Scalars["Int"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
-  itemId?: InputMaybe<Scalars["Int"]>;
-  itemShoppingListHistoriesUsingItemId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
-  itemShoppingListsUsingItemId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
+  itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
+  itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
   name: Scalars["String"];
 };
 
@@ -744,12 +744,12 @@ export type ItemItemItemNameKeyDelete = {
 
 /** The fields on `item` to look up the row to connect. */
 export type ItemItemPkeyConnect = {
-  itemId: Scalars["Int"];
+  id: Scalars["Int"];
 };
 
 /** The fields on `item` to look up the row to delete. */
 export type ItemItemPkeyDelete = {
-  itemId: Scalars["Int"];
+  id: Scalars["Int"];
 };
 
 /** The globally unique `ID` look up for the row to connect. */
@@ -781,7 +781,7 @@ export type ItemOnItemForItemCategoryIdFkeyUsingItemItemNameKeyUpdate = {
 
 /** The fields on `item` to look up the row to update. */
 export type ItemOnItemForItemCategoryIdFkeyUsingItemPkeyUpdate = {
-  itemId: Scalars["Int"];
+  id: Scalars["Int"];
   /** An object where the defined keys will be set on the `item` being updated. */
   patch: UpdateItemOnItemForItemCategoryIdFkeyPatch;
 };
@@ -805,7 +805,7 @@ export type ItemOnItemShoppingListForItemShoppingListItemIdFkeyUsingItemItemName
 /** The fields on `item` to look up the row to update. */
 export type ItemOnItemShoppingListForItemShoppingListItemIdFkeyUsingItemPkeyUpdate =
   {
-    itemId: Scalars["Int"];
+    id: Scalars["Int"];
     /** An object where the defined keys will be set on the `item` being updated. */
     patch: UpdateItemOnItemShoppingListForItemShoppingListItemIdFkeyPatch;
   };
@@ -830,7 +830,7 @@ export type ItemOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyUsi
 /** The fields on `item` to look up the row to update. */
 export type ItemOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyUsingItemPkeyUpdate =
   {
-    itemId: Scalars["Int"];
+    id: Scalars["Int"];
     /** An object where the defined keys will be set on the `item` being updated. */
     patch: UpdateItemOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyPatch;
   };
@@ -838,10 +838,10 @@ export type ItemOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyUsi
 /** Represents an update to a `Item`. Fields that are set will be updated. */
 export type ItemPatch = {
   categoryId?: InputMaybe<Scalars["BigInt"]>;
+  id?: InputMaybe<Scalars["Int"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
-  itemId?: InputMaybe<Scalars["Int"]>;
-  itemShoppingListHistoriesUsingItemId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
-  itemShoppingListsUsingItemId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
+  itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
+  itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
   name?: InputMaybe<Scalars["String"]>;
 };
 
@@ -913,6 +913,8 @@ export type ItemShoppingListHistoriesEdge = {
 export enum ItemShoppingListHistoriesOrderBy {
   AdditionalInformationsAsc = "ADDITIONAL_INFORMATIONS_ASC",
   AdditionalInformationsDesc = "ADDITIONAL_INFORMATIONS_DESC",
+  IdAsc = "ID_ASC",
+  IdDesc = "ID_DESC",
   ItemIdAsc = "ITEM_ID_ASC",
   ItemIdDesc = "ITEM_ID_DESC",
   Natural = "NATURAL",
@@ -925,6 +927,7 @@ export enum ItemShoppingListHistoriesOrderBy {
 export type ItemShoppingListHistory = Node & {
   __typename?: "ItemShoppingListHistory";
   additionalInformations?: Maybe<Scalars["String"]>;
+  id: Scalars["Int"];
   /** Reads a single `Item` that is related to this `ItemShoppingListHistory`. */
   item?: Maybe<Item>;
   itemId: Scalars["BigInt"];
@@ -942,6 +945,8 @@ export type ItemShoppingListHistory = Node & {
 export type ItemShoppingListHistoryCondition = {
   /** Checks for equality with the object’s `additionalInformations` field. */
   additionalInformations?: InputMaybe<Scalars["String"]>;
+  /** Checks for equality with the object’s `id` field. */
+  id?: InputMaybe<Scalars["Int"]>;
   /** Checks for equality with the object’s `itemId` field. */
   itemId?: InputMaybe<Scalars["BigInt"]>;
   /** Checks for equality with the object’s `shoppingListId` field. */
@@ -954,6 +959,8 @@ export type ItemShoppingListHistoryFilter = {
   additionalInformations?: InputMaybe<StringFilter>;
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<ItemShoppingListHistoryFilter>>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<IntFilter>;
   /** Filter by the object’s `itemId` field. */
   itemId?: InputMaybe<BigIntFilter>;
   /** Negates the expression. */
@@ -967,7 +974,7 @@ export type ItemShoppingListHistoryFilter = {
 /** Input for the nested mutation of `item` in the `ItemShoppingListHistoryInput` mutation. */
 export type ItemShoppingListHistoryItemIdFkeyInput = {
   /** The primary key(s) for `item` for the far side of the relationship. */
-  connectByItemId?: InputMaybe<ItemItemPkeyConnect>;
+  connectById?: InputMaybe<ItemItemPkeyConnect>;
   /** The primary key(s) for `item` for the far side of the relationship. */
   connectByName?: InputMaybe<ItemItemItemNameKeyConnect>;
   /** The primary key(s) for `item` for the far side of the relationship. */
@@ -975,13 +982,13 @@ export type ItemShoppingListHistoryItemIdFkeyInput = {
   /** A `ItemInput` object that will be created and connected to this object. */
   create?: InputMaybe<ItemShoppingListHistoryItemIdFkeyItemCreateInput>;
   /** The primary key(s) for `item` for the far side of the relationship. */
-  deleteByItemId?: InputMaybe<ItemItemPkeyDelete>;
+  deleteById?: InputMaybe<ItemItemPkeyDelete>;
   /** The primary key(s) for `item` for the far side of the relationship. */
   deleteByName?: InputMaybe<ItemItemItemNameKeyDelete>;
   /** The primary key(s) for `item` for the far side of the relationship. */
   deleteByNodeId?: InputMaybe<ItemNodeIdDelete>;
   /** The primary key(s) and patch data for `item` for the far side of the relationship. */
-  updateByItemId?: InputMaybe<ItemOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyUsingItemPkeyUpdate>;
+  updateById?: InputMaybe<ItemOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyUsingItemPkeyUpdate>;
   /** The primary key(s) and patch data for `item` for the far side of the relationship. */
   updateByName?: InputMaybe<ItemOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyUsingItemItemNameKeyUpdate>;
   /** The primary key(s) and patch data for `item` for the far side of the relationship. */
@@ -991,13 +998,13 @@ export type ItemShoppingListHistoryItemIdFkeyInput = {
 /** Input for the nested mutation of `itemShoppingListHistory` in the `ItemInput` mutation. */
 export type ItemShoppingListHistoryItemIdFkeyInverseInput = {
   /** The primary key(s) for `itemShoppingListHistory` for the far side of the relationship. */
-  connectByItemIdAndShoppingListId?: InputMaybe<
+  connectByIdAndItemIdAndShoppingListId?: InputMaybe<
     Array<ItemShoppingListHistoryItemShoppingListHistoryPkeyConnect>
   >;
   /** The primary key(s) for `itemShoppingListHistory` for the far side of the relationship. */
   connectByNodeId?: InputMaybe<Array<ItemShoppingListHistoryNodeIdConnect>>;
   /** The primary key(s) and patch data for `itemShoppingListHistory` for the far side of the relationship. */
-  updateByItemIdAndShoppingListId?: InputMaybe<
+  updateByIdAndItemIdAndShoppingListId?: InputMaybe<
     Array<ItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyUsingItemShoppingListHistoryPkeyUpdate>
   >;
   /** The primary key(s) and patch data for `itemShoppingListHistory` for the far side of the relationship. */
@@ -1009,14 +1016,16 @@ export type ItemShoppingListHistoryItemIdFkeyInverseInput = {
 /** The `item` to be created by this mutation. */
 export type ItemShoppingListHistoryItemIdFkeyItemCreateInput = {
   categoryId?: InputMaybe<Scalars["BigInt"]>;
+  id?: InputMaybe<Scalars["Int"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
-  itemShoppingListHistoriesUsingItemId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
-  itemShoppingListsUsingItemId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
+  itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
+  itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
   name: Scalars["String"];
 };
 
 /** The fields on `itemShoppingListHistory` to look up the row to connect. */
 export type ItemShoppingListHistoryItemShoppingListHistoryPkeyConnect = {
+  id: Scalars["Int"];
   itemId: Scalars["BigInt"];
   shoppingListId: Scalars["BigInt"];
 };
@@ -1039,6 +1048,7 @@ export type ItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListH
 /** The fields on `itemShoppingListHistory` to look up the row to update. */
 export type ItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyUsingItemShoppingListHistoryPkeyUpdate =
   {
+    id: Scalars["Int"];
     itemId: Scalars["BigInt"];
     /** An object where the defined keys will be set on the `itemShoppingListHistory` being updated. */
     patch: UpdateItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyPatch;
@@ -1057,6 +1067,7 @@ export type ItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListH
 /** The fields on `itemShoppingListHistory` to look up the row to update. */
 export type ItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyUsingItemShoppingListHistoryPkeyUpdate =
   {
+    id: Scalars["Int"];
     itemId: Scalars["BigInt"];
     /** An object where the defined keys will be set on the `itemShoppingListHistory` being updated. */
     patch: UpdateItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyPatch;
@@ -1066,6 +1077,7 @@ export type ItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListH
 /** Represents an update to a `ItemShoppingListHistory`. Fields that are set will be updated. */
 export type ItemShoppingListHistoryPatch = {
   additionalInformations?: InputMaybe<Scalars["String"]>;
+  id?: InputMaybe<Scalars["Int"]>;
   itemId?: InputMaybe<Scalars["BigInt"]>;
   itemToItemId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInput>;
   shoppingListId?: InputMaybe<Scalars["BigInt"]>;
@@ -1075,37 +1087,37 @@ export type ItemShoppingListHistoryPatch = {
 /** Input for the nested mutation of `shoppingList` in the `ItemShoppingListHistoryInput` mutation. */
 export type ItemShoppingListHistoryShoppingListIdFkeyInput = {
   /** The primary key(s) for `shoppingList` for the far side of the relationship. */
+  connectById?: InputMaybe<ShoppingListShoppingListPkeyConnect>;
+  /** The primary key(s) for `shoppingList` for the far side of the relationship. */
   connectByName?: InputMaybe<ShoppingListShoppingListShoppingListNameKeyConnect>;
   /** The primary key(s) for `shoppingList` for the far side of the relationship. */
   connectByNodeId?: InputMaybe<ShoppingListNodeIdConnect>;
-  /** The primary key(s) for `shoppingList` for the far side of the relationship. */
-  connectByShoppingListId?: InputMaybe<ShoppingListShoppingListPkeyConnect>;
   /** A `ShoppingListInput` object that will be created and connected to this object. */
   create?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyShoppingListCreateInput>;
+  /** The primary key(s) for `shoppingList` for the far side of the relationship. */
+  deleteById?: InputMaybe<ShoppingListShoppingListPkeyDelete>;
   /** The primary key(s) for `shoppingList` for the far side of the relationship. */
   deleteByName?: InputMaybe<ShoppingListShoppingListShoppingListNameKeyDelete>;
   /** The primary key(s) for `shoppingList` for the far side of the relationship. */
   deleteByNodeId?: InputMaybe<ShoppingListNodeIdDelete>;
-  /** The primary key(s) for `shoppingList` for the far side of the relationship. */
-  deleteByShoppingListId?: InputMaybe<ShoppingListShoppingListPkeyDelete>;
+  /** The primary key(s) and patch data for `shoppingList` for the far side of the relationship. */
+  updateById?: InputMaybe<ShoppingListOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyUsingShoppingListPkeyUpdate>;
   /** The primary key(s) and patch data for `shoppingList` for the far side of the relationship. */
   updateByName?: InputMaybe<ShoppingListOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyUsingShoppingListShoppingListNameKeyUpdate>;
   /** The primary key(s) and patch data for `shoppingList` for the far side of the relationship. */
   updateByNodeId?: InputMaybe<ItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyNodeIdUpdate>;
-  /** The primary key(s) and patch data for `shoppingList` for the far side of the relationship. */
-  updateByShoppingListId?: InputMaybe<ShoppingListOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyUsingShoppingListPkeyUpdate>;
 };
 
 /** Input for the nested mutation of `itemShoppingListHistory` in the `ShoppingListInput` mutation. */
 export type ItemShoppingListHistoryShoppingListIdFkeyInverseInput = {
   /** The primary key(s) for `itemShoppingListHistory` for the far side of the relationship. */
-  connectByItemIdAndShoppingListId?: InputMaybe<
+  connectByIdAndItemIdAndShoppingListId?: InputMaybe<
     Array<ItemShoppingListHistoryItemShoppingListHistoryPkeyConnect>
   >;
   /** The primary key(s) for `itemShoppingListHistory` for the far side of the relationship. */
   connectByNodeId?: InputMaybe<Array<ItemShoppingListHistoryNodeIdConnect>>;
   /** The primary key(s) and patch data for `itemShoppingListHistory` for the far side of the relationship. */
-  updateByItemIdAndShoppingListId?: InputMaybe<
+  updateByIdAndItemIdAndShoppingListId?: InputMaybe<
     Array<ItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyUsingItemShoppingListHistoryPkeyUpdate>
   >;
   /** The primary key(s) and patch data for `itemShoppingListHistory` for the far side of the relationship. */
@@ -1116,8 +1128,9 @@ export type ItemShoppingListHistoryShoppingListIdFkeyInverseInput = {
 
 /** The `shoppingList` to be created by this mutation. */
 export type ItemShoppingListHistoryShoppingListIdFkeyShoppingListCreateInput = {
-  itemShoppingListHistoriesUsingShoppingListId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
-  itemShoppingListsUsingShoppingListId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
+  id?: InputMaybe<Scalars["Int"]>;
+  itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
+  itemShoppingListsUsingId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
   name: Scalars["String"];
 };
 
@@ -1133,7 +1146,7 @@ export type ItemShoppingListInput = {
 /** Input for the nested mutation of `item` in the `ItemShoppingListInput` mutation. */
 export type ItemShoppingListItemIdFkeyInput = {
   /** The primary key(s) for `item` for the far side of the relationship. */
-  connectByItemId?: InputMaybe<ItemItemPkeyConnect>;
+  connectById?: InputMaybe<ItemItemPkeyConnect>;
   /** The primary key(s) for `item` for the far side of the relationship. */
   connectByName?: InputMaybe<ItemItemItemNameKeyConnect>;
   /** The primary key(s) for `item` for the far side of the relationship. */
@@ -1141,13 +1154,13 @@ export type ItemShoppingListItemIdFkeyInput = {
   /** A `ItemInput` object that will be created and connected to this object. */
   create?: InputMaybe<ItemShoppingListItemIdFkeyItemCreateInput>;
   /** The primary key(s) for `item` for the far side of the relationship. */
-  deleteByItemId?: InputMaybe<ItemItemPkeyDelete>;
+  deleteById?: InputMaybe<ItemItemPkeyDelete>;
   /** The primary key(s) for `item` for the far side of the relationship. */
   deleteByName?: InputMaybe<ItemItemItemNameKeyDelete>;
   /** The primary key(s) for `item` for the far side of the relationship. */
   deleteByNodeId?: InputMaybe<ItemNodeIdDelete>;
   /** The primary key(s) and patch data for `item` for the far side of the relationship. */
-  updateByItemId?: InputMaybe<ItemOnItemShoppingListForItemShoppingListItemIdFkeyUsingItemPkeyUpdate>;
+  updateById?: InputMaybe<ItemOnItemShoppingListForItemShoppingListItemIdFkeyUsingItemPkeyUpdate>;
   /** The primary key(s) and patch data for `item` for the far side of the relationship. */
   updateByName?: InputMaybe<ItemOnItemShoppingListForItemShoppingListItemIdFkeyUsingItemItemNameKeyUpdate>;
   /** The primary key(s) and patch data for `item` for the far side of the relationship. */
@@ -1187,9 +1200,10 @@ export type ItemShoppingListItemIdFkeyInverseInput = {
 /** The `item` to be created by this mutation. */
 export type ItemShoppingListItemIdFkeyItemCreateInput = {
   categoryId?: InputMaybe<Scalars["BigInt"]>;
+  id?: InputMaybe<Scalars["Int"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
-  itemShoppingListHistoriesUsingItemId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
-  itemShoppingListsUsingItemId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
+  itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
+  itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
   name: Scalars["String"];
 };
 
@@ -1273,25 +1287,25 @@ export type ItemShoppingListPatch = {
 /** Input for the nested mutation of `shoppingList` in the `ItemShoppingListInput` mutation. */
 export type ItemShoppingListShoppingListIdFkeyInput = {
   /** The primary key(s) for `shoppingList` for the far side of the relationship. */
+  connectById?: InputMaybe<ShoppingListShoppingListPkeyConnect>;
+  /** The primary key(s) for `shoppingList` for the far side of the relationship. */
   connectByName?: InputMaybe<ShoppingListShoppingListShoppingListNameKeyConnect>;
   /** The primary key(s) for `shoppingList` for the far side of the relationship. */
   connectByNodeId?: InputMaybe<ShoppingListNodeIdConnect>;
-  /** The primary key(s) for `shoppingList` for the far side of the relationship. */
-  connectByShoppingListId?: InputMaybe<ShoppingListShoppingListPkeyConnect>;
   /** A `ShoppingListInput` object that will be created and connected to this object. */
   create?: InputMaybe<ItemShoppingListShoppingListIdFkeyShoppingListCreateInput>;
+  /** The primary key(s) for `shoppingList` for the far side of the relationship. */
+  deleteById?: InputMaybe<ShoppingListShoppingListPkeyDelete>;
   /** The primary key(s) for `shoppingList` for the far side of the relationship. */
   deleteByName?: InputMaybe<ShoppingListShoppingListShoppingListNameKeyDelete>;
   /** The primary key(s) for `shoppingList` for the far side of the relationship. */
   deleteByNodeId?: InputMaybe<ShoppingListNodeIdDelete>;
-  /** The primary key(s) for `shoppingList` for the far side of the relationship. */
-  deleteByShoppingListId?: InputMaybe<ShoppingListShoppingListPkeyDelete>;
+  /** The primary key(s) and patch data for `shoppingList` for the far side of the relationship. */
+  updateById?: InputMaybe<ShoppingListOnItemShoppingListForItemShoppingListShoppingListIdFkeyUsingShoppingListPkeyUpdate>;
   /** The primary key(s) and patch data for `shoppingList` for the far side of the relationship. */
   updateByName?: InputMaybe<ShoppingListOnItemShoppingListForItemShoppingListShoppingListIdFkeyUsingShoppingListShoppingListNameKeyUpdate>;
   /** The primary key(s) and patch data for `shoppingList` for the far side of the relationship. */
   updateByNodeId?: InputMaybe<ItemShoppingListOnItemShoppingListForItemShoppingListShoppingListIdFkeyNodeIdUpdate>;
-  /** The primary key(s) and patch data for `shoppingList` for the far side of the relationship. */
-  updateByShoppingListId?: InputMaybe<ShoppingListOnItemShoppingListForItemShoppingListShoppingListIdFkeyUsingShoppingListPkeyUpdate>;
 };
 
 /** Input for the nested mutation of `itemShoppingList` in the `ShoppingListInput` mutation. */
@@ -1334,8 +1348,9 @@ export type ItemShoppingListShoppingListIdFkeyItemShoppingListCreateInput = {
 
 /** The `shoppingList` to be created by this mutation. */
 export type ItemShoppingListShoppingListIdFkeyShoppingListCreateInput = {
-  itemShoppingListHistoriesUsingShoppingListId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
-  itemShoppingListsUsingShoppingListId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
+  id?: InputMaybe<Scalars["Int"]>;
+  itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
+  itemShoppingListsUsingId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
   name: Scalars["String"];
 };
 
@@ -1357,11 +1372,25 @@ export type ItemShoppingListsByItemShoppingListHistoryItemIdAndShoppingListIdMan
 export type ItemShoppingListsByItemShoppingListHistoryItemIdAndShoppingListIdManyToManyEdge =
   {
     __typename?: "ItemShoppingListsByItemShoppingListHistoryItemIdAndShoppingListIdManyToManyEdge";
-    additionalInformations?: Maybe<Scalars["String"]>;
     /** A cursor for use in pagination. */
     cursor?: Maybe<Scalars["Cursor"]>;
+    /** Reads and enables pagination through a set of `ItemShoppingListHistory`. */
+    itemShoppingListHistories: ItemShoppingListHistoriesConnection;
     /** The `ShoppingList` at the end of the edge. */
     node?: Maybe<ShoppingList>;
+  };
+
+/** A `ShoppingList` edge in the connection, with data from `ItemShoppingListHistory`. */
+export type ItemShoppingListsByItemShoppingListHistoryItemIdAndShoppingListIdManyToManyEdgeItemShoppingListHistoriesArgs =
+  {
+    after?: InputMaybe<Scalars["Cursor"]>;
+    before?: InputMaybe<Scalars["Cursor"]>;
+    condition?: InputMaybe<ItemShoppingListHistoryCondition>;
+    filter?: InputMaybe<ItemShoppingListHistoryFilter>;
+    first?: InputMaybe<Scalars["Int"]>;
+    last?: InputMaybe<Scalars["Int"]>;
+    offset?: InputMaybe<Scalars["Int"]>;
+    orderBy?: InputMaybe<Array<ItemShoppingListHistoriesOrderBy>>;
   };
 
 /** A connection to a list of `ShoppingList` values, with data from `ItemShoppingList`. */
@@ -1450,8 +1479,8 @@ export type ItemsEdge = {
 export enum ItemsOrderBy {
   CategoryIdAsc = "CATEGORY_ID_ASC",
   CategoryIdDesc = "CATEGORY_ID_DESC",
-  ItemIdAsc = "ITEM_ID_ASC",
-  ItemIdDesc = "ITEM_ID_DESC",
+  IdAsc = "ID_ASC",
+  IdDesc = "ID_DESC",
   NameAsc = "NAME_ASC",
   NameDesc = "NAME_DESC",
   Natural = "NATURAL",
@@ -1700,7 +1729,7 @@ export type Query = Node & {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryItemArgs = {
-  itemId: Scalars["Int"];
+  id: Scalars["Int"];
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -1760,6 +1789,7 @@ export type QueryItemShoppingListHistoriesArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryItemShoppingListHistoryArgs = {
+  id: Scalars["Int"];
   itemId: Scalars["BigInt"];
   shoppingListId: Scalars["BigInt"];
 };
@@ -1800,7 +1830,7 @@ export type QueryNodeArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryShoppingListArgs = {
-  shoppingListId: Scalars["Int"];
+  id: Scalars["Int"];
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -1827,6 +1857,7 @@ export type QueryShoppingListsArgs = {
 
 export type ShoppingList = Node & {
   __typename?: "ShoppingList";
+  id: Scalars["Int"];
   /** Reads and enables pagination through a set of `ItemShoppingListHistory`. */
   itemShoppingListHistories: ItemShoppingListHistoriesConnection;
   /** Reads and enables pagination through a set of `ItemShoppingList`. */
@@ -1838,7 +1869,6 @@ export type ShoppingList = Node & {
   name: Scalars["String"];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars["ID"];
-  shoppingListId: Scalars["Int"];
 };
 
 export type ShoppingListItemShoppingListHistoriesArgs = {
@@ -1891,32 +1921,32 @@ export type ShoppingListItemsByItemShoppingListShoppingListIdAndItemIdArgs = {
  * tested for equality and combined with a logical ‘and.’
  */
 export type ShoppingListCondition = {
+  /** Checks for equality with the object’s `id` field. */
+  id?: InputMaybe<Scalars["Int"]>;
   /** Checks for equality with the object’s `name` field. */
   name?: InputMaybe<Scalars["String"]>;
-  /** Checks for equality with the object’s `shoppingListId` field. */
-  shoppingListId?: InputMaybe<Scalars["Int"]>;
 };
 
 /** A filter to be used against `ShoppingList` object types. All fields are combined with a logical ‘and.’ */
 export type ShoppingListFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<ShoppingListFilter>>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<IntFilter>;
   /** Filter by the object’s `name` field. */
   name?: InputMaybe<StringFilter>;
   /** Negates the expression. */
   not?: InputMaybe<ShoppingListFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<ShoppingListFilter>>;
-  /** Filter by the object’s `shoppingListId` field. */
-  shoppingListId?: InputMaybe<IntFilter>;
 };
 
 /** An input for mutations affecting `ShoppingList` */
 export type ShoppingListInput = {
-  itemShoppingListHistoriesUsingShoppingListId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
-  itemShoppingListsUsingShoppingListId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
+  id?: InputMaybe<Scalars["Int"]>;
+  itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
+  itemShoppingListsUsingId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
   name: Scalars["String"];
-  shoppingListId?: InputMaybe<Scalars["Int"]>;
 };
 
 /** A connection to a list of `Item` values, with data from `ItemShoppingListHistory`. */
@@ -1937,11 +1967,25 @@ export type ShoppingListItemsByItemShoppingListHistoryShoppingListIdAndItemIdMan
 export type ShoppingListItemsByItemShoppingListHistoryShoppingListIdAndItemIdManyToManyEdge =
   {
     __typename?: "ShoppingListItemsByItemShoppingListHistoryShoppingListIdAndItemIdManyToManyEdge";
-    additionalInformations?: Maybe<Scalars["String"]>;
     /** A cursor for use in pagination. */
     cursor?: Maybe<Scalars["Cursor"]>;
+    /** Reads and enables pagination through a set of `ItemShoppingListHistory`. */
+    itemShoppingListHistories: ItemShoppingListHistoriesConnection;
     /** The `Item` at the end of the edge. */
     node?: Maybe<Item>;
+  };
+
+/** A `Item` edge in the connection, with data from `ItemShoppingListHistory`. */
+export type ShoppingListItemsByItemShoppingListHistoryShoppingListIdAndItemIdManyToManyEdgeItemShoppingListHistoriesArgs =
+  {
+    after?: InputMaybe<Scalars["Cursor"]>;
+    before?: InputMaybe<Scalars["Cursor"]>;
+    condition?: InputMaybe<ItemShoppingListHistoryCondition>;
+    filter?: InputMaybe<ItemShoppingListHistoryFilter>;
+    first?: InputMaybe<Scalars["Int"]>;
+    last?: InputMaybe<Scalars["Int"]>;
+    offset?: InputMaybe<Scalars["Int"]>;
+    orderBy?: InputMaybe<Array<ItemShoppingListHistoriesOrderBy>>;
   };
 
 /** A connection to a list of `Item` values, with data from `ItemShoppingList`. */
@@ -1993,9 +2037,9 @@ export type ShoppingListOnItemShoppingListForItemShoppingListShoppingListIdFkeyN
 /** The fields on `shoppingList` to look up the row to update. */
 export type ShoppingListOnItemShoppingListForItemShoppingListShoppingListIdFkeyUsingShoppingListPkeyUpdate =
   {
+    id: Scalars["Int"];
     /** An object where the defined keys will be set on the `shoppingList` being updated. */
     patch: UpdateShoppingListOnItemShoppingListForItemShoppingListShoppingListIdFkeyPatch;
-    shoppingListId: Scalars["Int"];
   };
 
 /** The fields on `shoppingList` to look up the row to update. */
@@ -2018,9 +2062,9 @@ export type ShoppingListOnItemShoppingListHistoryForItemShoppingListHistoryShopp
 /** The fields on `shoppingList` to look up the row to update. */
 export type ShoppingListOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyUsingShoppingListPkeyUpdate =
   {
+    id: Scalars["Int"];
     /** An object where the defined keys will be set on the `shoppingList` being updated. */
     patch: UpdateShoppingListOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyPatch;
-    shoppingListId: Scalars["Int"];
   };
 
 /** The fields on `shoppingList` to look up the row to update. */
@@ -2033,20 +2077,20 @@ export type ShoppingListOnItemShoppingListHistoryForItemShoppingListHistoryShopp
 
 /** Represents an update to a `ShoppingList`. Fields that are set will be updated. */
 export type ShoppingListPatch = {
-  itemShoppingListHistoriesUsingShoppingListId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
-  itemShoppingListsUsingShoppingListId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
+  id?: InputMaybe<Scalars["Int"]>;
+  itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
+  itemShoppingListsUsingId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
   name?: InputMaybe<Scalars["String"]>;
-  shoppingListId?: InputMaybe<Scalars["Int"]>;
 };
 
 /** The fields on `shoppingList` to look up the row to connect. */
 export type ShoppingListShoppingListPkeyConnect = {
-  shoppingListId: Scalars["Int"];
+  id: Scalars["Int"];
 };
 
 /** The fields on `shoppingList` to look up the row to delete. */
 export type ShoppingListShoppingListPkeyDelete = {
-  shoppingListId: Scalars["Int"];
+  id: Scalars["Int"];
 };
 
 /** The fields on `shoppingList` to look up the row to connect. */
@@ -2083,13 +2127,13 @@ export type ShoppingListsEdge = {
 
 /** Methods to use when ordering `ShoppingList`. */
 export enum ShoppingListsOrderBy {
+  IdAsc = "ID_ASC",
+  IdDesc = "ID_DESC",
   NameAsc = "NAME_ASC",
   NameDesc = "NAME_DESC",
   Natural = "NATURAL",
   PrimaryKeyAsc = "PRIMARY_KEY_ASC",
   PrimaryKeyDesc = "PRIMARY_KEY_DESC",
-  ShoppingListIdAsc = "SHOPPING_LIST_ID_ASC",
-  ShoppingListIdDesc = "SHOPPING_LIST_ID_DESC",
 }
 
 /** A filter to be used against String fields. All fields are combined with a logical ‘and.’ */
@@ -2248,7 +2292,7 @@ export type UpdateItemInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars["String"]>;
-  itemId: Scalars["Int"];
+  id: Scalars["Int"];
   /** An object where the defined keys will be set on the `Item` being updated. */
   patch: ItemPatch;
 };
@@ -2359,9 +2403,9 @@ export type UpdateShoppingListInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars["String"]>;
+  id: Scalars["Int"];
   /** An object where the defined keys will be set on the `ShoppingList` being updated. */
   patch: ShoppingListPatch;
-  shoppingListId: Scalars["Int"];
 };
 
 /** The output of our update `ShoppingList` mutation. */
@@ -2394,19 +2438,20 @@ export type UpdateItemCategoryOnItemForItemCategoryIdFkeyPatch = {
 
 /** An object where the defined keys will be set on the `item` being updated. */
 export type UpdateItemOnItemForItemCategoryIdFkeyPatch = {
+  id?: InputMaybe<Scalars["Int"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
-  itemId?: InputMaybe<Scalars["Int"]>;
-  itemShoppingListHistoriesUsingItemId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
-  itemShoppingListsUsingItemId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
+  itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
+  itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
   name?: InputMaybe<Scalars["String"]>;
 };
 
 /** An object where the defined keys will be set on the `item` being updated. */
 export type UpdateItemOnItemShoppingListForItemShoppingListItemIdFkeyPatch = {
   categoryId?: InputMaybe<Scalars["BigInt"]>;
+  id?: InputMaybe<Scalars["Int"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
-  itemShoppingListHistoriesUsingItemId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
-  itemShoppingListsUsingItemId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
+  itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
+  itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
   name?: InputMaybe<Scalars["String"]>;
 };
 
@@ -2414,9 +2459,10 @@ export type UpdateItemOnItemShoppingListForItemShoppingListItemIdFkeyPatch = {
 export type UpdateItemOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyPatch =
   {
     categoryId?: InputMaybe<Scalars["BigInt"]>;
+    id?: InputMaybe<Scalars["Int"]>;
     itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
-    itemShoppingListHistoriesUsingItemId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
-    itemShoppingListsUsingItemId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
+    itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
+    itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
     name?: InputMaybe<Scalars["String"]>;
   };
 
@@ -2424,6 +2470,7 @@ export type UpdateItemOnItemShoppingListHistoryForItemShoppingListHistoryItemIdF
 export type UpdateItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyPatch =
   {
     additionalInformations?: InputMaybe<Scalars["String"]>;
+    id?: InputMaybe<Scalars["Int"]>;
     itemToItemId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInput>;
     shoppingListId?: InputMaybe<Scalars["BigInt"]>;
     shoppingListToShoppingListId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInput>;
@@ -2433,6 +2480,7 @@ export type UpdateItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppin
 export type UpdateItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyPatch =
   {
     additionalInformations?: InputMaybe<Scalars["String"]>;
+    id?: InputMaybe<Scalars["Int"]>;
     itemId?: InputMaybe<Scalars["BigInt"]>;
     itemToItemId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInput>;
     shoppingListToShoppingListId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInput>;
@@ -2459,15 +2507,17 @@ export type UpdateItemShoppingListOnItemShoppingListForItemShoppingListShoppingL
 /** An object where the defined keys will be set on the `shoppingList` being updated. */
 export type UpdateShoppingListOnItemShoppingListForItemShoppingListShoppingListIdFkeyPatch =
   {
-    itemShoppingListHistoriesUsingShoppingListId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
-    itemShoppingListsUsingShoppingListId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
+    id?: InputMaybe<Scalars["Int"]>;
+    itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
+    itemShoppingListsUsingId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
     name?: InputMaybe<Scalars["String"]>;
   };
 
 /** An object where the defined keys will be set on the `shoppingList` being updated. */
 export type UpdateShoppingListOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyPatch =
   {
-    itemShoppingListHistoriesUsingShoppingListId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
-    itemShoppingListsUsingShoppingListId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
+    id?: InputMaybe<Scalars["Int"]>;
+    itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
+    itemShoppingListsUsingId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
     name?: InputMaybe<Scalars["String"]>;
   };

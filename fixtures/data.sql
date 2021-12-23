@@ -18,12 +18,12 @@ INSERT INTO item_shopping_list (
     )
 VALUES (
         (
-            SELECT item_id
+            SELECT id
             FROM item
             WHERE item_name = 'Bread'
         ),
         (
-            SELECT shopping_list_id
+            SELECT id
             FROM shopping_list
             WHERE shopping_list_name = 'Bakery'
         ),

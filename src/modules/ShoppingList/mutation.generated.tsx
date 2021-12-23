@@ -12,7 +12,10 @@ export type DelteItemFromShoppingListMutation = {
   deleteItemShoppingListByNodeId?:
     | {
         __typename?: "DeleteItemShoppingListPayload";
-        item?: { __typename?: "Item"; nodeId: string } | null | undefined;
+        item?:
+          | { __typename?: "Item"; id: number; nodeId: string; name: string }
+          | null
+          | undefined;
       }
     | null
     | undefined;
@@ -32,8 +35,14 @@ export type AddItemToShoppingListMutation = {
           | {
               __typename?: "ItemShoppingList";
               nodeId: string;
+              id: string;
               item?:
-                | { __typename?: "Item"; name: string; nodeId: string }
+                | {
+                    __typename?: "Item";
+                    id: number;
+                    name: string;
+                    nodeId: string;
+                  }
                 | null
                 | undefined;
             }
@@ -48,7 +57,9 @@ export const DelteItemFromShoppingListDocument = gql`
   mutation DelteItemFromShoppingList($nodeId: ID!) {
     deleteItemShoppingListByNodeId(input: { nodeId: $nodeId }) {
       item {
+        id
         nodeId
+        name
       }
     }
   }
@@ -69,7 +80,9 @@ export const AddItemToShoppingListDocument = gql`
     ) {
       itemShoppingList {
         nodeId
+        id: nodeId
         item {
+          id
           name
           nodeId
         }
