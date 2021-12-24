@@ -3,6 +3,30 @@ import * as Types from "../../types";
 import { gql } from "graphql.macro";
 import * as Urql from "urql";
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+export type ShoppingListFragment = {
+  __typename: "ShoppingList";
+  id: number;
+  nodeId: string;
+  name: string;
+  itemShoppingLists: {
+    __typename: "ItemShoppingListsConnection";
+    nodes: Array<
+      | {
+          __typename: "ItemShoppingList";
+          nodeId: string;
+          additionalInformations?: string | null | undefined;
+          id: string;
+          item?:
+            | { __typename: "Item"; id: number; nodeId: string; name: string }
+            | null
+            | undefined;
+        }
+      | null
+      | undefined
+    >;
+  };
+};
+
 export type ShoppingListByNodeIdQueryVariables = Types.Exact<{
   nodeId: Types.Scalars["ID"];
 }>;
@@ -11,21 +35,21 @@ export type ShoppingListByNodeIdQuery = {
   __typename?: "Query";
   shoppingListByNodeId?:
     | {
-        __typename?: "ShoppingList";
+        __typename: "ShoppingList";
         id: number;
         nodeId: string;
         name: string;
         itemShoppingLists: {
-          __typename?: "ItemShoppingListsConnection";
+          __typename: "ItemShoppingListsConnection";
           nodes: Array<
             | {
-                __typename?: "ItemShoppingList";
+                __typename: "ItemShoppingList";
                 nodeId: string;
                 additionalInformations?: string | null | undefined;
                 id: string;
                 item?:
                   | {
-                      __typename?: "Item";
+                      __typename: "Item";
                       id: number;
                       nodeId: string;
                       name: string;
@@ -48,16 +72,16 @@ export type ItemsQuery = {
   __typename?: "Query";
   items?:
     | {
-        __typename?: "ItemsConnection";
+        __typename: "ItemsConnection";
         nodes: Array<
           | {
-              __typename?: "Item";
+              __typename: "Item";
               id: number;
               nodeId: string;
               name: string;
               category?:
                 | {
-                    __typename?: "ItemCategory";
+                    __typename: "ItemCategory";
                     id: number;
                     nodeId: string;
                     categroyName: string;
@@ -73,26 +97,36 @@ export type ItemsQuery = {
     | undefined;
 };
 
+export const ShoppingListFragmentDoc = gql`
+  fragment ShoppingList on ShoppingList {
+    id
+    nodeId
+    name
+    itemShoppingLists {
+      nodes {
+        nodeId
+        id: nodeId
+        item {
+          id
+          nodeId
+          name
+          __typename
+        }
+        additionalInformations
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+`;
 export const ShoppingListByNodeIdDocument = gql`
   query ShoppingListByNodeId($nodeId: ID!) {
     shoppingListByNodeId(nodeId: $nodeId) {
-      id
-      nodeId
-      name
-      itemShoppingLists {
-        nodes {
-          nodeId
-          id: nodeId
-          item {
-            id
-            nodeId
-            name
-          }
-          additionalInformations
-        }
-      }
+      ...ShoppingList
     }
   }
+  ${ShoppingListFragmentDoc}
 `;
 
 export function useShoppingListByNodeIdQuery(
@@ -117,8 +151,11 @@ export const ItemsDocument = gql`
           id
           nodeId
           categroyName
+          __typename
         }
+        __typename
       }
+      __typename
     }
   }
 `;

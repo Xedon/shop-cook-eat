@@ -1,20 +1,28 @@
+fragment ShoppingList on ShoppingList {
+  id
+  nodeId
+  name
+  itemShoppingLists {
+    nodes {
+      nodeId
+      id: nodeId
+      item {
+        id
+        nodeId
+        name
+        __typename
+      }
+      additionalInformations
+      __typename
+    }
+    __typename
+  }
+  __typename
+}
+
 query ShoppingListByNodeId($nodeId: ID!) {
   shoppingListByNodeId(nodeId: $nodeId) {
-    id
-    nodeId
-    name
-    itemShoppingLists {
-      nodes {
-        nodeId
-        id: nodeId
-        item {
-          id
-          nodeId
-          name
-        }
-        additionalInformations
-      }
-    }
+    ...ShoppingList
   }
 }
 
@@ -28,7 +36,10 @@ query Items {
         id
         nodeId
         categroyName
+        __typename
       }
+      __typename
     }
+    __typename
   }
 }

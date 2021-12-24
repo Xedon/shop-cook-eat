@@ -37,21 +37,23 @@ export const CardRenderer = <T,>({
   return (
     <Grid container spacing={1} justifyContent="center">
       <TransitionGroup>
-        {cards.map((value) => (
-          <Collapse key={value?.nodeId}>
-            <Grid key={value?.nodeId} item>
-              <Card
-                sx={cardCss}
-                onClick={() => value && onCardClick && onCardClick(value)}
-              >
-                <CardHeader title={value?.item?.name ?? value?.name} />
-                <CardContent>
-                  <Typography>{value?.additionalInformations}</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Collapse>
-        ))}
+        {cards
+          .filter((value) => value)
+          .map((value) => (
+            <Collapse key={value?.nodeId}>
+              <Grid key={value?.nodeId} item>
+                <Card
+                  sx={cardCss}
+                  onClick={() => value && onCardClick && onCardClick(value)}
+                >
+                  <CardHeader title={value?.item?.name ?? value?.name} />
+                  <CardContent>
+                    <Typography>{value?.additionalInformations}</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Collapse>
+          ))}
       </TransitionGroup>
     </Grid>
   );

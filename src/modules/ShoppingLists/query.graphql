@@ -4,6 +4,8 @@ query ShoppingLists {
       id
       nodeId
       name
+      __typename
     }
+    __typename
   }
 }

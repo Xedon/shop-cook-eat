@@ -9,10 +9,10 @@ export type ShoppingListsQuery = {
   __typename?: "Query";
   shoppingLists?:
     | {
-        __typename?: "ShoppingListsConnection";
+        __typename: "ShoppingListsConnection";
         nodes: Array<
           | {
-              __typename?: "ShoppingList";
+              __typename: "ShoppingList";
               id: number;
               nodeId: string;
               name: string;
@@ -32,7 +32,9 @@ export const ShoppingListsDocument = gql`
         id
         nodeId
         name
+        __typename
       }
+      __typename
     }
   }
 `;

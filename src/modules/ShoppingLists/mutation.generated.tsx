@@ -1,6 +1,7 @@
 import * as Types from "../../types";
 
 import { gql } from "graphql.macro";
+import { ShoppingListFragmentDoc } from "../ShoppingList/query.generated";
 import * as Urql from "urql";
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type CreateShoppingListMutationVariables = Types.Exact<{
@@ -11,9 +12,36 @@ export type CreateShoppingListMutation = {
   __typename?: "Mutation";
   createShoppingList?:
     | {
-        __typename?: "CreateShoppingListPayload";
+        __typename: "CreateShoppingListPayload";
         shoppingList?:
-          | { __typename?: "ShoppingList"; nodeId: string; name: string }
+          | {
+              __typename: "ShoppingList";
+              id: number;
+              nodeId: string;
+              name: string;
+              itemShoppingLists: {
+                __typename: "ItemShoppingListsConnection";
+                nodes: Array<
+                  | {
+                      __typename: "ItemShoppingList";
+                      nodeId: string;
+                      additionalInformations?: string | null | undefined;
+                      id: string;
+                      item?:
+                        | {
+                            __typename: "Item";
+                            id: number;
+                            nodeId: string;
+                            name: string;
+                          }
+                        | null
+                        | undefined;
+                    }
+                  | null
+                  | undefined
+                >;
+              };
+            }
           | null
           | undefined;
       }
@@ -25,11 +53,12 @@ export const CreateShoppingListDocument = gql`
   mutation CreateShoppingList($name: String!) {
     createShoppingList(input: { shoppingList: { name: $name } }) {
       shoppingList {
-        nodeId
-        name
+        ...ShoppingList
       }
+      __typename
     }
   }
+  ${ShoppingListFragmentDoc}
 `;
 
 export function useCreateShoppingListMutation() {

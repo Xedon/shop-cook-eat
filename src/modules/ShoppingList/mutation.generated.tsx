@@ -10,13 +10,7 @@ export type DelteItemFromShoppingListMutationVariables = Types.Exact<{
 export type DelteItemFromShoppingListMutation = {
   __typename?: "Mutation";
   deleteItemShoppingListByNodeId?:
-    | {
-        __typename?: "DeleteItemShoppingListPayload";
-        item?:
-          | { __typename?: "Item"; id: number; nodeId: string; name: string }
-          | null
-          | undefined;
-      }
+    | { __typename: "DeleteItemShoppingListPayload" }
     | null
     | undefined;
 };
@@ -29,26 +23,7 @@ export type AddItemToShoppingListMutationVariables = Types.Exact<{
 export type AddItemToShoppingListMutation = {
   __typename?: "Mutation";
   createItemShoppingList?:
-    | {
-        __typename?: "CreateItemShoppingListPayload";
-        itemShoppingList?:
-          | {
-              __typename?: "ItemShoppingList";
-              nodeId: string;
-              id: string;
-              item?:
-                | {
-                    __typename?: "Item";
-                    id: number;
-                    name: string;
-                    nodeId: string;
-                  }
-                | null
-                | undefined;
-            }
-          | null
-          | undefined;
-      }
+    | { __typename: "CreateItemShoppingListPayload" }
     | null
     | undefined;
 };
@@ -56,11 +31,7 @@ export type AddItemToShoppingListMutation = {
 export const DelteItemFromShoppingListDocument = gql`
   mutation DelteItemFromShoppingList($nodeId: ID!) {
     deleteItemShoppingListByNodeId(input: { nodeId: $nodeId }) {
-      item {
-        id
-        nodeId
-        name
-      }
+      __typename
     }
   }
 `;
@@ -78,15 +49,7 @@ export const AddItemToShoppingListDocument = gql`
         itemShoppingList: { shoppingListId: $shoppingListId, itemId: $itemId }
       }
     ) {
-      itemShoppingList {
-        nodeId
-        id: nodeId
-        item {
-          id
-          name
-          nodeId
-        }
-      }
+      __typename
     }
   }
 `;

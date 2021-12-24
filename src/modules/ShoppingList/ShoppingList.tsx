@@ -1,13 +1,4 @@
-import {
-  Card,
-  CardHeader,
-  Grid,
-  SxProps,
-  Button,
-  Typography,
-  Theme,
-  CardContent,
-} from "@mui/material";
+import { Grid, Button, Typography, Theme } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -21,19 +12,25 @@ import {
   useAddItemToShoppingListMutation,
   useDelteItemFromShoppingListMutation,
 } from "./mutation.generated";
+import { useReload } from "../../tools/useReload";
 
 export const ShoppingList = ({ nodeId }: { nodeId: string }) => {
   const disptach = useDispatch();
-  const [shoppingList] = useShoppingListByNodeIdQuery({
+  const [shoppingList, reloadShoppingList] = useShoppingListByNodeIdQuery({
     variables: { nodeId },
   });
 
   const [itemQuery] = useItemsQuery();
 
-  const [_, deleteItemFromShoppingList] =
+  const [deleteItemFromShoppingListResult, deleteItemFromShoppingList] =
     useDelteItemFromShoppingListMutation();
 
-  const [__, addItemToShoppingList] = useAddItemToShoppingListMutation();
+  const [addItemToShoppingListResult, addItemToShoppingList] =
+    useAddItemToShoppingListMutation();
+
+  useReload(addItemToShoppingListResult, reloadShoppingList);
+
+  console.log(shoppingList);
 
   return (
     <Grid container flexDirection="column" spacing={1} sx={{ padding: "4px" }}>
