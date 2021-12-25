@@ -22,8 +22,7 @@ export const ShoppingList = ({ nodeId }: { nodeId: string }) => {
 
   const [itemQuery] = useItemsQuery();
 
-  const [deleteItemFromShoppingListResult, deleteItemFromShoppingList] =
-    useDelteItemFromShoppingListMutation();
+  const [, deleteItemFromShoppingList] = useDelteItemFromShoppingListMutation();
 
   const [addItemToShoppingListResult, addItemToShoppingList] =
     useAddItemToShoppingListMutation();

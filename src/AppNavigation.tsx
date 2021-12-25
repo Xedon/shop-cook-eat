@@ -1,4 +1,4 @@
-import { Box, Paper, useMediaQuery } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { useSelector } from "react-redux";
 import { CookingPlan } from "./modules/CookingPlan/CookingPlan";
 import { ShoppingList } from "./modules/ShoppingList/ShoppingList";
@@ -6,7 +6,7 @@ import { ShoppingLists } from "./modules/ShoppingLists/ShoppingLists";
 import { AppSlice, View } from "./state/app";
 import { RootState } from "./state/store";
 
-const AppContent = (props: AppSlice["navigation"]) => {
+const AppContentInternal = (props: AppSlice["navigation"]) => {
   switch (props.view) {
     case View.List:
       return <ShoppingList {...props.parameter} />;
@@ -17,7 +17,7 @@ const AppContent = (props: AppSlice["navigation"]) => {
   }
 };
 
-export const AppNavigation = () => {
+export const AppContent = () => {
   const { navigation } = useSelector((state: RootState) => state.app);
   const isAppBarBigger = useMediaQuery("(min-width: 600px)");
 
@@ -31,7 +31,7 @@ export const AppNavigation = () => {
 
   return (
     <Box sx={workSpaceCss}>
-      <AppContent {...navigation} />
+      <AppContentInternal {...navigation} />
     </Box>
   );
 };
