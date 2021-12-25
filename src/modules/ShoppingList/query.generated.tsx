@@ -3,6 +3,24 @@ import * as Types from "../../types";
 import { gql } from "graphql.macro";
 import * as Urql from "urql";
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+export type ItemShoppingListsConnectionFragment = {
+  __typename: "ItemShoppingListsConnection";
+  nodes: Array<
+    | {
+        __typename: "ItemShoppingList";
+        nodeId: string;
+        additionalInformations?: string | null | undefined;
+        id: string;
+        item?:
+          | { __typename: "Item"; id: number; nodeId: string; name: string }
+          | null
+          | undefined;
+      }
+    | null
+    | undefined
+  >;
+};
+
 export type ShoppingListFragment = {
   __typename: "ShoppingList";
   id: number;
@@ -97,28 +115,34 @@ export type ItemsQuery = {
     | undefined;
 };
 
+export const ItemShoppingListsConnectionFragmentDoc = gql`
+  fragment ItemShoppingListsConnection on ItemShoppingListsConnection {
+    nodes {
+      nodeId
+      id: nodeId
+      item {
+        id
+        nodeId
+        name
+        __typename
+      }
+      additionalInformations
+      __typename
+    }
+    __typename
+  }
+`;
 export const ShoppingListFragmentDoc = gql`
   fragment ShoppingList on ShoppingList {
     id
     nodeId
     name
     itemShoppingLists {
-      nodes {
-        nodeId
-        id: nodeId
-        item {
-          id
-          nodeId
-          name
-          __typename
-        }
-        additionalInformations
-        __typename
-      }
-      __typename
+      ...ItemShoppingListsConnection
     }
     __typename
   }
+  ${ItemShoppingListsConnectionFragmentDoc}
 `;
 export const ShoppingListByNodeIdDocument = gql`
   query ShoppingListByNodeId($nodeId: ID!) {

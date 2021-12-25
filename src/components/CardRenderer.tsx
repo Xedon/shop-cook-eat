@@ -6,11 +6,13 @@ import {
   Typography,
   SxProps,
   Collapse,
+  Theme,
 } from "@mui/material";
 
 import { TransitionGroup } from "react-transition-group";
 
 interface CardRendererProps<T> {
+  sx?: SxProps<Theme>;
   onCardClick?: (cardData: T) => void;
   cards: Array<
     | ({
@@ -32,29 +34,25 @@ const cardCss: SxProps = {
 export const CardRenderer = <T,>({
   cards,
   onCardClick,
-  ...rest
+  sx,
 }: CardRendererProps<T>) => {
   return (
-    <Grid container spacing={1} justifyContent="center">
-      <TransitionGroup>
-        {cards
-          .filter((value) => value)
-          .map((value) => (
-            <Collapse key={value?.nodeId}>
-              <Grid key={value?.nodeId} item>
-                <Card
-                  sx={cardCss}
-                  onClick={() => value && onCardClick && onCardClick(value)}
-                >
-                  <CardHeader title={value?.item?.name ?? value?.name} />
-                  <CardContent>
-                    <Typography>{value?.additionalInformations}</Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Collapse>
-          ))}
-      </TransitionGroup>
+    <Grid sx={sx} container spacing={1} justifyContent="center">
+      {cards
+        .filter((value) => value)
+        .map((value) => (
+          <Grid key={value?.nodeId} item>
+            <Card
+              sx={cardCss}
+              onClick={() => value && onCardClick && onCardClick(value)}
+            >
+              <CardHeader title={value?.item?.name ?? value?.name} />
+              <CardContent>
+                <Typography>{value?.additionalInformations}</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
     </Grid>
   );
 };

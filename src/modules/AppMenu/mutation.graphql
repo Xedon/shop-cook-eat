@@ -1,0 +1,52 @@
+mutation AddItemToShoppingListByNodeId(
+  $itemId: BigInt!
+  $shoppingListNodeId: ID!
+) {
+  createItemShoppingList(
+    input: {
+      itemShoppingList: {
+        itemId: $itemId
+        shoppingListToShoppingListId: {
+          connectByNodeId: { nodeId: $shoppingListNodeId }
+        }
+      }
+    }
+  ) {
+    __typename
+  }
+}
+
+mutation CreateItemAndAddToShoppingList(
+  $itemName: String!
+  $categoryId: BigInt!
+  $shoppingListNodeId: ID!
+) {
+  createItemShoppingList(
+    input: {
+      itemShoppingList: {
+        itemToItemId: { create: { name: $itemName, categoryId: $categoryId } }
+        shoppingListToShoppingListId: {
+          connectByNodeId: { nodeId: $shoppingListNodeId }
+        }
+      }
+    }
+  ) {
+    itemShoppingList {
+      additionalInformations
+      itemId
+      nodeId
+      item {
+        name
+        nodeId
+        id
+        category {
+          nodeId
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}

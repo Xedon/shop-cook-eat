@@ -9,6 +9,15 @@ VALUES (
             WHERE categroy_name = 'Custom'
         )
     );
+    INSERT INTO item (item_name, category_id)
+VALUES (
+        'Bagles',
+        (
+            SELECT id
+            FROM item_category
+            WHERE categroy_name = 'Custom'
+        )
+    );
 INSERT INTO shopping_list (shopping_list_name)
 VALUES ('Bakery');
 INSERT INTO item_shopping_list (

@@ -1,21 +1,25 @@
+fragment ItemShoppingListsConnection on ItemShoppingListsConnection {
+  nodes {
+    nodeId
+    id: nodeId
+    item {
+      id
+      nodeId
+      name
+      __typename
+    }
+    additionalInformations
+    __typename
+  }
+  __typename
+}
+
 fragment ShoppingList on ShoppingList {
   id
   nodeId
   name
   itemShoppingLists {
-    nodes {
-      nodeId
-      id: nodeId
-      item {
-        id
-        nodeId
-        name
-        __typename
-      }
-      additionalInformations
-      __typename
-    }
-    __typename
+    ...ItemShoppingListsConnection
   }
   __typename
 }
