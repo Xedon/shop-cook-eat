@@ -13,6 +13,7 @@ import {
   useDelteItemFromShoppingListMutation,
 } from "./mutation.generated";
 import { useReload } from "../../tools/useReload";
+import { useMemo } from "react";
 
 export const ShoppingList = ({ nodeId }: { nodeId: string }) => {
   const disptach = useDispatch();
@@ -21,6 +22,21 @@ export const ShoppingList = ({ nodeId }: { nodeId: string }) => {
   });
 
   const [itemQuery] = useItemsQuery();
+
+  const itemsToAdd = useMemo(
+    () =>
+      (itemQuery.data?.items?.nodes ?? []).filter(
+        (item) =>
+          !shoppingList.data?.shoppingListByNodeId?.itemShoppingLists.nodes.some(
+            (shoppingListItem) =>
+              shoppingListItem?.item?.nodeId === item?.nodeId
+          )
+      ),
+    [
+      itemQuery.data?.items?.nodes,
+      shoppingList.data?.shoppingListByNodeId?.itemShoppingLists.nodes,
+    ]
+  );
 
   const [, deleteItemFromShoppingList] = useDelteItemFromShoppingListMutation();
 
@@ -79,7 +95,7 @@ export const ShoppingList = ({ nodeId }: { nodeId: string }) => {
           </AccordionSummary>
           <AccordionDetails sx={{ paddingLeft: "0px", paddingRight: "0px" }}>
             <CardRenderer
-              cards={itemQuery.data?.items?.nodes ?? []}
+              cards={itemsToAdd}
               onCardClick={(cardData) =>
                 addItemToShoppingList({
                   itemId: cardData.id,
