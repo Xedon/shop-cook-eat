@@ -12,7 +12,7 @@ mutation AddItemToShoppingListByNodeId(
       }
     }
   ) {
-    __typename
+    ...CreateItemShoppingList
   }
 }
 
@@ -31,22 +31,6 @@ mutation CreateItemAndAddToShoppingList(
       }
     }
   ) {
-    itemShoppingList {
-      additionalInformations
-      itemId
-      nodeId
-      item {
-        name
-        nodeId
-        id
-        category {
-          nodeId
-          __typename
-        }
-        __typename
-      }
-      __typename
-    }
-    __typename
+    ...CreateItemShoppingList
   }
 }

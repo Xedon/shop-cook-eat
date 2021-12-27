@@ -19,9 +19,8 @@ export const ListMenuAddition = () => {
     variables: { includesInsensitive: searchString },
   });
 
-  const [addItemToShoppingListResult, addItemToShoppingList] =
-    useAddItemToShoppingListByNodeIdMutation();
-  const [createItemAndAddToShoppingListResult, createItemAndAddToShoppingList] =
+  const [, addItemToShoppingList] = useAddItemToShoppingListByNodeIdMutation();
+  const [, createItemAndAddToShoppingList] =
     useCreateItemAndAddToShoppingListMutation();
 
   const onCardClick = useCallback(

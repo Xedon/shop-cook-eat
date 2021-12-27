@@ -1,50 +1,12 @@
 import * as Types from "../../types";
 
 import { gql } from "graphql.macro";
+import {
+  ShoppingListFragmentDoc,
+  ItemFragmentDoc,
+} from "../../graphql/fragments.generated";
 import * as Urql from "urql";
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type ItemShoppingListsConnectionFragment = {
-  __typename: "ItemShoppingListsConnection";
-  nodes: Array<
-    | {
-        __typename: "ItemShoppingList";
-        nodeId: string;
-        additionalInformations?: string | null | undefined;
-        id: string;
-        item?:
-          | { __typename: "Item"; id: number; nodeId: string; name: string }
-          | null
-          | undefined;
-      }
-    | null
-    | undefined
-  >;
-};
-
-export type ShoppingListFragment = {
-  __typename: "ShoppingList";
-  id: number;
-  nodeId: string;
-  name: string;
-  itemShoppingLists: {
-    __typename: "ItemShoppingListsConnection";
-    nodes: Array<
-      | {
-          __typename: "ItemShoppingList";
-          nodeId: string;
-          additionalInformations?: string | null | undefined;
-          id: string;
-          item?:
-            | { __typename: "Item"; id: number; nodeId: string; name: string }
-            | null
-            | undefined;
-        }
-      | null
-      | undefined
-    >;
-  };
-};
-
 export type ShoppingListByNodeIdQueryVariables = Types.Exact<{
   nodeId: Types.Scalars["ID"];
 }>;
@@ -71,6 +33,41 @@ export type ShoppingListByNodeIdQuery = {
                       id: number;
                       nodeId: string;
                       name: string;
+                      category?:
+                        | {
+                            __typename: "ItemCategory";
+                            id: number;
+                            nodeId: string;
+                            categroyName: string;
+                          }
+                        | null
+                        | undefined;
+                    }
+                  | null
+                  | undefined;
+                shoppingList?:
+                  | { __typename: "ShoppingList"; id: number; nodeId: string }
+                  | null
+                  | undefined;
+              }
+            | null
+            | undefined
+          >;
+        };
+        itemsByItemShoppingListHistoryShoppingListIdAndItemId: {
+          __typename?: "ShoppingListItemsByItemShoppingListHistoryShoppingListIdAndItemIdManyToManyConnection";
+          nodes: Array<
+            | {
+                __typename: "Item";
+                id: number;
+                nodeId: string;
+                name: string;
+                category?:
+                  | {
+                      __typename: "ItemCategory";
+                      id: number;
+                      nodeId: string;
+                      categroyName: string;
                     }
                   | null
                   | undefined;
@@ -90,7 +87,7 @@ export type ItemsQuery = {
   __typename?: "Query";
   items?:
     | {
-        __typename: "ItemsConnection";
+        __typename?: "ItemsConnection";
         nodes: Array<
           | {
               __typename: "Item";
@@ -115,35 +112,6 @@ export type ItemsQuery = {
     | undefined;
 };
 
-export const ItemShoppingListsConnectionFragmentDoc = gql`
-  fragment ItemShoppingListsConnection on ItemShoppingListsConnection {
-    nodes {
-      nodeId
-      id: nodeId
-      item {
-        id
-        nodeId
-        name
-        __typename
-      }
-      additionalInformations
-      __typename
-    }
-    __typename
-  }
-`;
-export const ShoppingListFragmentDoc = gql`
-  fragment ShoppingList on ShoppingList {
-    id
-    nodeId
-    name
-    itemShoppingLists {
-      ...ItemShoppingListsConnection
-    }
-    __typename
-  }
-  ${ItemShoppingListsConnectionFragmentDoc}
-`;
 export const ShoppingListByNodeIdDocument = gql`
   query ShoppingListByNodeId($nodeId: ID!) {
     shoppingListByNodeId(nodeId: $nodeId) {
@@ -168,20 +136,11 @@ export const ItemsDocument = gql`
   query Items {
     items {
       nodes {
-        id
-        nodeId
-        name
-        category {
-          id
-          nodeId
-          categroyName
-          __typename
-        }
-        __typename
+        ...Item
       }
-      __typename
     }
   }
+  ${ItemFragmentDoc}
 `;
 
 export function useItemsQuery(

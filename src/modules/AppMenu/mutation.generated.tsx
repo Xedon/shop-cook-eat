@@ -1,6 +1,7 @@
 import * as Types from "../../types";
 
 import { gql } from "graphql.macro";
+import { CreateItemShoppingListFragmentDoc } from "../../graphql/fragments.generated";
 import * as Urql from "urql";
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type AddItemToShoppingListByNodeIdMutationVariables = Types.Exact<{
@@ -11,7 +12,40 @@ export type AddItemToShoppingListByNodeIdMutationVariables = Types.Exact<{
 export type AddItemToShoppingListByNodeIdMutation = {
   __typename?: "Mutation";
   createItemShoppingList?:
-    | { __typename: "CreateItemShoppingListPayload" }
+    | {
+        __typename: "CreateItemShoppingListPayload";
+        itemShoppingList?:
+          | {
+              __typename: "ItemShoppingList";
+              nodeId: string;
+              additionalInformations?: string | null | undefined;
+              id: string;
+              item?:
+                | {
+                    __typename: "Item";
+                    id: number;
+                    nodeId: string;
+                    name: string;
+                    category?:
+                      | {
+                          __typename: "ItemCategory";
+                          id: number;
+                          nodeId: string;
+                          categroyName: string;
+                        }
+                      | null
+                      | undefined;
+                  }
+                | null
+                | undefined;
+              shoppingList?:
+                | { __typename: "ShoppingList"; id: number; nodeId: string }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined;
+      }
     | null
     | undefined;
 };
@@ -30,20 +64,29 @@ export type CreateItemAndAddToShoppingListMutation = {
         itemShoppingList?:
           | {
               __typename: "ItemShoppingList";
-              additionalInformations?: string | null | undefined;
-              itemId: any;
               nodeId: string;
+              additionalInformations?: string | null | undefined;
+              id: string;
               item?:
                 | {
                     __typename: "Item";
-                    name: string;
-                    nodeId: string;
                     id: number;
+                    nodeId: string;
+                    name: string;
                     category?:
-                      | { __typename: "ItemCategory"; nodeId: string }
+                      | {
+                          __typename: "ItemCategory";
+                          id: number;
+                          nodeId: string;
+                          categroyName: string;
+                        }
                       | null
                       | undefined;
                   }
+                | null
+                | undefined;
+              shoppingList?:
+                | { __typename: "ShoppingList"; id: number; nodeId: string }
                 | null
                 | undefined;
             }
@@ -69,9 +112,10 @@ export const AddItemToShoppingListByNodeIdDocument = gql`
         }
       }
     ) {
-      __typename
+      ...CreateItemShoppingList
     }
   }
+  ${CreateItemShoppingListFragmentDoc}
 `;
 
 export function useAddItemToShoppingListByNodeIdMutation() {
@@ -96,25 +140,10 @@ export const CreateItemAndAddToShoppingListDocument = gql`
         }
       }
     ) {
-      itemShoppingList {
-        additionalInformations
-        itemId
-        nodeId
-        item {
-          name
-          nodeId
-          id
-          category {
-            nodeId
-            __typename
-          }
-          __typename
-        }
-        __typename
-      }
-      __typename
+      ...CreateItemShoppingList
     }
   }
+  ${CreateItemShoppingListFragmentDoc}
 `;
 
 export function useCreateItemAndAddToShoppingListMutation() {

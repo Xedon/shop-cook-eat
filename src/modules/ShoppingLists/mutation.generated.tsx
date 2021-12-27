@@ -1,7 +1,10 @@
 import * as Types from "../../types";
 
 import { gql } from "graphql.macro";
-import { ShoppingListFragmentDoc } from "../ShoppingList/query.generated";
+import {
+  ShoppingListFragmentDoc,
+  ItemFragmentDoc,
+} from "../../graphql/fragments.generated";
 import * as Urql from "urql";
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type CreateShoppingListMutationVariables = Types.Exact<{
@@ -33,6 +36,45 @@ export type CreateShoppingListMutation = {
                             id: number;
                             nodeId: string;
                             name: string;
+                            category?:
+                              | {
+                                  __typename: "ItemCategory";
+                                  id: number;
+                                  nodeId: string;
+                                  categroyName: string;
+                                }
+                              | null
+                              | undefined;
+                          }
+                        | null
+                        | undefined;
+                      shoppingList?:
+                        | {
+                            __typename: "ShoppingList";
+                            id: number;
+                            nodeId: string;
+                          }
+                        | null
+                        | undefined;
+                    }
+                  | null
+                  | undefined
+                >;
+              };
+              itemsByItemShoppingListHistoryShoppingListIdAndItemId: {
+                __typename?: "ShoppingListItemsByItemShoppingListHistoryShoppingListIdAndItemIdManyToManyConnection";
+                nodes: Array<
+                  | {
+                      __typename: "Item";
+                      id: number;
+                      nodeId: string;
+                      name: string;
+                      category?:
+                        | {
+                            __typename: "ItemCategory";
+                            id: number;
+                            nodeId: string;
+                            categroyName: string;
                           }
                         | null
                         | undefined;

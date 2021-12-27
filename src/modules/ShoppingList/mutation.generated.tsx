@@ -1,6 +1,7 @@
 import * as Types from "../../types";
 
 import { gql } from "graphql.macro";
+import { CreateItemShoppingListFragmentDoc } from "../../graphql/fragments.generated";
 import * as Urql from "urql";
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type DelteItemFromShoppingListMutationVariables = Types.Exact<{
@@ -23,7 +24,40 @@ export type AddItemToShoppingListMutationVariables = Types.Exact<{
 export type AddItemToShoppingListMutation = {
   __typename?: "Mutation";
   createItemShoppingList?:
-    | { __typename: "CreateItemShoppingListPayload" }
+    | {
+        __typename: "CreateItemShoppingListPayload";
+        itemShoppingList?:
+          | {
+              __typename: "ItemShoppingList";
+              nodeId: string;
+              additionalInformations?: string | null | undefined;
+              id: string;
+              item?:
+                | {
+                    __typename: "Item";
+                    id: number;
+                    nodeId: string;
+                    name: string;
+                    category?:
+                      | {
+                          __typename: "ItemCategory";
+                          id: number;
+                          nodeId: string;
+                          categroyName: string;
+                        }
+                      | null
+                      | undefined;
+                  }
+                | null
+                | undefined;
+              shoppingList?:
+                | { __typename: "ShoppingList"; id: number; nodeId: string }
+                | null
+                | undefined;
+            }
+          | null
+          | undefined;
+      }
     | null
     | undefined;
 };
@@ -49,9 +83,10 @@ export const AddItemToShoppingListDocument = gql`
         itemShoppingList: { shoppingListId: $shoppingListId, itemId: $itemId }
       }
     ) {
-      __typename
+      ...CreateItemShoppingList
     }
   }
+  ${CreateItemShoppingListFragmentDoc}
 `;
 
 export function useAddItemToShoppingListMutation() {

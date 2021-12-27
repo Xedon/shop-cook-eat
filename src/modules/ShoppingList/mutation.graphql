@@ -10,6 +10,6 @@ mutation AddItemToShoppingList($itemId: BigInt!, $shoppingListId: BigInt!) {
       itemShoppingList: { shoppingListId: $shoppingListId, itemId: $itemId }
     }
   ) {
-    __typename
+    ...CreateItemShoppingList
   }
 }

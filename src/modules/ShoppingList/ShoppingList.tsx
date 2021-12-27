@@ -1,9 +1,5 @@
-import { Grid, Button, Typography, Theme } from "@mui/material";
+import { Grid, Button, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { appSlice, View } from "../../state/app";
 import { useDispatch } from "react-redux";
 import { useItemsQuery, useShoppingListByNodeIdQuery } from "./query.generated";
@@ -12,18 +8,18 @@ import {
   useAddItemToShoppingListMutation,
   useDelteItemFromShoppingListMutation,
 } from "./mutation.generated";
-import { useReload } from "../../tools/useReload";
 import { useMemo } from "react";
+import { ItemsByCategoryAccordion } from "./ItemsByCategoryAccordion";
 
 export const ShoppingList = ({ nodeId }: { nodeId: string }) => {
   const disptach = useDispatch();
-  const [shoppingList, reloadShoppingList] = useShoppingListByNodeIdQuery({
+  const [shoppingList] = useShoppingListByNodeIdQuery({
     variables: { nodeId },
   });
 
   const [itemQuery] = useItemsQuery();
 
-  const itemsToAdd = useMemo(
+  const customItems = useMemo(
     () =>
       (itemQuery.data?.items?.nodes ?? []).filter(
         (item) =>
@@ -38,12 +34,28 @@ export const ShoppingList = ({ nodeId }: { nodeId: string }) => {
     ]
   );
 
+  const lastUsedItems = useMemo(
+    () =>
+      (
+        shoppingList.data?.shoppingListByNodeId
+          ?.itemsByItemShoppingListHistoryShoppingListIdAndItemId.nodes ?? []
+      ).filter(
+        (item) =>
+          !shoppingList.data?.shoppingListByNodeId?.itemShoppingLists.nodes.some(
+            (shoppingListItem) =>
+              shoppingListItem?.item?.nodeId === item?.nodeId
+          )
+      ),
+    [
+      shoppingList.data?.shoppingListByNodeId?.itemShoppingLists.nodes,
+      shoppingList.data?.shoppingListByNodeId
+        ?.itemsByItemShoppingListHistoryShoppingListIdAndItemId.nodes,
+    ]
+  );
+
   const [, deleteItemFromShoppingList] = useDelteItemFromShoppingListMutation();
 
-  const [addItemToShoppingListResult, addItemToShoppingList] =
-    useAddItemToShoppingListMutation();
-
-  useReload(addItemToShoppingListResult, reloadShoppingList);
+  const [, addItemToShoppingList] = useAddItemToShoppingListMutation();
 
   console.log(shoppingList);
 
@@ -78,33 +90,32 @@ export const ShoppingList = ({ nodeId }: { nodeId: string }) => {
           }
         />
       </Grid>
-      <Grid item>
-        <Accordion
-          sx={(theme: Theme) => ({
-            marginLeft: "-4px",
-            marginRight: "-4px",
-          })}
-          elevation={0}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography>Last Used</Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{ paddingLeft: "0px", paddingRight: "0px" }}>
-            <CardRenderer
-              cards={itemsToAdd}
-              onCardClick={(cardData) =>
-                addItemToShoppingList({
-                  itemId: cardData.id,
-                  shoppingListId: shoppingList.data?.shoppingListByNodeId?.id,
-                })
-              }
-            />
-          </AccordionDetails>
-        </Accordion>
+      <Grid container item direction="row">
+        <Grid item xs={12}>
+          <ItemsByCategoryAccordion
+            items={lastUsedItems}
+            title="Last Used"
+            onCardClick={(cardData) =>
+              addItemToShoppingList({
+                itemId: cardData.id,
+                shoppingListId: shoppingList.data?.shoppingListByNodeId?.id,
+              })
+            }
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <ItemsByCategoryAccordion
+            items={customItems}
+            title="Custom"
+            onCardClick={(cardData) =>
+              addItemToShoppingList({
+                itemId: cardData.id,
+                shoppingListId: shoppingList.data?.shoppingListByNodeId?.id,
+              })
+            }
+          />
+        </Grid>
       </Grid>
     </Grid>
   );

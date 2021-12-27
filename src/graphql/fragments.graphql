@@ -1,0 +1,56 @@
+fragment Item on Item {
+  id
+  nodeId
+  name
+  category {
+    id
+    nodeId
+    categroyName
+    __typename
+  }
+  __typename
+}
+
+fragment ItemShoppingList on ItemShoppingList {
+  nodeId
+  id: nodeId
+  item {
+    ...Item
+  }
+  additionalInformations
+  shoppingList {
+    id
+    nodeId
+    __typename
+  }
+  __typename
+}
+
+fragment ItemShoppingListsConnection on ItemShoppingListsConnection {
+  nodes {
+    ...ItemShoppingList
+  }
+  __typename
+}
+
+fragment ShoppingList on ShoppingList {
+  id
+  nodeId
+  name
+  itemShoppingLists {
+    ...ItemShoppingListsConnection
+  }
+  __typename
+  itemsByItemShoppingListHistoryShoppingListIdAndItemId {
+    nodes {
+      ...Item
+    }
+  }
+}
+
+fragment CreateItemShoppingList on CreateItemShoppingListPayload {
+  itemShoppingList {
+    ...ItemShoppingList
+  }
+  __typename
+}

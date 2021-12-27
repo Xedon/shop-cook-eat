@@ -1,29 +1,3 @@
-fragment ItemShoppingListsConnection on ItemShoppingListsConnection {
-  nodes {
-    nodeId
-    id: nodeId
-    item {
-      id
-      nodeId
-      name
-      __typename
-    }
-    additionalInformations
-    __typename
-  }
-  __typename
-}
-
-fragment ShoppingList on ShoppingList {
-  id
-  nodeId
-  name
-  itemShoppingLists {
-    ...ItemShoppingListsConnection
-  }
-  __typename
-}
-
 query ShoppingListByNodeId($nodeId: ID!) {
   shoppingListByNodeId(nodeId: $nodeId) {
     ...ShoppingList
@@ -33,17 +7,7 @@ query ShoppingListByNodeId($nodeId: ID!) {
 query Items {
   items {
     nodes {
-      id
-      nodeId
-      name
-      category {
-        id
-        nodeId
-        categroyName
-        __typename
-      }
-      __typename
+      ...Item
     }
-    __typename
   }
 }

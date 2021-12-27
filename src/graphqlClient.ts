@@ -3,11 +3,24 @@ import { Cache, offlineExchange } from "@urql/exchange-graphcache";
 import { devtoolsExchange } from "@urql/devtools";
 import introspection from "./generated/introspection.json";
 import { makeDefaultStorage } from "@urql/exchange-graphcache/default-storage";
-import { CreateItemShoppingListInput, DeleteItemByNodeIdInput } from "./types";
 import {
+  MutationCreateItemShoppingListArgs,
+  MutationDeleteItemByNodeIdArgs,
+} from "./types";
+import {
+  ItemsDocument,
+  ItemsQuery,
   ShoppingListByNodeIdDocument,
   ShoppingListByNodeIdQuery,
 } from "./modules/ShoppingList/query.generated";
+import { encodeNodeId, decodeNodeId } from "./tools/nodeId";
+import {
+  ItemFragmentDoc,
+  ItemFragment,
+  ItemShoppingListFragmentDoc,
+  ItemShoppingListFragment,
+  CreateItemShoppingListFragment,
+} from "./graphql/fragments.generated";
 
 const storage = makeDefaultStorage({
   idbName: "graphcache-v3",
@@ -18,56 +31,136 @@ const cache = offlineExchange({
   schema: introspection as any,
   storage,
   updates: {
-    /* ... */
+    Mutation: {
+      createItemShoppingList: (
+        {
+          createItemShoppingList: { itemShoppingList },
+        }: { createItemShoppingList: CreateItemShoppingListFragment },
+        args,
+        cache
+      ) => {
+        if (itemShoppingList === undefined || itemShoppingList === null) {
+          throw new Error(
+            "Mutation createItemShoppingList must provide itemShoppingList"
+          );
+        }
+
+        if (
+          itemShoppingList.shoppingList?.nodeId === undefined ||
+          itemShoppingList.shoppingList?.nodeId === null
+        ) {
+          throw new Error(
+            "Mutation createItemShoppingList must provide itemShoppingList.shoppingList.nodeId"
+          );
+        }
+
+        cache.writeFragment(ItemShoppingListFragmentDoc, itemShoppingList);
+        cache.updateQuery(
+          {
+            query: ShoppingListByNodeIdDocument,
+            variables: {
+              nodeId: itemShoppingList.shoppingList.nodeId,
+            },
+          },
+          (data: ShoppingListByNodeIdQuery | null) => {
+            if (data) {
+              data.shoppingListByNodeId?.itemShoppingLists.nodes.push(
+                itemShoppingList
+              );
+            }
+            return data;
+          }
+        );
+      },
+    },
   },
   optimistic: {
-    deleteItemShoppingListByNodeId: (variables, cache: Cache) => {
-      const input = variables.input as DeleteItemByNodeIdInput;
-
+    deleteItemShoppingListByNodeId: (
+      variables: MutationDeleteItemByNodeIdArgs,
+      cache: Cache
+    ) => {
       cache.invalidate({
         __typename: "ItemShoppingList",
-        id: input.nodeId,
+        id: variables.input.nodeId,
       });
 
       return { __typename: "itemShoppingList" };
     },
-    createItemShoppingList: (variables, cache) => {
-      const input = variables.input as CreateItemShoppingListInput;
-      const shoppingListNodeId = cache.resolve(
-        {
-          __typename: "ShoppingList",
-          id: input.itemShoppingList.shoppingListId,
-        },
-        "nodeId"
+    createItemShoppingList: (
+      { input: { itemShoppingList } }: MutationCreateItemShoppingListArgs,
+      cache
+    ): CreateItemShoppingListFragment => {
+      const shoppingListId: number | undefined = itemShoppingList.shoppingListId
+        ? itemShoppingList.shoppingListId
+        : (decodeNodeId(
+            itemShoppingList.shoppingListToShoppingListId?.connectByNodeId
+              ?.nodeId
+          ) ?? [])[1];
+
+      if (shoppingListId === undefined) {
+        throw new Error("Request doesn't contain a resolvable shoppingListId");
+      }
+
+      const shoppingListNodeId = itemShoppingList.shoppingListToShoppingListId
+        ?.connectByNodeId?.nodeId
+        ? itemShoppingList.shoppingListToShoppingListId?.connectByNodeId?.nodeId
+        : (cache.resolve(
+            {
+              __typename: "ShoppingList",
+              id: itemShoppingList.shoppingListId,
+            },
+            "nodeId"
+          ) as string | undefined);
+
+      if (shoppingListNodeId === undefined) {
+        throw new Error(
+          "Request doesn't contain a resolvable shoppingListNodeId"
+        );
+      }
+
+      const itemsQuery: ItemsQuery | null = cache.readQuery({
+        query: ItemsDocument,
+      });
+
+      const nextItemId =
+        (itemsQuery?.items?.nodes
+          .map((item) => item?.id)
+          .sort()
+          .pop() ?? 0) + 1;
+
+      const newNodeId = encodeNodeId(
+        "ItemShoppingList",
+        itemShoppingList.itemId,
+        shoppingListId
       );
 
-      const newEntry = {
-        nodeId: "WyJpdGVtX3Nob3BwaW5nX2xpc3RzIiwxLDFd",
-        id: "WyJpdGVtX3Nob3BwaW5nX2xpc3RzIiwxLDFd",
-        item: {
-          id: 1,
-          name: "Bread",
-          nodeId: "WyJpdGVtcyIsMV0=",
-          __typename: "Item",
+      const item = cache.readFragment(ItemFragmentDoc, {
+        id: itemShoppingList.itemId,
+      }) as ItemFragment | null;
+
+      if (item === null) {
+        throw new Error("Can't resolve existing item");
+      }
+
+      const newEntry: ItemShoppingListFragment = {
+        nodeId: newNodeId,
+        id: newNodeId,
+        item,
+        additionalInformations: null,
+        shoppingList: {
+          id: shoppingListId,
+          nodeId: shoppingListNodeId,
+          __typename: "ShoppingList",
         },
-        additionalInformations: "",
         __typename: "ItemShoppingList",
       } as const;
 
-      cache.updateQuery(
-        {
-          query: ShoppingListByNodeIdDocument,
-          variables: { nodeId: shoppingListNodeId },
+      return {
+        itemShoppingList: {
+          ...newEntry,
         },
-        (data: ShoppingListByNodeIdQuery | null) => {
-          if (data) {
-            data.shoppingListByNodeId?.itemShoppingLists.nodes.push(newEntry);
-          }
-          return data;
-        }
-      );
-
-      return null;
+        __typename: "CreateItemShoppingListPayload",
+      };
     },
   },
 });

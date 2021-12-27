@@ -1,16 +1,19 @@
 query SearchForItems($includesInsensitive: String) {
   items(filter: { name: { includesInsensitive: $includesInsensitive } }) {
     nodes {
-      id
-      nodeId
-      name
+      ...Item
       itemShoppingLists {
         nodes {
           shoppingList {
             nodeId
+            __typename
           }
+          __typename
         }
+        __typename
       }
+      __typename
     }
+    __typename
   }
 }
