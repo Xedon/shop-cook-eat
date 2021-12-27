@@ -1,8 +1,17 @@
-import { Button, Card, CardHeader, Grid, SxProps } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardHeader,
+  Grid,
+  SxProps,
+  Tooltip,
+} from "@mui/material";
 import { useDispatch } from "react-redux";
 import { appSlice, View } from "../../state/app";
 import { useShoppingListsQuery } from "./query.generated";
 import AddIcon from "@mui/icons-material/Add";
+import { useOnlineStatus } from "../../tools/useOnlineStatus";
 
 const cardCss: SxProps = {
   width: "95vw",
@@ -11,6 +20,8 @@ const cardCss: SxProps = {
 export const ShoppingLists = () => {
   const dispatch = useDispatch();
   const [shoppingLists] = useShoppingListsQuery();
+  const online = useOnlineStatus();
+
   return (
     <Grid
       container
@@ -37,18 +48,22 @@ export const ShoppingLists = () => {
         </Grid>
       ))}
       <Grid item>
-        <Button
-          variant="text"
-          startIcon={<AddIcon />}
-          title="Add Shopping List"
-          color="secondary"
-          size="large"
-          onClick={() =>
-            dispatch(appSlice.actions.navigate({ view: View.AddList }))
-          }
-        >
-          Add Shopping List
-        </Button>
+        <Tooltip title={!online ? "Go Online to create a new list" : ""}>
+          <Box>
+            <Button
+              variant="text"
+              startIcon={<AddIcon />}
+              color="secondary"
+              size="large"
+              onClick={() =>
+                dispatch(appSlice.actions.navigate({ view: View.AddList }))
+              }
+              disabled={!online}
+            >
+              Add Shopping List
+            </Button>
+          </Box>
+        </Tooltip>
       </Grid>
     </Grid>
   );
