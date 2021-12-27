@@ -8,8 +8,6 @@ import {
   MutationDeleteItemByNodeIdArgs,
 } from "./types";
 import {
-  ItemsDocument,
-  ItemsQuery,
   ShoppingListByNodeIdDocument,
   ShoppingListByNodeIdQuery,
 } from "./modules/ShoppingList/query.generated";
@@ -21,6 +19,8 @@ import {
   ItemShoppingListFragment,
   CreateItemShoppingListFragment,
 } from "./graphql/fragments.generated";
+
+import { v4 as uuid } from "uuid";
 
 const storage = makeDefaultStorage({
   idbName: "graphcache-v3",
@@ -129,7 +129,7 @@ const cache = offlineExchange({
       }) as ItemFragment | null;
 
       if (item === null) {
-        const id = 9999; // todo
+        const id = uuid();
         const nodeId = encodeNodeId("Item", id);
         if (itemShoppingList.itemToItemId?.create?.name === undefined) {
           throw new Error("item missing in mutation");

@@ -19,3 +19,13 @@ query SearchForItems($includesInsensitive: String) {
     __typename
   }
 }
+
+query SelectCustomCategory {
+  itemCategories(first: 1) {
+    nodes {
+      id
+      nodeId
+      name
+    }
+  }
+}

@@ -1,4 +1,4 @@
-INSERT INTO item_category (categroy_name)
+INSERT INTO item_category (category_name)
 VALUES ('Custom');
 INSERT INTO item (item_name, category_id)
 VALUES (
@@ -6,7 +6,7 @@ VALUES (
         (
             SELECT id
             FROM item_category
-            WHERE categroy_name = 'Custom'
+            WHERE category_name = 'Custom'
         )
     );
     INSERT INTO item (item_name, category_id)
@@ -15,7 +15,7 @@ VALUES (
         (
             SELECT id
             FROM item_category
-            WHERE categroy_name = 'Custom'
+            WHERE category_name = 'Custom'
         )
     );
 INSERT INTO shopping_list (shopping_list_name)

@@ -5,7 +5,7 @@ import { CreateItemShoppingListFragmentDoc } from "../../graphql/fragments.gener
 import * as Urql from "urql";
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type AddItemToShoppingListByNodeIdMutationVariables = Types.Exact<{
-  itemId: Types.Scalars["BigInt"];
+  itemId: Types.Scalars["UUID"];
   shoppingListNodeId: Types.Scalars["ID"];
 }>;
 
@@ -23,13 +23,13 @@ export type AddItemToShoppingListByNodeIdMutation = {
               item?:
                 | {
                     __typename: "Item";
-                    id: number;
+                    id: any;
                     nodeId: string;
                     name: string;
                     category?:
                       | {
                           __typename: "ItemCategory";
-                          id: number;
+                          id: any;
                           nodeId: string;
                           name: string;
                         }
@@ -39,7 +39,7 @@ export type AddItemToShoppingListByNodeIdMutation = {
                 | null
                 | undefined;
               shoppingList?:
-                | { __typename: "ShoppingList"; id: number; nodeId: string }
+                | { __typename: "ShoppingList"; id: any; nodeId: string }
                 | null
                 | undefined;
             }
@@ -52,7 +52,7 @@ export type AddItemToShoppingListByNodeIdMutation = {
 
 export type CreateItemAndAddToShoppingListMutationVariables = Types.Exact<{
   itemName: Types.Scalars["String"];
-  categoryId: Types.Scalars["BigInt"];
+  categoryId: Types.Scalars["UUID"];
   shoppingListNodeId: Types.Scalars["ID"];
 }>;
 
@@ -70,13 +70,13 @@ export type CreateItemAndAddToShoppingListMutation = {
               item?:
                 | {
                     __typename: "Item";
-                    id: number;
+                    id: any;
                     nodeId: string;
                     name: string;
                     category?:
                       | {
                           __typename: "ItemCategory";
-                          id: number;
+                          id: any;
                           nodeId: string;
                           name: string;
                         }
@@ -86,7 +86,7 @@ export type CreateItemAndAddToShoppingListMutation = {
                 | null
                 | undefined;
               shoppingList?:
-                | { __typename: "ShoppingList"; id: number; nodeId: string }
+                | { __typename: "ShoppingList"; id: any; nodeId: string }
                 | null
                 | undefined;
             }
@@ -99,7 +99,7 @@ export type CreateItemAndAddToShoppingListMutation = {
 
 export const AddItemToShoppingListByNodeIdDocument = gql`
   mutation AddItemToShoppingListByNodeId(
-    $itemId: BigInt!
+    $itemId: UUID!
     $shoppingListNodeId: ID!
   ) {
     createItemShoppingList(
@@ -127,7 +127,7 @@ export function useAddItemToShoppingListByNodeIdMutation() {
 export const CreateItemAndAddToShoppingListDocument = gql`
   mutation CreateItemAndAddToShoppingList(
     $itemName: String!
-    $categoryId: BigInt!
+    $categoryId: UUID!
     $shoppingListNodeId: ID!
   ) {
     createItemShoppingList(

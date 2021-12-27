@@ -16,42 +16,12 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /**
-   * A signed eight-byte integer. The upper big integer values are greater than the
-   * max value for a JavaScript number. Therefore all big integers will be output as
-   * strings and not numbers.
-   */
-  BigInt: any;
   /** A location in a connection that can be used for resuming pagination. */
   Cursor: any;
   /** A builtin object identifier type for a relation name */
   RegClass: any;
-};
-
-/** A filter to be used against BigInt fields. All fields are combined with a logical ‘and.’ */
-export type BigIntFilter = {
-  /** Not equal to the specified value, treating null like an ordinary value. */
-  distinctFrom?: InputMaybe<Scalars["BigInt"]>;
-  /** Equal to the specified value. */
-  equalTo?: InputMaybe<Scalars["BigInt"]>;
-  /** Greater than the specified value. */
-  greaterThan?: InputMaybe<Scalars["BigInt"]>;
-  /** Greater than or equal to the specified value. */
-  greaterThanOrEqualTo?: InputMaybe<Scalars["BigInt"]>;
-  /** Included in the specified list. */
-  in?: InputMaybe<Array<Scalars["BigInt"]>>;
-  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
-  isNull?: InputMaybe<Scalars["Boolean"]>;
-  /** Less than the specified value. */
-  lessThan?: InputMaybe<Scalars["BigInt"]>;
-  /** Less than or equal to the specified value. */
-  lessThanOrEqualTo?: InputMaybe<Scalars["BigInt"]>;
-  /** Equal to the specified value, treating null like an ordinary value. */
-  notDistinctFrom?: InputMaybe<Scalars["BigInt"]>;
-  /** Not equal to the specified value. */
-  notEqualTo?: InputMaybe<Scalars["BigInt"]>;
-  /** Not included in the specified list. */
-  notIn?: InputMaybe<Array<Scalars["BigInt"]>>;
+  /** A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122). */
+  UUID: any;
 };
 
 /** All input for the create `ItemCategory` mutation. */
@@ -227,7 +197,7 @@ export type DeleteItemCategoryInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars["String"]>;
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
 };
 
 /** The output of our delete `ItemCategory` mutation. */
@@ -259,7 +229,7 @@ export type DeleteItemInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars["String"]>;
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
 };
 
 /** The output of our delete `Item` mutation. */
@@ -304,8 +274,8 @@ export type DeleteItemShoppingListInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars["String"]>;
-  itemId: Scalars["BigInt"];
-  shoppingListId: Scalars["BigInt"];
+  itemId: Scalars["UUID"];
+  shoppingListId: Scalars["UUID"];
 };
 
 /** The output of our delete `ItemShoppingList` mutation. */
@@ -362,7 +332,7 @@ export type DeleteShoppingListInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars["String"]>;
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
 };
 
 /** The output of our delete `ShoppingList` mutation. */
@@ -409,38 +379,12 @@ export type DieselManageUpdatedAtPayload = {
   query?: Maybe<Query>;
 };
 
-/** A filter to be used against Int fields. All fields are combined with a logical ‘and.’ */
-export type IntFilter = {
-  /** Not equal to the specified value, treating null like an ordinary value. */
-  distinctFrom?: InputMaybe<Scalars["Int"]>;
-  /** Equal to the specified value. */
-  equalTo?: InputMaybe<Scalars["Int"]>;
-  /** Greater than the specified value. */
-  greaterThan?: InputMaybe<Scalars["Int"]>;
-  /** Greater than or equal to the specified value. */
-  greaterThanOrEqualTo?: InputMaybe<Scalars["Int"]>;
-  /** Included in the specified list. */
-  in?: InputMaybe<Array<Scalars["Int"]>>;
-  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
-  isNull?: InputMaybe<Scalars["Boolean"]>;
-  /** Less than the specified value. */
-  lessThan?: InputMaybe<Scalars["Int"]>;
-  /** Less than or equal to the specified value. */
-  lessThanOrEqualTo?: InputMaybe<Scalars["Int"]>;
-  /** Equal to the specified value, treating null like an ordinary value. */
-  notDistinctFrom?: InputMaybe<Scalars["Int"]>;
-  /** Not equal to the specified value. */
-  notEqualTo?: InputMaybe<Scalars["Int"]>;
-  /** Not included in the specified list. */
-  notIn?: InputMaybe<Array<Scalars["Int"]>>;
-};
-
 export type Item = Node & {
   __typename?: "Item";
   /** Reads a single `ItemCategory` that is related to this `Item`. */
   category?: Maybe<ItemCategory>;
-  categoryId?: Maybe<Scalars["BigInt"]>;
-  id: Scalars["Int"];
+  categoryId?: Maybe<Scalars["UUID"]>;
+  id: Scalars["UUID"];
   /** Reads and enables pagination through a set of `ItemShoppingListHistory`. */
   itemShoppingListHistories: ItemShoppingListHistoriesConnection;
   /** Reads and enables pagination through a set of `ItemShoppingList`. */
@@ -532,7 +476,7 @@ export enum ItemCategoriesOrderBy {
 
 export type ItemCategory = Node & {
   __typename?: "ItemCategory";
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
   /** Reads and enables pagination through a set of `Item`. */
   itemsByCategoryId: ItemsConnection;
   name: Scalars["String"];
@@ -557,7 +501,7 @@ export type ItemCategoryItemsByCategoryIdArgs = {
  */
 export type ItemCategoryCondition = {
   /** Checks for equality with the object’s `id` field. */
-  id?: InputMaybe<Scalars["Int"]>;
+  id?: InputMaybe<Scalars["UUID"]>;
   /** Checks for equality with the object’s `name` field. */
   name?: InputMaybe<Scalars["String"]>;
 };
@@ -567,7 +511,7 @@ export type ItemCategoryFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<ItemCategoryFilter>>;
   /** Filter by the object’s `id` field. */
-  id?: InputMaybe<IntFilter>;
+  id?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `name` field. */
   name?: InputMaybe<StringFilter>;
   /** Negates the expression. */
@@ -648,12 +592,12 @@ export type ItemCategoryInput = {
 
 /** The fields on `itemCategory` to look up the row to connect. */
 export type ItemCategoryItemCategoryPkeyConnect = {
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
 };
 
 /** The fields on `itemCategory` to look up the row to delete. */
 export type ItemCategoryItemCategoryPkeyDelete = {
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
 };
 
 /** The globally unique `ID` look up for the row to connect. */
@@ -679,7 +623,7 @@ export type ItemCategoryOnItemForItemCategoryIdFkeyNodeIdUpdate = {
 /** The fields on `itemCategory` to look up the row to update. */
 export type ItemCategoryOnItemForItemCategoryIdFkeyUsingItemCategoryPkeyUpdate =
   {
-    id: Scalars["Int"];
+    id: Scalars["UUID"];
     /** An object where the defined keys will be set on the `itemCategory` being updated. */
     patch: UpdateItemCategoryOnItemForItemCategoryIdFkeyPatch;
   };
@@ -693,9 +637,9 @@ export type ItemCategoryPatch = {
 /** A condition to be used against `Item` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type ItemCondition = {
   /** Checks for equality with the object’s `categoryId` field. */
-  categoryId?: InputMaybe<Scalars["BigInt"]>;
+  categoryId?: InputMaybe<Scalars["UUID"]>;
   /** Checks for equality with the object’s `id` field. */
-  id?: InputMaybe<Scalars["Int"]>;
+  id?: InputMaybe<Scalars["UUID"]>;
   /** Checks for equality with the object’s `name` field. */
   name?: InputMaybe<Scalars["String"]>;
 };
@@ -705,9 +649,9 @@ export type ItemFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<ItemFilter>>;
   /** Filter by the object’s `categoryId` field. */
-  categoryId?: InputMaybe<BigIntFilter>;
+  categoryId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `id` field. */
-  id?: InputMaybe<IntFilter>;
+  id?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `name` field. */
   name?: InputMaybe<StringFilter>;
   /** Negates the expression. */
@@ -718,7 +662,7 @@ export type ItemFilter = {
 
 /** An input for mutations affecting `Item` */
 export type ItemInput = {
-  categoryId?: InputMaybe<Scalars["BigInt"]>;
+  categoryId?: InputMaybe<Scalars["UUID"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
   itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
   itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
@@ -737,12 +681,12 @@ export type ItemItemItemNameKeyDelete = {
 
 /** The fields on `item` to look up the row to connect. */
 export type ItemItemPkeyConnect = {
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
 };
 
 /** The fields on `item` to look up the row to delete. */
 export type ItemItemPkeyDelete = {
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
 };
 
 /** The globally unique `ID` look up for the row to connect. */
@@ -774,7 +718,7 @@ export type ItemOnItemForItemCategoryIdFkeyUsingItemItemNameKeyUpdate = {
 
 /** The fields on `item` to look up the row to update. */
 export type ItemOnItemForItemCategoryIdFkeyUsingItemPkeyUpdate = {
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
   /** An object where the defined keys will be set on the `item` being updated. */
   patch: UpdateItemOnItemForItemCategoryIdFkeyPatch;
 };
@@ -798,7 +742,7 @@ export type ItemOnItemShoppingListForItemShoppingListItemIdFkeyUsingItemItemName
 /** The fields on `item` to look up the row to update. */
 export type ItemOnItemShoppingListForItemShoppingListItemIdFkeyUsingItemPkeyUpdate =
   {
-    id: Scalars["Int"];
+    id: Scalars["UUID"];
     /** An object where the defined keys will be set on the `item` being updated. */
     patch: UpdateItemOnItemShoppingListForItemShoppingListItemIdFkeyPatch;
   };
@@ -823,14 +767,14 @@ export type ItemOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyUsi
 /** The fields on `item` to look up the row to update. */
 export type ItemOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyUsingItemPkeyUpdate =
   {
-    id: Scalars["Int"];
+    id: Scalars["UUID"];
     /** An object where the defined keys will be set on the `item` being updated. */
     patch: UpdateItemOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyPatch;
   };
 
 /** Represents an update to a `Item`. Fields that are set will be updated. */
 export type ItemPatch = {
-  categoryId?: InputMaybe<Scalars["BigInt"]>;
+  categoryId?: InputMaybe<Scalars["UUID"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
   itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
   itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
@@ -842,12 +786,12 @@ export type ItemShoppingList = Node & {
   additionalInformations?: Maybe<Scalars["String"]>;
   /** Reads a single `Item` that is related to this `ItemShoppingList`. */
   item?: Maybe<Item>;
-  itemId: Scalars["BigInt"];
+  itemId: Scalars["UUID"];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars["ID"];
   /** Reads a single `ShoppingList` that is related to this `ItemShoppingList`. */
   shoppingList?: Maybe<ShoppingList>;
-  shoppingListId: Scalars["BigInt"];
+  shoppingListId: Scalars["UUID"];
 };
 
 /**
@@ -858,9 +802,9 @@ export type ItemShoppingListCondition = {
   /** Checks for equality with the object’s `additionalInformations` field. */
   additionalInformations?: InputMaybe<Scalars["String"]>;
   /** Checks for equality with the object’s `itemId` field. */
-  itemId?: InputMaybe<Scalars["BigInt"]>;
+  itemId?: InputMaybe<Scalars["UUID"]>;
   /** Checks for equality with the object’s `shoppingListId` field. */
-  shoppingListId?: InputMaybe<Scalars["BigInt"]>;
+  shoppingListId?: InputMaybe<Scalars["UUID"]>;
 };
 
 /** A filter to be used against `ItemShoppingList` object types. All fields are combined with a logical ‘and.’ */
@@ -870,13 +814,13 @@ export type ItemShoppingListFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<ItemShoppingListFilter>>;
   /** Filter by the object’s `itemId` field. */
-  itemId?: InputMaybe<BigIntFilter>;
+  itemId?: InputMaybe<UuidFilter>;
   /** Negates the expression. */
   not?: InputMaybe<ItemShoppingListFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<ItemShoppingListFilter>>;
   /** Filter by the object’s `shoppingListId` field. */
-  shoppingListId?: InputMaybe<BigIntFilter>;
+  shoppingListId?: InputMaybe<UuidFilter>;
 };
 
 /** A connection to a list of `ItemShoppingListHistory` values. */
@@ -919,15 +863,15 @@ export enum ItemShoppingListHistoriesOrderBy {
 export type ItemShoppingListHistory = Node & {
   __typename?: "ItemShoppingListHistory";
   additionalInformations?: Maybe<Scalars["String"]>;
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
   /** Reads a single `Item` that is related to this `ItemShoppingListHistory`. */
   item?: Maybe<Item>;
-  itemId: Scalars["BigInt"];
+  itemId: Scalars["UUID"];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars["ID"];
   /** Reads a single `ShoppingList` that is related to this `ItemShoppingListHistory`. */
   shoppingList?: Maybe<ShoppingList>;
-  shoppingListId: Scalars["BigInt"];
+  shoppingListId: Scalars["UUID"];
 };
 
 /**
@@ -938,11 +882,11 @@ export type ItemShoppingListHistoryCondition = {
   /** Checks for equality with the object’s `additionalInformations` field. */
   additionalInformations?: InputMaybe<Scalars["String"]>;
   /** Checks for equality with the object’s `id` field. */
-  id?: InputMaybe<Scalars["Int"]>;
+  id?: InputMaybe<Scalars["UUID"]>;
   /** Checks for equality with the object’s `itemId` field. */
-  itemId?: InputMaybe<Scalars["BigInt"]>;
+  itemId?: InputMaybe<Scalars["UUID"]>;
   /** Checks for equality with the object’s `shoppingListId` field. */
-  shoppingListId?: InputMaybe<Scalars["BigInt"]>;
+  shoppingListId?: InputMaybe<Scalars["UUID"]>;
 };
 
 /** A filter to be used against `ItemShoppingListHistory` object types. All fields are combined with a logical ‘and.’ */
@@ -952,15 +896,15 @@ export type ItemShoppingListHistoryFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<ItemShoppingListHistoryFilter>>;
   /** Filter by the object’s `id` field. */
-  id?: InputMaybe<IntFilter>;
+  id?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `itemId` field. */
-  itemId?: InputMaybe<BigIntFilter>;
+  itemId?: InputMaybe<UuidFilter>;
   /** Negates the expression. */
   not?: InputMaybe<ItemShoppingListHistoryFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<ItemShoppingListHistoryFilter>>;
   /** Filter by the object’s `shoppingListId` field. */
-  shoppingListId?: InputMaybe<BigIntFilter>;
+  shoppingListId?: InputMaybe<UuidFilter>;
 };
 
 /** Input for the nested mutation of `item` in the `ItemShoppingListHistoryInput` mutation. */
@@ -1007,7 +951,7 @@ export type ItemShoppingListHistoryItemIdFkeyInverseInput = {
 
 /** The `item` to be created by this mutation. */
 export type ItemShoppingListHistoryItemIdFkeyItemCreateInput = {
-  categoryId?: InputMaybe<Scalars["BigInt"]>;
+  categoryId?: InputMaybe<Scalars["UUID"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
   itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
   itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
@@ -1016,9 +960,9 @@ export type ItemShoppingListHistoryItemIdFkeyItemCreateInput = {
 
 /** The fields on `itemShoppingListHistory` to look up the row to connect. */
 export type ItemShoppingListHistoryItemShoppingListHistoryPkeyConnect = {
-  id: Scalars["Int"];
-  itemId: Scalars["BigInt"];
-  shoppingListId: Scalars["BigInt"];
+  id: Scalars["UUID"];
+  itemId: Scalars["UUID"];
+  shoppingListId: Scalars["UUID"];
 };
 
 /** The globally unique `ID` look up for the row to connect. */
@@ -1039,11 +983,11 @@ export type ItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListH
 /** The fields on `itemShoppingListHistory` to look up the row to update. */
 export type ItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyUsingItemShoppingListHistoryPkeyUpdate =
   {
-    id: Scalars["Int"];
-    itemId: Scalars["BigInt"];
+    id: Scalars["UUID"];
+    itemId: Scalars["UUID"];
     /** An object where the defined keys will be set on the `itemShoppingListHistory` being updated. */
     patch: UpdateItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyPatch;
-    shoppingListId: Scalars["BigInt"];
+    shoppingListId: Scalars["UUID"];
   };
 
 /** The globally unique `ID` look up for the row to update. */
@@ -1058,20 +1002,20 @@ export type ItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListH
 /** The fields on `itemShoppingListHistory` to look up the row to update. */
 export type ItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyUsingItemShoppingListHistoryPkeyUpdate =
   {
-    id: Scalars["Int"];
-    itemId: Scalars["BigInt"];
+    id: Scalars["UUID"];
+    itemId: Scalars["UUID"];
     /** An object where the defined keys will be set on the `itemShoppingListHistory` being updated. */
     patch: UpdateItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyPatch;
-    shoppingListId: Scalars["BigInt"];
+    shoppingListId: Scalars["UUID"];
   };
 
 /** Represents an update to a `ItemShoppingListHistory`. Fields that are set will be updated. */
 export type ItemShoppingListHistoryPatch = {
   additionalInformations?: InputMaybe<Scalars["String"]>;
-  id?: InputMaybe<Scalars["Int"]>;
-  itemId?: InputMaybe<Scalars["BigInt"]>;
+  id?: InputMaybe<Scalars["UUID"]>;
+  itemId?: InputMaybe<Scalars["UUID"]>;
   itemToItemId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInput>;
-  shoppingListId?: InputMaybe<Scalars["BigInt"]>;
+  shoppingListId?: InputMaybe<Scalars["UUID"]>;
   shoppingListToShoppingListId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInput>;
 };
 
@@ -1127,9 +1071,9 @@ export type ItemShoppingListHistoryShoppingListIdFkeyShoppingListCreateInput = {
 /** An input for mutations affecting `ItemShoppingList` */
 export type ItemShoppingListInput = {
   additionalInformations?: InputMaybe<Scalars["String"]>;
-  itemId?: InputMaybe<Scalars["BigInt"]>;
+  itemId?: InputMaybe<Scalars["UUID"]>;
   itemToItemId?: InputMaybe<ItemShoppingListItemIdFkeyInput>;
-  shoppingListId?: InputMaybe<Scalars["BigInt"]>;
+  shoppingListId?: InputMaybe<Scalars["UUID"]>;
   shoppingListToShoppingListId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInput>;
 };
 
@@ -1189,7 +1133,7 @@ export type ItemShoppingListItemIdFkeyInverseInput = {
 
 /** The `item` to be created by this mutation. */
 export type ItemShoppingListItemIdFkeyItemCreateInput = {
-  categoryId?: InputMaybe<Scalars["BigInt"]>;
+  categoryId?: InputMaybe<Scalars["UUID"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
   itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
   itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
@@ -1200,20 +1144,20 @@ export type ItemShoppingListItemIdFkeyItemCreateInput = {
 export type ItemShoppingListItemIdFkeyItemShoppingListCreateInput = {
   additionalInformations?: InputMaybe<Scalars["String"]>;
   itemToItemId?: InputMaybe<ItemShoppingListItemIdFkeyInput>;
-  shoppingListId?: InputMaybe<Scalars["BigInt"]>;
+  shoppingListId?: InputMaybe<Scalars["UUID"]>;
   shoppingListToShoppingListId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInput>;
 };
 
 /** The fields on `itemShoppingList` to look up the row to connect. */
 export type ItemShoppingListItemShoppingListPkeyConnect = {
-  itemId: Scalars["BigInt"];
-  shoppingListId: Scalars["BigInt"];
+  itemId: Scalars["UUID"];
+  shoppingListId: Scalars["UUID"];
 };
 
 /** The fields on `itemShoppingList` to look up the row to delete. */
 export type ItemShoppingListItemShoppingListPkeyDelete = {
-  itemId: Scalars["BigInt"];
-  shoppingListId: Scalars["BigInt"];
+  itemId: Scalars["UUID"];
+  shoppingListId: Scalars["UUID"];
 };
 
 /** The globally unique `ID` look up for the row to connect. */
@@ -1240,10 +1184,10 @@ export type ItemShoppingListOnItemShoppingListForItemShoppingListItemIdFkeyNodeI
 /** The fields on `itemShoppingList` to look up the row to update. */
 export type ItemShoppingListOnItemShoppingListForItemShoppingListItemIdFkeyUsingItemShoppingListPkeyUpdate =
   {
-    itemId: Scalars["BigInt"];
+    itemId: Scalars["UUID"];
     /** An object where the defined keys will be set on the `itemShoppingList` being updated. */
     patch: UpdateItemShoppingListOnItemShoppingListForItemShoppingListItemIdFkeyPatch;
-    shoppingListId: Scalars["BigInt"];
+    shoppingListId: Scalars["UUID"];
   };
 
 /** The globally unique `ID` look up for the row to update. */
@@ -1258,18 +1202,18 @@ export type ItemShoppingListOnItemShoppingListForItemShoppingListShoppingListIdF
 /** The fields on `itemShoppingList` to look up the row to update. */
 export type ItemShoppingListOnItemShoppingListForItemShoppingListShoppingListIdFkeyUsingItemShoppingListPkeyUpdate =
   {
-    itemId: Scalars["BigInt"];
+    itemId: Scalars["UUID"];
     /** An object where the defined keys will be set on the `itemShoppingList` being updated. */
     patch: UpdateItemShoppingListOnItemShoppingListForItemShoppingListShoppingListIdFkeyPatch;
-    shoppingListId: Scalars["BigInt"];
+    shoppingListId: Scalars["UUID"];
   };
 
 /** Represents an update to a `ItemShoppingList`. Fields that are set will be updated. */
 export type ItemShoppingListPatch = {
   additionalInformations?: InputMaybe<Scalars["String"]>;
-  itemId?: InputMaybe<Scalars["BigInt"]>;
+  itemId?: InputMaybe<Scalars["UUID"]>;
   itemToItemId?: InputMaybe<ItemShoppingListItemIdFkeyInput>;
-  shoppingListId?: InputMaybe<Scalars["BigInt"]>;
+  shoppingListId?: InputMaybe<Scalars["UUID"]>;
   shoppingListToShoppingListId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInput>;
 };
 
@@ -1330,7 +1274,7 @@ export type ItemShoppingListShoppingListIdFkeyInverseInput = {
 /** The `itemShoppingList` to be created by this mutation. */
 export type ItemShoppingListShoppingListIdFkeyItemShoppingListCreateInput = {
   additionalInformations?: InputMaybe<Scalars["String"]>;
-  itemId?: InputMaybe<Scalars["BigInt"]>;
+  itemId?: InputMaybe<Scalars["UUID"]>;
   itemToItemId?: InputMaybe<ItemShoppingListItemIdFkeyInput>;
   shoppingListToShoppingListId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInput>;
 };
@@ -1715,7 +1659,7 @@ export type Query = Node & {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryItemArgs = {
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -1742,7 +1686,7 @@ export type QueryItemCategoriesArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryItemCategoryArgs = {
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -1752,8 +1696,8 @@ export type QueryItemCategoryByNodeIdArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryItemShoppingListArgs = {
-  itemId: Scalars["BigInt"];
-  shoppingListId: Scalars["BigInt"];
+  itemId: Scalars["UUID"];
+  shoppingListId: Scalars["UUID"];
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -1775,9 +1719,9 @@ export type QueryItemShoppingListHistoriesArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryItemShoppingListHistoryArgs = {
-  id: Scalars["Int"];
-  itemId: Scalars["BigInt"];
-  shoppingListId: Scalars["BigInt"];
+  id: Scalars["UUID"];
+  itemId: Scalars["UUID"];
+  shoppingListId: Scalars["UUID"];
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -1816,7 +1760,7 @@ export type QueryNodeArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryShoppingListArgs = {
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -1843,7 +1787,7 @@ export type QueryShoppingListsArgs = {
 
 export type ShoppingList = Node & {
   __typename?: "ShoppingList";
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
   /** Reads and enables pagination through a set of `ItemShoppingListHistory`. */
   itemShoppingListHistories: ItemShoppingListHistoriesConnection;
   /** Reads and enables pagination through a set of `ItemShoppingList`. */
@@ -1908,7 +1852,7 @@ export type ShoppingListItemsByItemShoppingListShoppingListIdAndItemIdArgs = {
  */
 export type ShoppingListCondition = {
   /** Checks for equality with the object’s `id` field. */
-  id?: InputMaybe<Scalars["Int"]>;
+  id?: InputMaybe<Scalars["UUID"]>;
   /** Checks for equality with the object’s `name` field. */
   name?: InputMaybe<Scalars["String"]>;
 };
@@ -1918,7 +1862,7 @@ export type ShoppingListFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<ShoppingListFilter>>;
   /** Filter by the object’s `id` field. */
-  id?: InputMaybe<IntFilter>;
+  id?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `name` field. */
   name?: InputMaybe<StringFilter>;
   /** Negates the expression. */
@@ -2022,7 +1966,7 @@ export type ShoppingListOnItemShoppingListForItemShoppingListShoppingListIdFkeyN
 /** The fields on `shoppingList` to look up the row to update. */
 export type ShoppingListOnItemShoppingListForItemShoppingListShoppingListIdFkeyUsingShoppingListPkeyUpdate =
   {
-    id: Scalars["Int"];
+    id: Scalars["UUID"];
     /** An object where the defined keys will be set on the `shoppingList` being updated. */
     patch: UpdateShoppingListOnItemShoppingListForItemShoppingListShoppingListIdFkeyPatch;
   };
@@ -2047,7 +1991,7 @@ export type ShoppingListOnItemShoppingListHistoryForItemShoppingListHistoryShopp
 /** The fields on `shoppingList` to look up the row to update. */
 export type ShoppingListOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyUsingShoppingListPkeyUpdate =
   {
-    id: Scalars["Int"];
+    id: Scalars["UUID"];
     /** An object where the defined keys will be set on the `shoppingList` being updated. */
     patch: UpdateShoppingListOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyPatch;
   };
@@ -2069,12 +2013,12 @@ export type ShoppingListPatch = {
 
 /** The fields on `shoppingList` to look up the row to connect. */
 export type ShoppingListShoppingListPkeyConnect = {
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
 };
 
 /** The fields on `shoppingList` to look up the row to delete. */
 export type ShoppingListShoppingListPkeyDelete = {
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
 };
 
 /** The fields on `shoppingList` to look up the row to connect. */
@@ -2196,6 +2140,32 @@ export type StringFilter = {
   startsWithInsensitive?: InputMaybe<Scalars["String"]>;
 };
 
+/** A filter to be used against UUID fields. All fields are combined with a logical ‘and.’ */
+export type UuidFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars["UUID"]>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars["UUID"]>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars["UUID"]>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars["UUID"]>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars["UUID"]>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars["Boolean"]>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars["UUID"]>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars["UUID"]>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars["UUID"]>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars["UUID"]>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars["UUID"]>>;
+};
+
 /** All input for the `updateItemByName` mutation. */
 export type UpdateItemByNameInput = {
   /**
@@ -2241,7 +2211,7 @@ export type UpdateItemCategoryInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars["String"]>;
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
   /** An object where the defined keys will be set on the `ItemCategory` being updated. */
   patch: ItemCategoryPatch;
 };
@@ -2274,7 +2244,7 @@ export type UpdateItemInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars["String"]>;
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
   /** An object where the defined keys will be set on the `Item` being updated. */
   patch: ItemPatch;
 };
@@ -2322,10 +2292,10 @@ export type UpdateItemShoppingListInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars["String"]>;
-  itemId: Scalars["BigInt"];
+  itemId: Scalars["UUID"];
   /** An object where the defined keys will be set on the `ItemShoppingList` being updated. */
   patch: ItemShoppingListPatch;
-  shoppingListId: Scalars["BigInt"];
+  shoppingListId: Scalars["UUID"];
 };
 
 /** The output of our update `ItemShoppingList` mutation. */
@@ -2385,7 +2355,7 @@ export type UpdateShoppingListInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars["String"]>;
-  id: Scalars["Int"];
+  id: Scalars["UUID"];
   /** An object where the defined keys will be set on the `ShoppingList` being updated. */
   patch: ShoppingListPatch;
 };
@@ -2427,7 +2397,7 @@ export type UpdateItemOnItemForItemCategoryIdFkeyPatch = {
 
 /** An object where the defined keys will be set on the `item` being updated. */
 export type UpdateItemOnItemShoppingListForItemShoppingListItemIdFkeyPatch = {
-  categoryId?: InputMaybe<Scalars["BigInt"]>;
+  categoryId?: InputMaybe<Scalars["UUID"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
   itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
   itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
@@ -2437,7 +2407,7 @@ export type UpdateItemOnItemShoppingListForItemShoppingListItemIdFkeyPatch = {
 /** An object where the defined keys will be set on the `item` being updated. */
 export type UpdateItemOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyPatch =
   {
-    categoryId?: InputMaybe<Scalars["BigInt"]>;
+    categoryId?: InputMaybe<Scalars["UUID"]>;
     itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
     itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
     itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
@@ -2448,9 +2418,9 @@ export type UpdateItemOnItemShoppingListHistoryForItemShoppingListHistoryItemIdF
 export type UpdateItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyPatch =
   {
     additionalInformations?: InputMaybe<Scalars["String"]>;
-    id?: InputMaybe<Scalars["Int"]>;
+    id?: InputMaybe<Scalars["UUID"]>;
     itemToItemId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInput>;
-    shoppingListId?: InputMaybe<Scalars["BigInt"]>;
+    shoppingListId?: InputMaybe<Scalars["UUID"]>;
     shoppingListToShoppingListId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInput>;
   };
 
@@ -2458,8 +2428,8 @@ export type UpdateItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppin
 export type UpdateItemShoppingListHistoryOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyPatch =
   {
     additionalInformations?: InputMaybe<Scalars["String"]>;
-    id?: InputMaybe<Scalars["Int"]>;
-    itemId?: InputMaybe<Scalars["BigInt"]>;
+    id?: InputMaybe<Scalars["UUID"]>;
+    itemId?: InputMaybe<Scalars["UUID"]>;
     itemToItemId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInput>;
     shoppingListToShoppingListId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInput>;
   };
@@ -2469,7 +2439,7 @@ export type UpdateItemShoppingListOnItemShoppingListForItemShoppingListItemIdFke
   {
     additionalInformations?: InputMaybe<Scalars["String"]>;
     itemToItemId?: InputMaybe<ItemShoppingListItemIdFkeyInput>;
-    shoppingListId?: InputMaybe<Scalars["BigInt"]>;
+    shoppingListId?: InputMaybe<Scalars["UUID"]>;
     shoppingListToShoppingListId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInput>;
   };
 
@@ -2477,7 +2447,7 @@ export type UpdateItemShoppingListOnItemShoppingListForItemShoppingListItemIdFke
 export type UpdateItemShoppingListOnItemShoppingListForItemShoppingListShoppingListIdFkeyPatch =
   {
     additionalInformations?: InputMaybe<Scalars["String"]>;
-    itemId?: InputMaybe<Scalars["BigInt"]>;
+    itemId?: InputMaybe<Scalars["UUID"]>;
     itemToItemId?: InputMaybe<ItemShoppingListItemIdFkeyInput>;
     shoppingListToShoppingListId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInput>;
   };

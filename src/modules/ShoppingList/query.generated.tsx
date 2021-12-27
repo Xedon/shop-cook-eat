@@ -16,7 +16,7 @@ export type ShoppingListByNodeIdQuery = {
   shoppingListByNodeId?:
     | {
         __typename: "ShoppingList";
-        id: number;
+        id: any;
         nodeId: string;
         name: string;
         itemShoppingLists: {
@@ -30,13 +30,13 @@ export type ShoppingListByNodeIdQuery = {
                 item?:
                   | {
                       __typename: "Item";
-                      id: number;
+                      id: any;
                       nodeId: string;
                       name: string;
                       category?:
                         | {
                             __typename: "ItemCategory";
-                            id: number;
+                            id: any;
                             nodeId: string;
                             name: string;
                           }
@@ -46,7 +46,7 @@ export type ShoppingListByNodeIdQuery = {
                   | null
                   | undefined;
                 shoppingList?:
-                  | { __typename: "ShoppingList"; id: number; nodeId: string }
+                  | { __typename: "ShoppingList"; id: any; nodeId: string }
                   | null
                   | undefined;
               }
@@ -59,13 +59,13 @@ export type ShoppingListByNodeIdQuery = {
           nodes: Array<
             | {
                 __typename: "Item";
-                id: number;
+                id: any;
                 nodeId: string;
                 name: string;
                 category?:
                   | {
                       __typename: "ItemCategory";
-                      id: number;
+                      id: any;
                       nodeId: string;
                       name: string;
                     }
@@ -91,13 +91,13 @@ export type ItemsQuery = {
         nodes: Array<
           | {
               __typename: "Item";
-              id: number;
+              id: any;
               nodeId: string;
               name: string;
               category?:
                 | {
                     __typename: "ItemCategory";
-                    id: number;
+                    id: any;
                     nodeId: string;
                     name: string;
                   }

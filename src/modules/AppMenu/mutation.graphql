@@ -1,5 +1,5 @@
 mutation AddItemToShoppingListByNodeId(
-  $itemId: BigInt!
+  $itemId: UUID!
   $shoppingListNodeId: ID!
 ) {
   createItemShoppingList(
@@ -18,7 +18,7 @@ mutation AddItemToShoppingListByNodeId(
 
 mutation CreateItemAndAddToShoppingList(
   $itemName: String!
-  $categoryId: BigInt!
+  $categoryId: UUID!
   $shoppingListNodeId: ID!
 ) {
   createItemShoppingList(

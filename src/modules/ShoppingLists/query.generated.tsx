@@ -13,7 +13,7 @@ export type ShoppingListsQuery = {
         nodes: Array<
           | {
               __typename: "ShoppingList";
-              id: number;
+              id: any;
               nodeId: string;
               name: string;
             }

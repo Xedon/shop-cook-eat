@@ -16,7 +16,7 @@ export type SearchForItemsQuery = {
         nodes: Array<
           | {
               __typename: "Item";
-              id: number;
+              id: any;
               nodeId: string;
               name: string;
               itemShoppingLists: {
@@ -28,7 +28,7 @@ export type SearchForItemsQuery = {
                       shoppingList?:
                         | {
                             __typename: "ShoppingList";
-                            id: number;
+                            id: any;
                             nodeId: string;
                           }
                         | null
@@ -41,12 +41,36 @@ export type SearchForItemsQuery = {
               category?:
                 | {
                     __typename: "ItemCategory";
-                    id: number;
+                    id: any;
                     nodeId: string;
                     name: string;
                   }
                 | null
                 | undefined;
+            }
+          | null
+          | undefined
+        >;
+      }
+    | null
+    | undefined;
+};
+
+export type SelectCustomCategoryQueryVariables = Types.Exact<{
+  [key: string]: never;
+}>;
+
+export type SelectCustomCategoryQuery = {
+  __typename?: "Query";
+  itemCategories?:
+    | {
+        __typename?: "ItemCategoriesConnection";
+        nodes: Array<
+          | {
+              __typename?: "ItemCategory";
+              id: any;
+              nodeId: string;
+              name: string;
             }
           | null
           | undefined
@@ -86,6 +110,29 @@ export function useSearchForItemsQuery(
 ) {
   return Urql.useQuery<SearchForItemsQuery>({
     query: SearchForItemsDocument,
+    ...options,
+  });
+}
+export const SelectCustomCategoryDocument = gql`
+  query SelectCustomCategory {
+    itemCategories(first: 1) {
+      nodes {
+        id
+        nodeId
+        name
+      }
+    }
+  }
+`;
+
+export function useSelectCustomCategoryQuery(
+  options: Omit<
+    Urql.UseQueryArgs<SelectCustomCategoryQueryVariables>,
+    "query"
+  > = {}
+) {
+  return Urql.useQuery<SelectCustomCategoryQuery>({
+    query: SelectCustomCategoryDocument,
     ...options,
   });
 }

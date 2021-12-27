@@ -15,7 +15,7 @@ export type CreateShoppingListWithNameMutation = {
         shoppingList?:
           | {
               __typename?: "ShoppingList";
-              id: number;
+              id: any;
               nodeId: string;
               name: string;
             }

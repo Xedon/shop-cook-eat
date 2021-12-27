@@ -17,8 +17,8 @@ export type DelteItemFromShoppingListMutation = {
 };
 
 export type AddItemToShoppingListMutationVariables = Types.Exact<{
-  itemId: Types.Scalars["BigInt"];
-  shoppingListId: Types.Scalars["BigInt"];
+  itemId: Types.Scalars["UUID"];
+  shoppingListId: Types.Scalars["UUID"];
 }>;
 
 export type AddItemToShoppingListMutation = {
@@ -35,13 +35,13 @@ export type AddItemToShoppingListMutation = {
               item?:
                 | {
                     __typename: "Item";
-                    id: number;
+                    id: any;
                     nodeId: string;
                     name: string;
                     category?:
                       | {
                           __typename: "ItemCategory";
-                          id: number;
+                          id: any;
                           nodeId: string;
                           name: string;
                         }
@@ -51,7 +51,7 @@ export type AddItemToShoppingListMutation = {
                 | null
                 | undefined;
               shoppingList?:
-                | { __typename: "ShoppingList"; id: number; nodeId: string }
+                | { __typename: "ShoppingList"; id: any; nodeId: string }
                 | null
                 | undefined;
             }
@@ -77,7 +77,7 @@ export function useDelteItemFromShoppingListMutation() {
   >(DelteItemFromShoppingListDocument);
 }
 export const AddItemToShoppingListDocument = gql`
-  mutation AddItemToShoppingList($itemId: BigInt!, $shoppingListId: BigInt!) {
+  mutation AddItemToShoppingList($itemId: UUID!, $shoppingListId: UUID!) {
     createItemShoppingList(
       input: {
         itemShoppingList: { shoppingListId: $shoppingListId, itemId: $itemId }

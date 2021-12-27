@@ -1,7 +1,10 @@
 import { Box, Fade } from "@mui/material";
 import { View } from "../../state/app";
 import { InputField } from "../../components/InputField";
-import { useSearchForItemsQuery } from "./query.generated";
+import {
+  useSearchForItemsQuery,
+  useSelectCustomCategoryQuery,
+} from "./query.generated";
 import { useCallback, useMemo, useState } from "react";
 import { CardRenderer } from "../../components/CardRenderer";
 import {
@@ -12,7 +15,11 @@ import { useNavigation } from "../../state/selectors";
 
 export const ListMenuAddition = () => {
   const navigation = useNavigation();
+
   const [searchString, setSearchString] = useState<string>("");
+
+  const [customCategory] = useSelectCustomCategoryQuery();
+
   const [foundItems] = useSearchForItemsQuery({
     pause: searchString === "",
     variables: { includesInsensitive: searchString },
@@ -36,7 +43,7 @@ export const ListMenuAddition = () => {
         });
       } else {
         createItemAndAddToShoppingList({
-          categoryId: 1,
+          categoryId: customCategory.data?.itemCategories?.nodes[0]?.id,
           itemName: name,
           shoppingListNodeId,
         });

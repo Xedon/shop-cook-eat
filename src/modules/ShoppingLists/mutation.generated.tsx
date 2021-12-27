@@ -19,7 +19,7 @@ export type CreateShoppingListMutation = {
         shoppingList?:
           | {
               __typename: "ShoppingList";
-              id: number;
+              id: any;
               nodeId: string;
               name: string;
               itemShoppingLists: {
@@ -33,13 +33,13 @@ export type CreateShoppingListMutation = {
                       item?:
                         | {
                             __typename: "Item";
-                            id: number;
+                            id: any;
                             nodeId: string;
                             name: string;
                             category?:
                               | {
                                   __typename: "ItemCategory";
-                                  id: number;
+                                  id: any;
                                   nodeId: string;
                                   name: string;
                                 }
@@ -51,7 +51,7 @@ export type CreateShoppingListMutation = {
                       shoppingList?:
                         | {
                             __typename: "ShoppingList";
-                            id: number;
+                            id: any;
                             nodeId: string;
                           }
                         | null
@@ -66,13 +66,13 @@ export type CreateShoppingListMutation = {
                 nodes: Array<
                   | {
                       __typename: "Item";
-                      id: number;
+                      id: any;
                       nodeId: string;
                       name: string;
                       category?:
                         | {
                             __typename: "ItemCategory";
-                            id: number;
+                            id: any;
                             nodeId: string;
                             name: string;
                           }

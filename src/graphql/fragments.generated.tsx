@@ -3,11 +3,11 @@ import * as Types from "../types";
 import { gql } from "graphql.macro";
 export type ItemFragment = {
   __typename: "Item";
-  id: number;
+  id: any;
   nodeId: string;
   name: string;
   category?:
-    | { __typename: "ItemCategory"; id: number; nodeId: string; name: string }
+    | { __typename: "ItemCategory"; id: any; nodeId: string; name: string }
     | null
     | undefined;
 };
@@ -20,13 +20,13 @@ export type ItemShoppingListFragment = {
   item?:
     | {
         __typename: "Item";
-        id: number;
+        id: any;
         nodeId: string;
         name: string;
         category?:
           | {
               __typename: "ItemCategory";
-              id: number;
+              id: any;
               nodeId: string;
               name: string;
             }
@@ -36,7 +36,7 @@ export type ItemShoppingListFragment = {
     | null
     | undefined;
   shoppingList?:
-    | { __typename: "ShoppingList"; id: number; nodeId: string }
+    | { __typename: "ShoppingList"; id: any; nodeId: string }
     | null
     | undefined;
 };
@@ -52,13 +52,13 @@ export type ItemShoppingListsConnectionFragment = {
         item?:
           | {
               __typename: "Item";
-              id: number;
+              id: any;
               nodeId: string;
               name: string;
               category?:
                 | {
                     __typename: "ItemCategory";
-                    id: number;
+                    id: any;
                     nodeId: string;
                     name: string;
                   }
@@ -68,7 +68,7 @@ export type ItemShoppingListsConnectionFragment = {
           | null
           | undefined;
         shoppingList?:
-          | { __typename: "ShoppingList"; id: number; nodeId: string }
+          | { __typename: "ShoppingList"; id: any; nodeId: string }
           | null
           | undefined;
       }
@@ -79,7 +79,7 @@ export type ItemShoppingListsConnectionFragment = {
 
 export type ShoppingListFragment = {
   __typename: "ShoppingList";
-  id: number;
+  id: any;
   nodeId: string;
   name: string;
   itemShoppingLists: {
@@ -93,13 +93,13 @@ export type ShoppingListFragment = {
           item?:
             | {
                 __typename: "Item";
-                id: number;
+                id: any;
                 nodeId: string;
                 name: string;
                 category?:
                   | {
                       __typename: "ItemCategory";
-                      id: number;
+                      id: any;
                       nodeId: string;
                       name: string;
                     }
@@ -109,7 +109,7 @@ export type ShoppingListFragment = {
             | null
             | undefined;
           shoppingList?:
-            | { __typename: "ShoppingList"; id: number; nodeId: string }
+            | { __typename: "ShoppingList"; id: any; nodeId: string }
             | null
             | undefined;
         }
@@ -122,13 +122,13 @@ export type ShoppingListFragment = {
     nodes: Array<
       | {
           __typename: "Item";
-          id: number;
+          id: any;
           nodeId: string;
           name: string;
           category?:
             | {
                 __typename: "ItemCategory";
-                id: number;
+                id: any;
                 nodeId: string;
                 name: string;
               }
@@ -152,13 +152,13 @@ export type CreateItemShoppingListFragment = {
         item?:
           | {
               __typename: "Item";
-              id: number;
+              id: any;
               nodeId: string;
               name: string;
               category?:
                 | {
                     __typename: "ItemCategory";
-                    id: number;
+                    id: any;
                     nodeId: string;
                     name: string;
                   }
@@ -168,7 +168,7 @@ export type CreateItemShoppingListFragment = {
           | null
           | undefined;
         shoppingList?:
-          | { __typename: "ShoppingList"; id: number; nodeId: string }
+          | { __typename: "ShoppingList"; id: any; nodeId: string }
           | null
           | undefined;
       }

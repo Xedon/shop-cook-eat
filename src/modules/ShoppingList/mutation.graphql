@@ -4,7 +4,7 @@ mutation DelteItemFromShoppingList($nodeId: ID!) {
   }
 }
 
-mutation AddItemToShoppingList($itemId: BigInt!, $shoppingListId: BigInt!) {
+mutation AddItemToShoppingList($itemId: UUID!, $shoppingListId: UUID!) {
   createItemShoppingList(
     input: {
       itemShoppingList: { shoppingListId: $shoppingListId, itemId: $itemId }
