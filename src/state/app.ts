@@ -4,6 +4,7 @@ export enum View {
   Lists = "Lists",
   List = "List",
   Cooking = "Cooking",
+  AddList = "AddList",
 }
 
 export interface NavigationParmeterCooking {
@@ -19,11 +20,16 @@ export interface NavigationParmeterLists {
   view: View.Lists;
 }
 
+export interface NavigationParmeterAddList {
+  view: View.AddList;
+}
+
 export interface AppSlice {
   navigation:
     | NavigationParmeterCooking
     | NavigationParmeterList
-    | NavigationParmeterLists;
+    | NavigationParmeterLists
+    | NavigationParmeterAddList;
 }
 
 const initialState: AppSlice = { navigation: { view: View.Lists } };

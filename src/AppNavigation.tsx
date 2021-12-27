@@ -14,6 +14,8 @@ const AppContentInternal = (props: AppSlice["navigation"]) => {
       return <ShoppingLists />;
     case View.Cooking:
       return <CookingPlan />;
+    default:
+      return null;
   }
 };
 

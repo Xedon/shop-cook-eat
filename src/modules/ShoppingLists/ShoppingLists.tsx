@@ -1,7 +1,8 @@
-import { Card, CardHeader, Grid, SxProps } from "@mui/material";
+import { Button, Card, CardHeader, Grid, SxProps } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { appSlice, View } from "../../state/app";
 import { useShoppingListsQuery } from "./query.generated";
+import AddIcon from "@mui/icons-material/Add";
 
 const cardCss: SxProps = {
   width: "95vw",
@@ -35,6 +36,20 @@ export const ShoppingLists = () => {
           </Card>
         </Grid>
       ))}
+      <Grid item>
+        <Button
+          variant="text"
+          startIcon={<AddIcon />}
+          title="Add Shopping List"
+          color="secondary"
+          size="large"
+          onClick={() =>
+            dispatch(appSlice.actions.navigate({ view: View.AddList }))
+          }
+        >
+          Add Shopping List
+        </Button>
+      </Grid>
     </Grid>
   );
 };

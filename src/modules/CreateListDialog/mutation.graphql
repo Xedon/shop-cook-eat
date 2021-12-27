@@ -1,0 +1,9 @@
+mutation CreateShoppingListWithName($name: String!) {
+  createShoppingList(input: { shoppingList: { name: $name } }) {
+    shoppingList {
+      id
+      nodeId
+      name
+    }
+  }
+}

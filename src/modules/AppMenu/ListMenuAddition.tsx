@@ -1,8 +1,6 @@
 import { Box, Fade } from "@mui/material";
-import { useSelector } from "react-redux";
 import { View } from "../../state/app";
 import { InputField } from "../../components/InputField";
-import { RootState } from "../../state/store";
 import { useSearchForItemsQuery } from "./query.generated";
 import { useCallback, useMemo, useState } from "react";
 import { CardRenderer } from "../../components/CardRenderer";
@@ -10,9 +8,10 @@ import {
   useAddItemToShoppingListByNodeIdMutation,
   useCreateItemAndAddToShoppingListMutation,
 } from "./mutation.generated";
+import { useNavigation } from "../../state/selectors";
 
 export const ListMenuAddition = () => {
-  const navigation = useSelector((state: RootState) => state.app.navigation);
+  const navigation = useNavigation();
   const [searchString, setSearchString] = useState<string>("");
   const [foundItems] = useSearchForItemsQuery({
     pause: searchString === "",

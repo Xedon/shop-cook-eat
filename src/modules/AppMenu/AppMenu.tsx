@@ -6,14 +6,14 @@ import {
 } from "@mui/material";
 import LocalGroceryStoreOutlinedIcon from "@mui/icons-material/LocalGroceryStoreOutlined";
 import RestaurantOutlinedIcon from "@mui/icons-material/RestaurantOutlined";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { appSlice, View } from "../../state/app";
-import { RootState } from "../../state/store";
 import { ListMenuAddition } from "./ListMenuAddition";
+import { useNavigation } from "../../state/selectors";
 
 export const AppMenu = () => {
   const dispatch = useDispatch();
-  const { view } = useSelector((state: RootState) => state.app.navigation);
+  const { view } = useNavigation();
   return (
     <Paper
       sx={{
