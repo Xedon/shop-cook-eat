@@ -118,28 +118,29 @@ const cache = offlineExchange({
         );
       }
 
-      const itemsQuery: ItemsQuery | null = cache.readQuery({
-        query: ItemsDocument,
-      });
-
-      const nextItemId =
-        (itemsQuery?.items?.nodes
-          .map((item) => item?.id)
-          .sort()
-          .pop() ?? 0) + 1;
-
       const newNodeId = encodeNodeId(
         "ItemShoppingList",
         itemShoppingList.itemId,
         shoppingListId
       );
 
-      const item = cache.readFragment(ItemFragmentDoc, {
+      let item = cache.readFragment(ItemFragmentDoc, {
         id: itemShoppingList.itemId,
       }) as ItemFragment | null;
 
       if (item === null) {
-        throw new Error("Can't resolve existing item");
+        const id = 9999; // todo
+        const nodeId = encodeNodeId("Item", id);
+        if (itemShoppingList.itemToItemId?.create?.name === undefined) {
+          throw new Error("item missing in mutation");
+        }
+
+        item = {
+          id,
+          nodeId,
+          name: itemShoppingList.itemToItemId?.create?.name,
+          __typename: "Item",
+        };
       }
 
       const newEntry: ItemShoppingListFragment = {
