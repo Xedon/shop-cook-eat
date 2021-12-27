@@ -38,7 +38,7 @@ export type ShoppingListByNodeIdQuery = {
                             __typename: "ItemCategory";
                             id: number;
                             nodeId: string;
-                            categroyName: string;
+                            name: string;
                           }
                         | null
                         | undefined;
@@ -67,7 +67,7 @@ export type ShoppingListByNodeIdQuery = {
                       __typename: "ItemCategory";
                       id: number;
                       nodeId: string;
-                      categroyName: string;
+                      name: string;
                     }
                   | null
                   | undefined;
@@ -99,7 +99,7 @@ export type ItemsQuery = {
                     __typename: "ItemCategory";
                     id: number;
                     nodeId: string;
-                    categroyName: string;
+                    name: string;
                   }
                 | null
                 | undefined;

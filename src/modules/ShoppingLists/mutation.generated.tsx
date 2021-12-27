@@ -41,7 +41,7 @@ export type CreateShoppingListMutation = {
                                   __typename: "ItemCategory";
                                   id: number;
                                   nodeId: string;
-                                  categroyName: string;
+                                  name: string;
                                 }
                               | null
                               | undefined;
@@ -74,7 +74,7 @@ export type CreateShoppingListMutation = {
                             __typename: "ItemCategory";
                             id: number;
                             nodeId: string;
-                            categroyName: string;
+                            name: string;
                           }
                         | null
                         | undefined;

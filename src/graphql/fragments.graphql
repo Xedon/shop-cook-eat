@@ -5,7 +5,7 @@ fragment Item on Item {
   category {
     id
     nodeId
-    categroyName
+    name
     __typename
   }
   __typename

@@ -523,10 +523,8 @@ export type ItemCategoriesEdge = {
 
 /** Methods to use when ordering `ItemCategory`. */
 export enum ItemCategoriesOrderBy {
-  CategroyNameAsc = "CATEGROY_NAME_ASC",
-  CategroyNameDesc = "CATEGROY_NAME_DESC",
-  IdAsc = "ID_ASC",
-  IdDesc = "ID_DESC",
+  NameAsc = "NAME_ASC",
+  NameDesc = "NAME_DESC",
   Natural = "NATURAL",
   PrimaryKeyAsc = "PRIMARY_KEY_ASC",
   PrimaryKeyDesc = "PRIMARY_KEY_DESC",
@@ -534,10 +532,10 @@ export enum ItemCategoriesOrderBy {
 
 export type ItemCategory = Node & {
   __typename?: "ItemCategory";
-  categroyName: Scalars["String"];
   id: Scalars["Int"];
   /** Reads and enables pagination through a set of `Item`. */
   itemsByCategoryId: ItemsConnection;
+  name: Scalars["String"];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars["ID"];
 };
@@ -558,20 +556,20 @@ export type ItemCategoryItemsByCategoryIdArgs = {
  * tested for equality and combined with a logical ‘and.’
  */
 export type ItemCategoryCondition = {
-  /** Checks for equality with the object’s `categroyName` field. */
-  categroyName?: InputMaybe<Scalars["String"]>;
   /** Checks for equality with the object’s `id` field. */
   id?: InputMaybe<Scalars["Int"]>;
+  /** Checks for equality with the object’s `name` field. */
+  name?: InputMaybe<Scalars["String"]>;
 };
 
 /** A filter to be used against `ItemCategory` object types. All fields are combined with a logical ‘and.’ */
 export type ItemCategoryFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<ItemCategoryFilter>>;
-  /** Filter by the object’s `categroyName` field. */
-  categroyName?: InputMaybe<StringFilter>;
   /** Filter by the object’s `id` field. */
   id?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `name` field. */
+  name?: InputMaybe<StringFilter>;
   /** Negates the expression. */
   not?: InputMaybe<ItemCategoryFilter>;
   /** Checks for any expressions in this list. */
@@ -630,14 +628,12 @@ export type ItemCategoryIdFkeyInverseInput = {
 
 /** The `itemCategory` to be created by this mutation. */
 export type ItemCategoryIdFkeyItemCategoryCreateInput = {
-  categroyName: Scalars["String"];
-  id?: InputMaybe<Scalars["Int"]>;
   itemsUsingId?: InputMaybe<ItemCategoryIdFkeyInverseInput>;
+  name: Scalars["String"];
 };
 
 /** The `item` to be created by this mutation. */
 export type ItemCategoryIdFkeyItemCreateInput = {
-  id?: InputMaybe<Scalars["Int"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
   itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
   itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
@@ -646,9 +642,8 @@ export type ItemCategoryIdFkeyItemCreateInput = {
 
 /** An input for mutations affecting `ItemCategory` */
 export type ItemCategoryInput = {
-  categroyName: Scalars["String"];
-  id?: InputMaybe<Scalars["Int"]>;
   itemsUsingId?: InputMaybe<ItemCategoryIdFkeyInverseInput>;
+  name: Scalars["String"];
 };
 
 /** The fields on `itemCategory` to look up the row to connect. */
@@ -691,9 +686,8 @@ export type ItemCategoryOnItemForItemCategoryIdFkeyUsingItemCategoryPkeyUpdate =
 
 /** Represents an update to a `ItemCategory`. Fields that are set will be updated. */
 export type ItemCategoryPatch = {
-  categroyName?: InputMaybe<Scalars["String"]>;
-  id?: InputMaybe<Scalars["Int"]>;
   itemsUsingId?: InputMaybe<ItemCategoryIdFkeyInverseInput>;
+  name?: InputMaybe<Scalars["String"]>;
 };
 
 /** A condition to be used against `Item` object types. All fields are tested for equality and combined with a logical ‘and.’ */
@@ -725,7 +719,6 @@ export type ItemFilter = {
 /** An input for mutations affecting `Item` */
 export type ItemInput = {
   categoryId?: InputMaybe<Scalars["BigInt"]>;
-  id?: InputMaybe<Scalars["Int"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
   itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
   itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
@@ -838,7 +831,6 @@ export type ItemOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyUsi
 /** Represents an update to a `Item`. Fields that are set will be updated. */
 export type ItemPatch = {
   categoryId?: InputMaybe<Scalars["BigInt"]>;
-  id?: InputMaybe<Scalars["Int"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
   itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
   itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
@@ -1016,7 +1008,6 @@ export type ItemShoppingListHistoryItemIdFkeyInverseInput = {
 /** The `item` to be created by this mutation. */
 export type ItemShoppingListHistoryItemIdFkeyItemCreateInput = {
   categoryId?: InputMaybe<Scalars["BigInt"]>;
-  id?: InputMaybe<Scalars["Int"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
   itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
   itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
@@ -1128,7 +1119,6 @@ export type ItemShoppingListHistoryShoppingListIdFkeyInverseInput = {
 
 /** The `shoppingList` to be created by this mutation. */
 export type ItemShoppingListHistoryShoppingListIdFkeyShoppingListCreateInput = {
-  id?: InputMaybe<Scalars["Int"]>;
   itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
   itemShoppingListsUsingId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
   name: Scalars["String"];
@@ -1200,7 +1190,6 @@ export type ItemShoppingListItemIdFkeyInverseInput = {
 /** The `item` to be created by this mutation. */
 export type ItemShoppingListItemIdFkeyItemCreateInput = {
   categoryId?: InputMaybe<Scalars["BigInt"]>;
-  id?: InputMaybe<Scalars["Int"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
   itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
   itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
@@ -1348,7 +1337,6 @@ export type ItemShoppingListShoppingListIdFkeyItemShoppingListCreateInput = {
 
 /** The `shoppingList` to be created by this mutation. */
 export type ItemShoppingListShoppingListIdFkeyShoppingListCreateInput = {
-  id?: InputMaybe<Scalars["Int"]>;
   itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
   itemShoppingListsUsingId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
   name: Scalars["String"];
@@ -1479,8 +1467,6 @@ export type ItemsEdge = {
 export enum ItemsOrderBy {
   CategoryIdAsc = "CATEGORY_ID_ASC",
   CategoryIdDesc = "CATEGORY_ID_DESC",
-  IdAsc = "ID_ASC",
-  IdDesc = "ID_DESC",
   NameAsc = "NAME_ASC",
   NameDesc = "NAME_DESC",
   Natural = "NATURAL",
@@ -1943,7 +1929,6 @@ export type ShoppingListFilter = {
 
 /** An input for mutations affecting `ShoppingList` */
 export type ShoppingListInput = {
-  id?: InputMaybe<Scalars["Int"]>;
   itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
   itemShoppingListsUsingId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
   name: Scalars["String"];
@@ -2077,7 +2062,6 @@ export type ShoppingListOnItemShoppingListHistoryForItemShoppingListHistoryShopp
 
 /** Represents an update to a `ShoppingList`. Fields that are set will be updated. */
 export type ShoppingListPatch = {
-  id?: InputMaybe<Scalars["Int"]>;
   itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
   itemShoppingListsUsingId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
   name?: InputMaybe<Scalars["String"]>;
@@ -2127,8 +2111,6 @@ export type ShoppingListsEdge = {
 
 /** Methods to use when ordering `ShoppingList`. */
 export enum ShoppingListsOrderBy {
-  IdAsc = "ID_ASC",
-  IdDesc = "ID_DESC",
   NameAsc = "NAME_ASC",
   NameDesc = "NAME_DESC",
   Natural = "NATURAL",
@@ -2431,14 +2413,12 @@ export type UpdateShoppingListPayloadShoppingListEdgeArgs = {
 
 /** An object where the defined keys will be set on the `itemCategory` being updated. */
 export type UpdateItemCategoryOnItemForItemCategoryIdFkeyPatch = {
-  categroyName?: InputMaybe<Scalars["String"]>;
-  id?: InputMaybe<Scalars["Int"]>;
   itemsUsingId?: InputMaybe<ItemCategoryIdFkeyInverseInput>;
+  name?: InputMaybe<Scalars["String"]>;
 };
 
 /** An object where the defined keys will be set on the `item` being updated. */
 export type UpdateItemOnItemForItemCategoryIdFkeyPatch = {
-  id?: InputMaybe<Scalars["Int"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
   itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
   itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
@@ -2448,7 +2428,6 @@ export type UpdateItemOnItemForItemCategoryIdFkeyPatch = {
 /** An object where the defined keys will be set on the `item` being updated. */
 export type UpdateItemOnItemShoppingListForItemShoppingListItemIdFkeyPatch = {
   categoryId?: InputMaybe<Scalars["BigInt"]>;
-  id?: InputMaybe<Scalars["Int"]>;
   itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
   itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
   itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
@@ -2459,7 +2438,6 @@ export type UpdateItemOnItemShoppingListForItemShoppingListItemIdFkeyPatch = {
 export type UpdateItemOnItemShoppingListHistoryForItemShoppingListHistoryItemIdFkeyPatch =
   {
     categoryId?: InputMaybe<Scalars["BigInt"]>;
-    id?: InputMaybe<Scalars["Int"]>;
     itemCategoryToCategoryId?: InputMaybe<ItemCategoryIdFkeyInput>;
     itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryItemIdFkeyInverseInput>;
     itemShoppingListsUsingId?: InputMaybe<ItemShoppingListItemIdFkeyInverseInput>;
@@ -2507,7 +2485,6 @@ export type UpdateItemShoppingListOnItemShoppingListForItemShoppingListShoppingL
 /** An object where the defined keys will be set on the `shoppingList` being updated. */
 export type UpdateShoppingListOnItemShoppingListForItemShoppingListShoppingListIdFkeyPatch =
   {
-    id?: InputMaybe<Scalars["Int"]>;
     itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
     itemShoppingListsUsingId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
     name?: InputMaybe<Scalars["String"]>;
@@ -2516,7 +2493,6 @@ export type UpdateShoppingListOnItemShoppingListForItemShoppingListShoppingListI
 /** An object where the defined keys will be set on the `shoppingList` being updated. */
 export type UpdateShoppingListOnItemShoppingListHistoryForItemShoppingListHistoryShoppingListIdFkeyPatch =
   {
-    id?: InputMaybe<Scalars["Int"]>;
     itemShoppingListHistoriesUsingId?: InputMaybe<ItemShoppingListHistoryShoppingListIdFkeyInverseInput>;
     itemShoppingListsUsingId?: InputMaybe<ItemShoppingListShoppingListIdFkeyInverseInput>;
     name?: InputMaybe<Scalars["String"]>;

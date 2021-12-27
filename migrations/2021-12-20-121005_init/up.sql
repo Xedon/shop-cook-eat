@@ -1,5 +1,8 @@
 
-CREATE TABLE item_category(id SERIAL PRIMARY KEY, categroy_name TEXT NOT NULL);
+CREATE TABLE item_category(id SERIAL PRIMARY KEY, category_name TEXT NOT NULL);
+
+COMMENT ON COLUMN item_category.id IS '@omit create,update,delete,order';
+COMMENT ON COLUMN item_category.category_name IS '@name name';
 
 CREATE TABLE item (
   id SERIAL PRIMARY KEY,
@@ -7,6 +10,7 @@ CREATE TABLE item (
   category_id BIGINT REFERENCES item_category
 );
 
+COMMENT ON COLUMN item.id IS '@omit create,update,delete,order';
 COMMENT ON COLUMN item.item_name IS '@name name';
 
 CREATE TABLE shopping_list(
@@ -14,6 +18,7 @@ CREATE TABLE shopping_list(
   shopping_list_name TEXT NOT NULL UNIQUE
 );
 
+COMMENT ON COLUMN shopping_list.id IS '@omit create,update,delete,order';
 COMMENT ON COLUMN shopping_list.shopping_list_name IS '@name name';
 
 -- On changes on this table item_shopping_list_history, add_item_shopping_list_history_entry must be checked if changes are necessarys

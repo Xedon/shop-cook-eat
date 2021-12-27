@@ -7,12 +7,7 @@ export type ItemFragment = {
   nodeId: string;
   name: string;
   category?:
-    | {
-        __typename: "ItemCategory";
-        id: number;
-        nodeId: string;
-        categroyName: string;
-      }
+    | { __typename: "ItemCategory"; id: number; nodeId: string; name: string }
     | null
     | undefined;
 };
@@ -33,7 +28,7 @@ export type ItemShoppingListFragment = {
               __typename: "ItemCategory";
               id: number;
               nodeId: string;
-              categroyName: string;
+              name: string;
             }
           | null
           | undefined;
@@ -65,7 +60,7 @@ export type ItemShoppingListsConnectionFragment = {
                     __typename: "ItemCategory";
                     id: number;
                     nodeId: string;
-                    categroyName: string;
+                    name: string;
                   }
                 | null
                 | undefined;
@@ -106,7 +101,7 @@ export type ShoppingListFragment = {
                       __typename: "ItemCategory";
                       id: number;
                       nodeId: string;
-                      categroyName: string;
+                      name: string;
                     }
                   | null
                   | undefined;
@@ -135,7 +130,7 @@ export type ShoppingListFragment = {
                 __typename: "ItemCategory";
                 id: number;
                 nodeId: string;
-                categroyName: string;
+                name: string;
               }
             | null
             | undefined;
@@ -165,7 +160,7 @@ export type CreateItemShoppingListFragment = {
                     __typename: "ItemCategory";
                     id: number;
                     nodeId: string;
-                    categroyName: string;
+                    name: string;
                   }
                 | null
                 | undefined;
@@ -189,7 +184,7 @@ export const ItemFragmentDoc = gql`
     category {
       id
       nodeId
-      categroyName
+      name
       __typename
     }
     __typename

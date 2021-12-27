@@ -43,7 +43,7 @@ export type AddItemToShoppingListMutation = {
                           __typename: "ItemCategory";
                           id: number;
                           nodeId: string;
-                          categroyName: string;
+                          name: string;
                         }
                       | null
                       | undefined;
