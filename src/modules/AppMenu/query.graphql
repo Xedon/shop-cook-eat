@@ -4,7 +4,9 @@ query SearchForItems($includesInsensitive: String) {
       ...Item
       itemShoppingLists {
         nodes {
+          id: nodeId
           shoppingList {
+            id
             nodeId
             __typename
           }

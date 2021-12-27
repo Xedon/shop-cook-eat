@@ -24,8 +24,13 @@ export type SearchForItemsQuery = {
                 nodes: Array<
                   | {
                       __typename: "ItemShoppingList";
+                      id: string;
                       shoppingList?:
-                        | { __typename: "ShoppingList"; nodeId: string }
+                        | {
+                            __typename: "ShoppingList";
+                            id: number;
+                            nodeId: string;
+                          }
                         | null
                         | undefined;
                     }
@@ -58,7 +63,9 @@ export const SearchForItemsDocument = gql`
         ...Item
         itemShoppingLists {
           nodes {
+            id: nodeId
             shoppingList {
+              id
               nodeId
               __typename
             }
