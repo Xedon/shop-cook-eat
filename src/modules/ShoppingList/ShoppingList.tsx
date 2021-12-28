@@ -56,7 +56,7 @@ export const ShoppingList = ({ nodeId }: { nodeId: string }) => {
   const [, deleteItemFromShoppingList] = useDelteItemFromShoppingListMutation();
 
   const [, addItemToShoppingList] = useAddItemToShoppingListMutation();
-  const t = { blarg: () => console.log() } as any;
+
   return (
     <Grid container flexDirection="column" spacing={1} sx={{ padding: "4px" }}>
       <Grid item>
@@ -76,7 +76,6 @@ export const ShoppingList = ({ nodeId }: { nodeId: string }) => {
             {shoppingList.data?.shoppingListByNodeId?.name}
           </Typography>
         </Grid>
-        <div {...t}></div>
       </Grid>
       <Grid item>
         <CardRenderer

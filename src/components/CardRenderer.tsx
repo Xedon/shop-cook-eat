@@ -42,6 +42,7 @@ export const CardRenderer = <T,>({
             <Card
               sx={cardCss}
               onClick={() => value && onCardClick && onCardClick(value)}
+              onTouchEnd={(e) => console.log(e.timeStamp)}
             >
               <CardHeader title={value?.item?.name ?? value?.name} />
               <CardContent>
