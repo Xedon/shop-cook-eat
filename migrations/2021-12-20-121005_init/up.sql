@@ -1,5 +1,8 @@
 
 CREATE TABLE item_category(id UUID PRIMARY KEY DEFAULT gen_random_uuid(), category_name TEXT NOT NULL);
+INSERT INTO item_category (category_name)
+VALUES ('Custom');
+
 
 COMMENT ON COLUMN item_category.id IS '@omit create,update,delete,order';
 COMMENT ON COLUMN item_category.category_name IS '@name name';

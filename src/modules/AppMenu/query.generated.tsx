@@ -115,7 +115,7 @@ export function useSearchForItemsQuery(
 }
 export const SelectCustomCategoryDocument = gql`
   query SelectCustomCategory {
-    itemCategories(first: 1) {
+    itemCategories(condition: { name: "Custom" }) {
       nodes {
         id
         nodeId

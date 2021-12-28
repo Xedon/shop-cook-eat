@@ -18,6 +18,8 @@ import {
   ItemShoppingListFragmentDoc,
   ItemShoppingListFragment,
   CreateItemShoppingListFragment,
+  ItemCategoryFragmentDoc,
+  ItemCategoryFragment,
 } from "./graphql/fragments.generated";
 
 import { v4 as uuid } from "uuid";
@@ -118,15 +120,12 @@ const cache = offlineExchange({
         );
       }
 
-      const newNodeId = encodeNodeId(
-        "ItemShoppingList",
-        itemShoppingList.itemId,
-        shoppingListId
-      );
-
-      let item = cache.readFragment(ItemFragmentDoc, {
-        id: itemShoppingList.itemId,
-      }) as ItemFragment | null;
+      let item: ItemFragment | null = null;
+      if (itemShoppingList.itemId) {
+        item = cache.readFragment(ItemFragmentDoc, {
+          id: itemShoppingList.itemId,
+        }) as ItemFragment | null;
+      }
 
       if (item === null) {
         const id = uuid();
@@ -135,13 +134,31 @@ const cache = offlineExchange({
           throw new Error("item missing in mutation");
         }
 
+        let category: ItemCategoryFragment | null = null;
+        if (itemShoppingList.itemToItemId?.create?.categoryId) {
+          category = cache.readFragment(ItemCategoryFragmentDoc, {
+            id: itemShoppingList.itemToItemId.create.categoryId,
+          }) as ItemCategoryFragment | null;
+        }
+
+        if (category === null) {
+          throw new Error("Can't resolve item category");
+        }
+
         item = {
           id,
           nodeId,
           name: itemShoppingList.itemToItemId?.create?.name,
+          category,
           __typename: "Item",
-        };
+        } as const;
       }
+
+      const newNodeId = encodeNodeId(
+        "ItemShoppingList",
+        item.id,
+        shoppingListId
+      );
 
       const newEntry: ItemShoppingListFragment = {
         nodeId: newNodeId,

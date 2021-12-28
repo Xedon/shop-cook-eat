@@ -21,7 +21,7 @@ query SearchForItems($includesInsensitive: String) {
 }
 
 query SelectCustomCategory {
-  itemCategories(first: 1) {
+  itemCategories(condition: { name: "Custom" }) {
     nodes {
       id
       nodeId

@@ -50,7 +50,12 @@ export const ListMenuAddition = () => {
       }
       setSearchString("");
     },
-    [addItemToShoppingList, createItemAndAddToShoppingList, navigation]
+    [
+      addItemToShoppingList,
+      createItemAndAddToShoppingList,
+      customCategory.data?.itemCategories?.nodes,
+      navigation,
+    ]
   );
 
   const displayedCards = useMemo(() => {

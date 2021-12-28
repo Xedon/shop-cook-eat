@@ -1,6 +1,13 @@
 import * as Types from "../types";
 
 import { gql } from "graphql.macro";
+export type ItemCategoryFragment = {
+  __typename: "ItemCategory";
+  id: any;
+  nodeId: string;
+  name: string;
+};
+
 export type ItemFragment = {
   __typename: "Item";
   id: any;
@@ -176,19 +183,25 @@ export type CreateItemShoppingListFragment = {
     | undefined;
 };
 
+export const ItemCategoryFragmentDoc = gql`
+  fragment ItemCategory on ItemCategory {
+    id
+    nodeId
+    name
+    __typename
+  }
+`;
 export const ItemFragmentDoc = gql`
   fragment Item on Item {
     id
     nodeId
     name
     category {
-      id
-      nodeId
-      name
-      __typename
+      ...ItemCategory
     }
     __typename
   }
+  ${ItemCategoryFragmentDoc}
 `;
 export const ItemShoppingListFragmentDoc = gql`
   fragment ItemShoppingList on ItemShoppingList {

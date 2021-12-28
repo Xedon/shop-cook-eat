@@ -1,12 +1,16 @@
+fragment ItemCategory on ItemCategory {
+  id
+  nodeId
+  name
+  __typename
+}
+
 fragment Item on Item {
   id
   nodeId
   name
   category {
-    id
-    nodeId
-    name
-    __typename
+    ...ItemCategory
   }
   __typename
 }
