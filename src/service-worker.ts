@@ -12,7 +12,8 @@ import { clientsClaim } from "workbox-core";
 import { ExpirationPlugin } from "workbox-expiration";
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { StaleWhileRevalidate } from "workbox-strategies";
+import { CacheFirst, StaleWhileRevalidate } from "workbox-strategies";
+import { CacheableResponsePlugin } from "workbox-cacheable-response";
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -78,4 +79,14 @@ self.addEventListener("message", (event) => {
   }
 });
 
-// Any other custom service worker logic can go here.
+registerRoute(
+  "https://accounts.google.com/gsi/client",
+  new CacheFirst({
+    cacheName: "google-api",
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }) as any,
+    ],
+  })
+);

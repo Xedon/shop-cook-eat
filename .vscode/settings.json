@@ -10,5 +10,8 @@
     "[sql]": {
         "editor.formatOnPaste": false,
         "editor.formatOnSave": false
+    },
+    "[dotenv]": {
+        "editor.defaultFormatter": "foxundermoon.shell-format"
     }
 }
