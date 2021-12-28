@@ -1,4 +1,5 @@
-import * as Types from "../../types";
+/* eslint-disable*/
+import * as Types from "../../generated/types";
 
 import { gql } from "graphql.macro";
 import { CreateItemShoppingListFragmentDoc } from "../../graphql/fragments.generated";

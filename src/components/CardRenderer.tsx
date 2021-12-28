@@ -5,11 +5,8 @@ import {
   CardContent,
   Typography,
   SxProps,
-  Collapse,
   Theme,
 } from "@mui/material";
-
-import { TransitionGroup } from "react-transition-group";
 
 interface CardRendererProps<T> {
   sx?: SxProps<Theme>;

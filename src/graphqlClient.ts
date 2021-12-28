@@ -6,7 +6,7 @@ import { makeDefaultStorage } from "@urql/exchange-graphcache/default-storage";
 import {
   MutationCreateItemShoppingListArgs,
   MutationDeleteItemByNodeIdArgs,
-} from "./types";
+} from "./generated/types";
 import {
   ShoppingListByNodeIdDocument,
   ShoppingListByNodeIdQuery,

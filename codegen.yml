@@ -7,16 +7,20 @@ generates:
       - introspection
     config:
       minify: true
-  src/types.ts:
+  src/generated/types.ts:
     plugins:
       - "typescript"
+      - add:
+          content: "/* eslint-disable*/"
   src/:
     preset: near-operation-file
     presetConfig:
-      extension: .generated.tsx
-      baseTypesPath: types.ts
+      extension: .generated.ts
+      baseTypesPath: generated/types.ts
     config:
       gqlImport: graphql.macro#gql
     plugins:
       - "typescript-operations"
       - "typescript-urql"
+      - add:
+          content: "/* eslint-disable*/"
