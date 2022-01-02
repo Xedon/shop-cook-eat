@@ -22,7 +22,7 @@ BEGIN EXECUTE format(
 END;
 $$ LANGUAGE plpgsql;
 
-CREATEOR REPLACE FUNCTION diesel_set_updated_at() RETURNS trigger AS $$
+CREATE OR REPLACE FUNCTION diesel_set_updated_at() RETURNS trigger AS $$
 BEGIN IF (
   NEW IS DISTINCT
   FROM OLD AND NEW.updated_at IS NOT DISTINCT FROM OLD.updated_at
