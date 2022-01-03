@@ -47,7 +47,8 @@ export const CreateListDialog = () => {
   useEffect(() => {
     if (
       createShoppingListResult.fetching === false &&
-      createShoppingListResult.error === undefined
+      createShoppingListResult.error === undefined &&
+      name !== ""
     ) {
       setName("");
       onAbort();
@@ -55,6 +56,7 @@ export const CreateListDialog = () => {
   }, [
     createShoppingListResult.error,
     createShoppingListResult.fetching,
+    name,
     onAbort,
   ]);
 

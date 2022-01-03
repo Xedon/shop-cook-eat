@@ -3,13 +3,15 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
-import { store } from "./state/store";
 import { Provider } from "react-redux";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./theme";
 import { Provider as ClientProvider } from "urql";
-import { graphqlClient } from "./graphqlClient";
+
+import { boot } from "./bootstrap";
+
+const { store, graphqlClient } = boot();
 
 ReactDOM.render(
   <React.StrictMode>

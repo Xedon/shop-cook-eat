@@ -8,7 +8,11 @@ services:
     command: sleep infinity
     environment:
       DATABASE_URL: postgres://postgres:dev@postgres:5432/sce
-    ports: ["3003:3000"]
+      PGUSER: postgres
+      PGPASSWORD: dev
+      PGHOST: postgres
+      PGDATABASE: sce
+      DEV: true
   postgres:
     image: postgres:14
     environment:

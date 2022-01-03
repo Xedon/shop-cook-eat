@@ -183,8 +183,12 @@ const cache = offlineExchange({
   },
 });
 
-export const graphqlClient = createClient({
-  url: `${process.env.PUBLIC_URL ?? "localhost"}/graphql`,
-  exchanges: [devtoolsExchange, dedupExchange, cache, fetchExchange],
-  requestPolicy: "cache-and-network",
-});
+export const createGraphqlClient = () =>
+  createClient({
+    url: `${process.env.PUBLIC_URL ?? "localhost"}/graphql`,
+    exchanges: [devtoolsExchange, dedupExchange, cache, fetchExchange],
+    requestPolicy: "cache-and-network",
+    fetchOptions: {
+      credentials: "include",
+    },
+  });

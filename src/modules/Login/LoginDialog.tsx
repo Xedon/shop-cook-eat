@@ -9,7 +9,6 @@ import { TransitionProps } from "@mui/material/transitions";
 import { useNavigation } from "../../state/selectors";
 import { appSlice, View } from "../../state/app";
 import { Box } from "@mui/system";
-import GoogleButton from "../../components/GoogleLogin";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -22,12 +21,11 @@ const Transition = React.forwardRef(function Transition(
 
 export const LoginDialog = () => {
   const { view } = useNavigation();
-  const dispatch = useDispatch();
 
   return (
     <Dialog
       fullScreen
-      open={view === View.AddList}
+      open={view === View.Login}
       TransitionComponent={Transition}
     >
       <AppBar sx={{ position: "relative" }}>
@@ -36,12 +34,7 @@ export const LoginDialog = () => {
         </Toolbar>
       </AppBar>
       <Box sx={(theme) => ({ margin: theme.spacing(2) })}>
-        <GoogleButton
-          onCredentialResponse={(x) => {
-            console.log(x);
-            dispatch(appSlice.actions.navigate({ view: View.Lists }));
-          }}
-        />
+        <Typography>Please login with google.</Typography>
       </Box>
     </Dialog>
   );

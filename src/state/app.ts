@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { loginSuccessful } from "./store";
 
 export enum View {
   Lists = "Lists",
@@ -30,6 +31,7 @@ export interface NavigationParmeterLogin {
 }
 
 export interface AppSlice {
+  idToken?: string;
   navigation:
     | NavigationParmeterCooking
     | NavigationParmeterList
@@ -38,7 +40,7 @@ export interface AppSlice {
     | NavigationParmeterLogin;
 }
 
-const initialState: AppSlice = { navigation: { view: View.Lists } };
+const initialState: AppSlice = { navigation: { view: View.Login } };
 
 export const appSlice = createSlice({
   name: "app",
@@ -48,4 +50,8 @@ export const appSlice = createSlice({
       state.navigation = action.payload;
     },
   },
+  extraReducers: (builder) =>
+    builder.addCase(loginSuccessful, (state, action) => {
+      state.idToken = action.payload;
+    }),
 });
