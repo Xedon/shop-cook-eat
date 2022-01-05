@@ -20,6 +20,8 @@ import ConnectionFilterPlugin from "postgraphile-plugin-connection-filter";
 import NestedMutationsPlugin from "postgraphile-plugin-nested-mutations";
 import { GoogleLoginPlugin } from "./plugins/GoogleLoginPlugin";
 import { IncomingMessage, ServerResponse } from "http";
+import { LoginTicket, TokenPayload } from "google-auth-library";
+import { addDays } from "date-fns";
 
 const fastify = Fastify({ logger: true });
 
@@ -40,37 +42,69 @@ fastify.register(fastifyJwt, {
       "utf8"
     ),
   },
-  sign: { algorithm: "RS256", iss: process.env.JWT_ISS },
-  verify: { algorithms: ["RS256"], allowedIss: process.env.JWT_ISS },
+  sign: { algorithm: "RS256", sub: "graphql", iss: process.env.JWT_ISS },
+  verify: {
+    algorithms: ["RS256"],
+    allowedSub: "graphql",
+    allowedIss: process.env.JWT_ISS,
+  },
   decode: { complete: true },
 });
 
-function createAdditionalContext(res: ServerResponse) {
-  return {
-    signJwt: fastify.jwt.sign,
-    decodeJwt: fastify.jwt.decode,
-    setAuthCookies: ({
-      auth,
-      refresh,
-    }: {
-      auth: { token: string; expires: Date };
-      refresh: { token: string; expires: Date };
-    }) => {
-      res.setHeader("Set-Cookie", [
-        cookie.serialize("auth", auth.token, {
-          expires: auth.expires,
-          secure: true,
-          sameSite: "strict",
-        }),
-        cookie.serialize("auth_refresh", refresh.token, {
-          expires: refresh.expires,
-          secure: true,
-          sameSite: "strict",
-        }),
-      ]);
-    },
-  };
-}
+const cleanTokenPayload = ({
+  aud,
+  exp,
+  iat,
+  iss,
+  at_hash,
+  azp,
+  email_verified,
+  hd,
+  nonce,
+  profile,
+  ...rest
+}: TokenPayload) => ({ ...rest });
+
+const createAdditionalContext = (res: ServerResponse) => ({
+  signAuthToken: (payload: TokenPayload) =>
+    fastify.jwt.sign(cleanTokenPayload(payload), {
+      ...fastify.jwt.options.sign,
+      expiresIn: "1d",
+    }),
+  signRefreshToken: (payload: TokenPayload) =>
+    fastify.jwt.sign(cleanTokenPayload(payload), {
+      ...fastify.jwt.options.sign,
+      expiresIn: "7d",
+      sub: "refreshToken",
+    }),
+  decodeJwt: (token: string) =>
+    fastify.jwt.decode<TokenPayload>(token, fastify.jwt.options.decode),
+  verifyRefreshToken: (token: string) =>
+    fastify.jwt.verify<TokenPayload>(token, {
+      ...fastify.jwt.options.verify,
+      allowedSub: "refreshToken",
+    }),
+  setAuthCookies: ({
+    authToken,
+    refreshToken,
+  }: {
+    authToken: string;
+    refreshToken: string;
+  }) => {
+    res.setHeader("Set-Cookie", [
+      cookie.serialize("auth", authToken, {
+        expires: addDays(new Date(), 1),
+        secure: true,
+        sameSite: "strict",
+      }),
+      cookie.serialize("auth_refresh", refreshToken, {
+        expires: addDays(new Date(), 7),
+        secure: true,
+        sameSite: "strict",
+      }),
+    ]);
+  },
+});
 
 export type ContextType = ReturnType<typeof createAdditionalContext>;
 
@@ -96,9 +130,26 @@ const middleware = postgraphile(
     allowExplain: Boolean(process.env.DEV),
     ignoreRBAC: false,
     watchPg: true,
-    pgSettings: async (req) => ({
-      /*TODO map login*/
-    }),
+    pgSettings: async (req) => {
+      if (!req.headers.cookie) {
+        return { userId: null };
+      }
+      const token = fastify.parseCookie(req.headers.cookie)["auth"];
+
+      if (!token) {
+        return { userId: null };
+      }
+
+      const decodedToken = fastify.jwt.decode<TokenPayload>(token);
+
+      if (!decodedToken) {
+        return { userId: null };
+      }
+
+      return {
+        userId: decodedToken.sub,
+      };
+    },
     appendPlugins: [
       ManyToManyPlugin,
       SimplifyInflectorPlugin,
@@ -125,8 +176,10 @@ const convertHandler =
           document.definitions[0].operation === "mutation" &&
           document.definitions[0].selectionSet.selections.length === 1 &&
           document.definitions[0].selectionSet.selections[0].kind === "Field" &&
-          document.definitions[0].selectionSet.selections[0].name.value ===
-            "registerUser"
+          (document.definitions[0].selectionSet.selections[0].name.value ===
+            "registerUserByGoogleIdToken" ||
+            document.definitions[0].selectionSet.selections[0].name.value ===
+              "refreshToken")
         )
       ) {
         await request.jwtVerify().catch((error) => {

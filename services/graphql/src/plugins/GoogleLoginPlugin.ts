@@ -1,37 +1,41 @@
-import { Context, gql, makeExtendSchemaPlugin } from "postgraphile";
+import { gql, makeExtendSchemaPlugin } from "postgraphile";
 import { OAuth2Client } from "google-auth-library";
 import { GraphQLError } from "graphql";
 import { ContextType } from "..";
-import { addDays } from "date-fns";
 
 export const GoogleLoginPlugin = makeExtendSchemaPlugin((build) => {
-  const { pgSql: sql } = build;
+  const sql = build.pgSql;
+  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_KEY);
   return {
     typeDefs: gql`
       input GoogleLoginInput {
         idToken: String!
       }
 
-      type RegisterUserPayload {
+      input RefreshTokenInput {
         refreshToken: String!
-        token: String!
+      }
+
+      type TokenPayload {
+        authToken: String!
+        refreshToken: String!
       }
 
       extend type Mutation {
-        registerUser(input: GoogleLoginInput!): RegisterUserPayload
+        registerUserByGoogleIdToken(input: GoogleLoginInput!): TokenPayload
+
+        refreshToken(input: RefreshTokenInput!): TokenPayload
       }
     `,
     resolvers: {
       Mutation: {
-        registerUser: async (
+        registerUserByGoogleIdToken: async (
           _query,
           { input: { idToken } }: { input: { idToken: string } },
           context: ContextType,
           resolveInfo
         ) => {
-          GraphQLError;
-          const { setAuthCookies, decodeJwt, signJwt } = context;
-          const client = new OAuth2Client(process.env.GOOGLE_CLIENT_KEY);
+          const { setAuthCookies, signAuthToken, signRefreshToken } = context;
 
           async function verify() {
             const ticket = await client.verifyIdToken({
@@ -39,9 +43,9 @@ export const GoogleLoginPlugin = makeExtendSchemaPlugin((build) => {
               audience: process.env.GOOGLE_CLIENT_KEY,
             });
 
-            const payload = ticket.getPayload()!;
+            const payload = ticket.getPayload();
 
-            if (!payload.email_verified) {
+            if (!payload?.email_verified) {
               throw new GraphQLError(
                 "Google user is not verified",
                 undefined,
@@ -53,27 +57,17 @@ export const GoogleLoginPlugin = makeExtendSchemaPlugin((build) => {
               );
             }
 
-            const token = signJwt(payload, { expiresIn: "7d" });
-            const refreshToken = signJwt(payload, {
-              expiresIn: "1d",
-            });
+            const authToken = signAuthToken(payload);
+            const refreshToken = signRefreshToken(payload);
 
-            setAuthCookies({
-              auth: {
-                token: token,
-                expires: addDays(new Date(), 7),
-              },
-              refresh: {
-                token: refreshToken,
-                expires: addDays(new Date(), 1),
-              },
-            });
-
-            return {
-              token,
+            const tokens = {
+              authToken,
               refreshToken,
             };
-            /* TODO generate token */
+
+            setAuthCookies(tokens);
+
+            return tokens;
           }
           return verify().catch((error) => {
             if (error instanceof GraphQLError) {
@@ -90,6 +84,25 @@ export const GoogleLoginPlugin = makeExtendSchemaPlugin((build) => {
               { verify: "TOKEN_INVALLID" }
             );
           });
+        },
+        refreshToken: async (
+          _query,
+          { input: { refreshToken } }: { input: { refreshToken: string } },
+          { signAuthToken, setAuthCookies, verifyRefreshToken }: ContextType,
+          resolveInfo
+        ) => {
+          const payload = await verifyRefreshToken(refreshToken);
+
+          const authToken = signAuthToken(payload);
+
+          const tokens = {
+            authToken,
+            refreshToken,
+          };
+
+          setAuthCookies(tokens);
+
+          return tokens;
         },
       },
     },
