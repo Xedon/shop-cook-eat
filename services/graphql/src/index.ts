@@ -5,17 +5,81 @@ import {
   PostGraphileResponse,
 } from "postgraphile";
 
+import { parse } from "graphql";
+
 import fastifyJwt from "fastify-jwt";
 import { readFileSync } from "fs";
 import path from "path";
+import cookie from "cookie";
+import fastifyCookie from "fastify-cookie";
 
 import ManyToManyPlugin from "@graphile-contrib/pg-many-to-many";
 import SimplifyInflectorPlugin from "@graphile-contrib/pg-simplify-inflector";
 import ConnectionFilterPlugin from "postgraphile-plugin-connection-filter";
 //@ts-ignore
 import NestedMutationsPlugin from "postgraphile-plugin-nested-mutations";
+import { GoogleLoginPlugin } from "./plugins/GoogleLoginPlugin";
+import { IncomingMessage, ServerResponse } from "http";
 
-console.log(path.resolve());
+const fastify = Fastify({ logger: true });
+
+fastify.register(fastifyCookie);
+
+fastify.register(fastifyJwt, {
+  cookie: {
+    cookieName: "auth",
+    signed: false,
+  },
+  secret: {
+    private: readFileSync(
+      `${path.join(path.resolve(), "certs")}/private.key`,
+      "utf8"
+    ),
+    public: readFileSync(
+      `${path.join(path.resolve(), "certs")}/public.key`,
+      "utf8"
+    ),
+  },
+  sign: { algorithm: "RS256", iss: process.env.JWT_ISS },
+  verify: { algorithms: ["RS256"], allowedIss: process.env.JWT_ISS },
+  decode: { complete: true },
+});
+
+function createAdditionalContext(res: ServerResponse) {
+  return {
+    signJwt: fastify.jwt.sign,
+    decodeJwt: fastify.jwt.decode,
+    setAuthCookies: ({
+      auth,
+      refresh,
+    }: {
+      auth: { token: string; expires: Date };
+      refresh: { token: string; expires: Date };
+    }) => {
+      res.setHeader("Set-Cookie", [
+        cookie.serialize("auth", auth.token, {
+          expires: auth.expires,
+          secure: true,
+          sameSite: "strict",
+        }),
+        cookie.serialize("auth_refresh", refresh.token, {
+          expires: refresh.expires,
+          secure: true,
+          sameSite: "strict",
+        }),
+      ]);
+    },
+  };
+}
+
+export type ContextType = ReturnType<typeof createAdditionalContext>;
+
+async function additionalGraphQLContextFromRequest(
+  req: IncomingMessage,
+  res: ServerResponse
+) {
+  return createAdditionalContext(res);
+}
 
 const middleware = postgraphile(
   {
@@ -40,19 +104,38 @@ const middleware = postgraphile(
       SimplifyInflectorPlugin,
       ConnectionFilterPlugin,
       NestedMutationsPlugin,
+      GoogleLoginPlugin,
     ],
+    additionalGraphQLContextFromRequest,
   }
 );
-
-const fastify = Fastify({ logger: true });
 
 /**
  * Converts a PostGraphile route handler into a Fastify request handler.
  */
 const convertHandler =
   (handler: (res: PostGraphileResponse) => Promise<void>) =>
-  (request: FastifyRequest, reply: FastifyReply) =>
-    handler(new PostGraphileResponseFastify3(request, reply));
+  async (request: FastifyRequest, reply: FastifyReply) => {
+    if (request.method.toUpperCase() === "POST") {
+      const document = parse((request.body as any).query);
+      if (
+        !(
+          document.definitions.length === 1 &&
+          document.definitions[0].kind === "OperationDefinition" &&
+          document.definitions[0].operation === "mutation" &&
+          document.definitions[0].selectionSet.selections.length === 1 &&
+          document.definitions[0].selectionSet.selections[0].kind === "Field" &&
+          document.definitions[0].selectionSet.selections[0].name.value ===
+            "registerUser"
+        )
+      ) {
+        await request.jwtVerify().catch((error) => {
+          throw error;
+        });
+      }
+    }
+    return handler(new PostGraphileResponseFastify3(request, reply));
+  };
 
 // IMPORTANT: do **NOT** change these routes here; if you want to change the
 // routes, do so in PostGraphile options. If you change the routes here only
@@ -105,20 +188,6 @@ if (middleware.options.watchPg) {
     );
   }
 }
-
-fastify.register(fastifyJwt, {
-  secret: {
-    private: readFileSync(
-      `${path.join(path.resolve(), "certs")}/private.key`,
-      "utf8"
-    ),
-    public: readFileSync(
-      `${path.join(path.resolve(), "certs")}/public.key`,
-      "utf8"
-    ),
-  },
-  sign: { algorithm: "RS256" },
-});
 
 fastify.listen(8080, (err, address) => {
   if (err) {
