@@ -33,25 +33,29 @@ services:
     depends_on:
       - postgres
     build:
-      context: .
-      dockerfile: dockerfiles/postgraphile.dockerfile
+      context: services/graphql
+      dockerfile: ../../dockerfiles/postgraphile.dockerfile
     environment:
       PGUSER: postgres
       PGPASSWORD: dev
       PGHOST: postgres
       PGDATABASE: sce
-    command:
-      [
-        "--no-ignore-rbac",
-        "--cors",
-        "--retry-on-init-fail",
-        "--owner-connection",
-        "postgres://postgres:dev@postgres:5432/sce",
-        "--schema",
-        "public",
-        "--append-plugins",
-        "@graphile-contrib/pg-simplify-inflector,postgraphile-plugin-connection-filter,postgraphile-plugin-nested-mutations,@graphile-contrib/pg-many-to-many",
-        "--enhance-graphiql",
-        "--watch",
-      ]
+      DEV: true
+    env_file:
+      - "services/graphql/.env.development.local"
+    volumes:
+      - "certs:/app/certs"
     ports: ["5001:5000"]
+  create_keys:
+    image: debian
+    volumes:
+      - "certs:/tmp"
+    command: bash -c "
+      apt-get update &&
+      apt-get install openssl &&
+      cd /tmp &&
+      openssl genpkey -algorithm RSA -out private.key -pkeyopt rsa_keygen_bits:2048 &&
+      openssl rsa -pubout -in private.key -out public.key &&
+      chmod 777 private.key public.key"
+volumes:
+  certs:

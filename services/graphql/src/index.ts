@@ -20,12 +20,14 @@ import ConnectionFilterPlugin from "postgraphile-plugin-connection-filter";
 import NestedMutationsPlugin from "postgraphile-plugin-nested-mutations";
 import { GoogleLoginPlugin } from "./plugins/GoogleLoginPlugin";
 import { IncomingMessage, ServerResponse } from "http";
-import { LoginTicket, TokenPayload } from "google-auth-library";
+import { TokenPayload } from "google-auth-library";
 import { addDays } from "date-fns";
+import fastifyBlipp from "fastify-blipp";
 
 const fastify = Fastify({ logger: true });
 
 fastify.register(fastifyCookie);
+fastify.register(fastifyBlipp);
 
 fastify.register(fastifyJwt, {
   cookie: {
@@ -109,7 +111,7 @@ const createAdditionalContext = (res: ServerResponse) => ({
 export type ContextType = ReturnType<typeof createAdditionalContext>;
 
 async function additionalGraphQLContextFromRequest(
-  req: IncomingMessage,
+  _req: IncomingMessage,
   res: ServerResponse
 ) {
   return createAdditionalContext(res);
@@ -242,12 +244,13 @@ if (middleware.options.watchPg) {
   }
 }
 
-fastify.listen(8080, (err, address) => {
+fastify.listen(5000, "0.0.0.0", (err, address) => {
   if (err) {
     fastify.log.error(String(err));
     process.exit(1);
   }
+  fastify.blipp();
   fastify.log.info(
-    `PostGraphiQL available at ${address}${middleware.graphiqlRoute} 🚀`
+    `PostGraphiQL available at ${address}${middleware.graphiqlRoute}`
   );
 });

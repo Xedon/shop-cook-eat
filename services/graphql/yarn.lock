@@ -439,7 +439,7 @@ chalk@^2.4.2:
     escape-string-regexp "^1.0.5"
     supports-color "^5.3.0"
 
-chalk@^4.0.0:
+chalk@^4.0.0, chalk@^4.1.1:
   version "4.1.2"
   resolved "https://registry.npmjs.org/chalk/-/chalk-4.1.2.tgz"
   integrity sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==
@@ -809,6 +809,14 @@ fastfall@^1.5.0:
   dependencies:
     reusify "^1.0.0"
 
+fastify-blipp@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/fastify-blipp/-/fastify-blipp-3.1.0.tgz#52a5bfa8400726df7cdc65cea90664e9e888974f"
+  integrity sha512-9tmQ2ljvUKOHKSRPMx1WhkvkZrinBc9y/EwU5THO27TDB+2haZ1BfGuGB4Dsb2R6CVGpuEjh8+dneV0CfLspQw==
+  dependencies:
+    chalk "^4.1.1"
+    fastify-plugin "^3.0.0"
+
 fastify-cookie@^5.5.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/fastify-cookie/-/fastify-cookie-5.5.0.tgz#5898ef8197a3976874c30c04c21f103856ab251f"
@@ -837,6 +845,11 @@ fastify-plugin@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-3.0.0.tgz#cf1b8c8098e3b5a7c8c30e6aeb06903370c054ca"
   integrity sha512-ZdCvKEEd92DNLps5n0v231Bha8bkz1DjnPP/aEz37rz/q42Z5JVLmgnqR4DYuNn3NXAO3IDCPyRvgvxtJ4Ym4w==
+
+fastify-tsconfig@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/fastify-tsconfig/-/fastify-tsconfig-1.0.1.tgz#ec90e45fa8aa72b81178757bd5940c7875037639"
+  integrity sha512-BXkTG3JYcjJb3xX5R5FcE9ciscV/h7YtmnkiSaNAONd1g6ooMSN/4GWfhA8hnS6SRZFYBBxsn8719Mj9lbCOtA==
 
 fastify-warning@^0.2.0:
   version "0.2.0"
@@ -1815,7 +1828,7 @@ rfdc@^1.1.4, rfdc@^1.2.0:
 
 rimraf@^3.0.2:
   version "3.0.2"
-  resolved "https://registry.npmjs.org/rimraf/-/rimraf-3.0.2.tgz"
+  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-3.0.2.tgz#f1a5402ba6220ad52cc1282bac1ae3aa49fd061a"
   integrity sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==
   dependencies:
     glob "^7.1.3"

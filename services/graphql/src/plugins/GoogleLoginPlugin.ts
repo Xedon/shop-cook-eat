@@ -3,8 +3,7 @@ import { OAuth2Client } from "google-auth-library";
 import { GraphQLError } from "graphql";
 import { ContextType } from "..";
 
-export const GoogleLoginPlugin = makeExtendSchemaPlugin((build) => {
-  const sql = build.pgSql;
+export const GoogleLoginPlugin = makeExtendSchemaPlugin((_) => {
   const client = new OAuth2Client(process.env.GOOGLE_CLIENT_KEY);
   return {
     typeDefs: gql`
@@ -32,8 +31,7 @@ export const GoogleLoginPlugin = makeExtendSchemaPlugin((build) => {
         registerUserByGoogleIdToken: async (
           _query,
           { input: { idToken } }: { input: { idToken: string } },
-          context: ContextType,
-          resolveInfo
+          context: ContextType
         ) => {
           const { setAuthCookies, signAuthToken, signRefreshToken } = context;
 
@@ -88,8 +86,7 @@ export const GoogleLoginPlugin = makeExtendSchemaPlugin((build) => {
         refreshToken: async (
           _query,
           { input: { refreshToken } }: { input: { refreshToken: string } },
-          { signAuthToken, setAuthCookies, verifyRefreshToken }: ContextType,
-          resolveInfo
+          { signAuthToken, setAuthCookies, verifyRefreshToken }: ContextType
         ) => {
           const payload = await verifyRefreshToken(refreshToken);
 
