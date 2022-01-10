@@ -5,8 +5,6 @@ import {
   PostGraphileResponse,
 } from "postgraphile";
 
-import { parse } from "graphql";
-
 import fastifyJwt from "fastify-jwt";
 import { readFileSync } from "fs";
 import path from "path";
@@ -18,7 +16,7 @@ import SimplifyInflectorPlugin from "@graphile-contrib/pg-simplify-inflector";
 import ConnectionFilterPlugin from "postgraphile-plugin-connection-filter";
 //@ts-ignore
 import NestedMutationsPlugin from "postgraphile-plugin-nested-mutations";
-import { GoogleLoginPlugin } from "./plugins/GoogleLoginPlugin";
+import { AuthPlugin } from "./plugins/AuthPlugin";
 import { IncomingMessage, ServerResponse } from "http";
 import { TokenPayload } from "google-auth-library";
 import { addDays } from "date-fns";
@@ -67,7 +65,10 @@ const cleanTokenPayload = ({
   ...rest
 }: TokenPayload) => ({ ...rest });
 
-const createAdditionalContext = (res: ServerResponse) => ({
+const createAdditionalContext = (
+  req: IncomingMessage,
+  res: ServerResponse
+) => ({
   signAuthToken: (payload: TokenPayload) =>
     fastify.jwt.sign(cleanTokenPayload(payload), {
       ...fastify.jwt.options.sign,
@@ -81,6 +82,10 @@ const createAdditionalContext = (res: ServerResponse) => ({
     }),
   decodeJwt: (token: string) =>
     fastify.jwt.decode<TokenPayload>(token, fastify.jwt.options.decode),
+  verifyAuthToken: () => {
+    const token = fastify.parseCookie(req?.headers?.cookie ?? "")?.auth;
+    return fastify.jwt.verify<TokenPayload>(token, fastify.jwt.options.verify);
+  },
   verifyRefreshToken: (token: string) =>
     fastify.jwt.verify<TokenPayload>(token, {
       ...fastify.jwt.options.verify,
@@ -111,10 +116,10 @@ const createAdditionalContext = (res: ServerResponse) => ({
 export type ContextType = ReturnType<typeof createAdditionalContext>;
 
 async function additionalGraphQLContextFromRequest(
-  _req: IncomingMessage,
+  req: IncomingMessage,
   res: ServerResponse
 ) {
-  return createAdditionalContext(res);
+  return createAdditionalContext(req, res);
 }
 
 const middleware = postgraphile(
@@ -157,7 +162,7 @@ const middleware = postgraphile(
       SimplifyInflectorPlugin,
       ConnectionFilterPlugin,
       NestedMutationsPlugin,
-      GoogleLoginPlugin,
+      AuthPlugin,
     ],
     additionalGraphQLContextFromRequest,
   }
@@ -169,26 +174,6 @@ const middleware = postgraphile(
 const convertHandler =
   (handler: (res: PostGraphileResponse) => Promise<void>) =>
   async (request: FastifyRequest, reply: FastifyReply) => {
-    if (request.method.toUpperCase() === "POST") {
-      const document = parse((request.body as any).query);
-      if (
-        !(
-          document.definitions.length === 1 &&
-          document.definitions[0].kind === "OperationDefinition" &&
-          document.definitions[0].operation === "mutation" &&
-          document.definitions[0].selectionSet.selections.length === 1 &&
-          document.definitions[0].selectionSet.selections[0].kind === "Field" &&
-          (document.definitions[0].selectionSet.selections[0].name.value ===
-            "registerUserByGoogleIdToken" ||
-            document.definitions[0].selectionSet.selections[0].name.value ===
-              "refreshToken")
-        )
-      ) {
-        await request.jwtVerify().catch((error) => {
-          throw error;
-        });
-      }
-    }
     return handler(new PostGraphileResponseFastify3(request, reply));
   };
 

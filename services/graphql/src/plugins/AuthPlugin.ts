@@ -1,18 +1,38 @@
-import { gql, makeExtendSchemaPlugin } from "postgraphile";
+import {
+  gql,
+  makeExtendSchemaPlugin,
+  makePluginByCombiningPlugins,
+  makeWrapResolversPlugin,
+} from "postgraphile";
 import { OAuth2Client } from "google-auth-library";
 import { GraphQLError } from "graphql";
 import { ContextType } from "..";
 
-export const GoogleLoginPlugin = makeExtendSchemaPlugin((_) => {
+const permissionsPlugin = makeWrapResolversPlugin(
+  (ctx) => {
+    if (
+      (ctx.scope.isRootMutation || ctx.scope.isRootQuery) &&
+      ctx.scope.fieldName !== "register_userByGoogleIdToken" &&
+      ctx.scope.fieldName !== "refreshToken"
+    ) {
+      return ctx.scope.fieldName;
+    }
+    // return null to not wrap this non-root resolver
+    return null;
+  },
+  (_) => async (resolve, source, args, context: ContextType, info) => {
+    await context.verifyAuthToken();
+
+    return resolve(source, args, context, info);
+  }
+);
+
+const googleAuthPlugin = makeExtendSchemaPlugin((_) => {
   const client = new OAuth2Client(process.env.GOOGLE_CLIENT_KEY);
   return {
     typeDefs: gql`
       input GoogleLoginInput {
         idToken: String!
-      }
-
-      input RefreshTokenInput {
-        refreshToken: String!
       }
 
       type TokenPayload {
@@ -22,8 +42,6 @@ export const GoogleLoginPlugin = makeExtendSchemaPlugin((_) => {
 
       extend type Mutation {
         registerUserByGoogleIdToken(input: GoogleLoginInput!): TokenPayload
-
-        refreshToken(input: RefreshTokenInput!): TokenPayload
       }
     `,
     resolvers: {
@@ -83,12 +101,30 @@ export const GoogleLoginPlugin = makeExtendSchemaPlugin((_) => {
             );
           });
         },
+      },
+    },
+  };
+});
+
+const refreshTokenPlugin = makeExtendSchemaPlugin((_) => {
+  return {
+    typeDefs: gql`
+      input RefreshTokenInput {
+        refreshToken: String!
+      }
+
+      extend type Mutation {
+        refreshToken(input: RefreshTokenInput!): TokenPayload
+      }
+    `,
+    resolvers: {
+      Mutation: {
         refreshToken: async (
           _query,
           { input: { refreshToken } }: { input: { refreshToken: string } },
           { signAuthToken, setAuthCookies, verifyRefreshToken }: ContextType
         ) => {
-          const payload = await verifyRefreshToken(refreshToken);
+          const payload = verifyRefreshToken(refreshToken);
 
           const authToken = signAuthToken(payload);
 
@@ -105,3 +141,9 @@ export const GoogleLoginPlugin = makeExtendSchemaPlugin((_) => {
     },
   };
 });
+
+export const AuthPlugin = makePluginByCombiningPlugins(
+  permissionsPlugin,
+  googleAuthPlugin,
+  refreshTokenPlugin
+);
