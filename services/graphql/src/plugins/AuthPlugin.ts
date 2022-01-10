@@ -12,7 +12,7 @@ const permissionsPlugin = makeWrapResolversPlugin(
   (ctx) => {
     if (
       (ctx.scope.isRootMutation || ctx.scope.isRootQuery) &&
-      ctx.scope.fieldName !== "register_userByGoogleIdToken" &&
+      ctx.scope.fieldName !== "registerUserByGoogleIdToken" &&
       ctx.scope.fieldName !== "refreshToken"
     ) {
       return ctx.scope.fieldName;
@@ -21,7 +21,7 @@ const permissionsPlugin = makeWrapResolversPlugin(
     return null;
   },
   (_) => async (resolve, source, args, context: ContextType, info) => {
-    await context.verifyAuthToken();
+    context.verifyAuthToken();
 
     return resolve(source, args, context, info);
   }
