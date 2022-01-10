@@ -380,6 +380,10 @@ export type DieselManageUpdatedAtPayload = {
   query?: Maybe<Query>;
 };
 
+export type GoogleLoginInput = {
+  idToken: Scalars["String"];
+};
+
 export type Item = Node & {
   __typename?: "Item";
   /** Reads a single `ItemCategory` that is related to this `Item`. */
@@ -1451,6 +1455,8 @@ export type Mutation = {
   /** Deletes a single `ShoppingList` using its globally unique id. */
   deleteShoppingListByNodeId?: Maybe<DeleteShoppingListPayload>;
   dieselManageUpdatedAt?: Maybe<DieselManageUpdatedAtPayload>;
+  refreshToken?: Maybe<TokenPayload>;
+  registerUserByGoogleIdToken?: Maybe<TokenPayload>;
   /** Updates a single `Item` using a unique key and a patch. */
   updateItem?: Maybe<UpdateItemPayload>;
   /** Updates a single `Item` using a unique key and a patch. */
@@ -1546,6 +1552,16 @@ export type MutationDeleteShoppingListByNodeIdArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDieselManageUpdatedAtArgs = {
   input: DieselManageUpdatedAtInput;
+};
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationRefreshTokenArgs = {
+  input: RefreshTokenInput;
+};
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationRegisterUserByGoogleIdTokenArgs = {
+  input: GoogleLoginInput;
 };
 
 /** The root mutation type which contains root level fields which mutate data. */
@@ -1784,6 +1800,10 @@ export type QueryShoppingListsArgs = {
   last?: InputMaybe<Scalars["Int"]>;
   offset?: InputMaybe<Scalars["Int"]>;
   orderBy?: InputMaybe<Array<ShoppingListsOrderBy>>;
+};
+
+export type RefreshTokenInput = {
+  refreshToken: Scalars["String"];
 };
 
 export type ShoppingList = Node & {
@@ -2139,6 +2159,12 @@ export type StringFilter = {
   startsWith?: InputMaybe<Scalars["String"]>;
   /** Starts with the specified string (case-insensitive). */
   startsWithInsensitive?: InputMaybe<Scalars["String"]>;
+};
+
+export type TokenPayload = {
+  __typename?: "TokenPayload";
+  authToken: Scalars["String"];
+  refreshToken: Scalars["String"];
 };
 
 /** A filter to be used against UUID fields. All fields are combined with a logical ‘and.’ */

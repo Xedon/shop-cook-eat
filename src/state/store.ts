@@ -1,12 +1,21 @@
 import { configureStore, createAction } from "@reduxjs/toolkit";
 import { Client as GraphqlClient } from "urql";
 import { appSlice } from "./app";
-import { LoginMiddleware } from "./loginMiddleware";
+import { LoginMiddleware } from "./login/loginMiddleware";
 
 export const initAction = createAction("init");
 export const loginAction = createAction("login");
-export const loginSuccessful = createAction<string>("login-successful");
-export const loginFailed = createAction("login-failed");
+
+export const googleLoginSuccessful = createAction<string>(
+  "google-login-successful"
+);
+export const googleLoginFailed = createAction("google-login-failed");
+
+export const apiLoginSuccessful = createAction<{
+  authToken: string;
+  refreshToken: string;
+}>("api-login-successful");
+export const apiLoginFailed = createAction("api-login-failed");
 
 export const createStore = (graphqlClient: GraphqlClient) => {
   const store = configureStore({

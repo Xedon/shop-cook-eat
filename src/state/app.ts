@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { loginSuccessful } from "./store";
+import {
+  apiLoginFailed,
+  apiLoginSuccessful,
+  googleLoginSuccessful,
+} from "./store";
 
 export enum View {
   Lists = "Lists",
@@ -32,6 +36,8 @@ export interface NavigationParmeterLogin {
 
 export interface AppSlice {
   idToken?: string;
+  authToken?: string;
+  refreshToken?: string;
   navigation:
     | NavigationParmeterCooking
     | NavigationParmeterList
@@ -51,7 +57,12 @@ export const appSlice = createSlice({
     },
   },
   extraReducers: (builder) =>
-    builder.addCase(loginSuccessful, (state, action) => {
-      state.idToken = action.payload;
-    }),
+    builder
+      .addCase(googleLoginSuccessful, (state, action) => {
+        state.idToken = action.payload;
+      })
+      .addCase(apiLoginSuccessful, (state, action) => {
+        state.authToken = action.payload.authToken;
+        state.refreshToken = action.payload.refreshToken;
+      }),
 });

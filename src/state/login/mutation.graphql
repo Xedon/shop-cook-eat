@@ -1,0 +1,16 @@
+fragment TokenPayload on TokenPayload {
+  authToken
+  refreshToken
+}
+
+mutation registerUserByGoogleIdToken($idToken: String!) {
+  registerUserByGoogleIdToken(input: { idToken: $idToken }) {
+    ...TokenPayload
+  }
+}
+
+mutation refreshToken($refreshToken: String!) {
+  refreshToken(input: { refreshToken: $refreshToken }) {
+    ...TokenPayload
+  }
+}
