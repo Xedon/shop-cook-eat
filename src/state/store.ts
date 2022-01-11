@@ -1,7 +1,11 @@
 import { configureStore, createAction } from "@reduxjs/toolkit";
 import { Client as GraphqlClient } from "urql";
 import { appSlice } from "./app";
-import { LoginMiddleware } from "./login/loginMiddleware";
+import { loginMiddlewareFactory } from "./login/loginMiddleware";
+import {
+  loadStateFromLocalStorage,
+  registerStateToLocalStorageSubscriber,
+} from "./statePersistence";
 
 export const initAction = createAction("init");
 export const loginAction = createAction("login");
@@ -19,12 +23,14 @@ export const apiLoginFailed = createAction("api-login-failed");
 
 export const createStore = (graphqlClient: GraphqlClient) => {
   const store = configureStore({
+    preloadedState: loadStateFromLocalStorage(),
     middleware: (defaultMiddlewares) => [
       ...defaultMiddlewares(),
-      LoginMiddleware(graphqlClient),
+      loginMiddlewareFactory(graphqlClient),
     ],
     reducer: { [appSlice.name]: appSlice.reducer },
   });
+  registerStateToLocalStorageSubscriber(store);
   store.dispatch(initAction());
   return store;
 };

@@ -7,9 +7,13 @@ import {
   googleLoginFailed,
   googleLoginSuccessful,
   apiLoginSuccessful,
+  apiLoginFailed,
 } from "../store";
 import { Client as GraphqlClient } from "urql";
 import {
+  RefreshTokenDocument,
+  RefreshTokenMutation,
+  RefreshTokenMutationVariables,
   RegisterUserByGoogleIdTokenDocument,
   RegisterUserByGoogleIdTokenMutation,
   RegisterUserByGoogleIdTokenMutationVariables,
@@ -17,25 +21,42 @@ import {
 
 const serviceWorkerChannel = createAuthChannel();
 
-export const LoginMiddleware: (
+export const loginMiddlewareFactory: (
   graphqlClient: GraphqlClient
 ) => Middleware<{}, { app: AppSlice }, Dispatch<AnyAction>> =
-  (graphqlClient) => (store) => (next) => async (action) => {
+  (graphqlClient) =>
+  ({ dispatch, getState }) =>
+  (next) =>
+  async (action) => {
     next(action);
     if (initAction.match(action)) {
       (window as any).google.accounts.id.initialize({
         client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
         callback: (resp: any) =>
-          store.dispatch(googleLoginSuccessful(resp.credential)),
+          dispatch(googleLoginSuccessful(resp.credential)),
         auto_select: true,
       });
-      store.dispatch(loginAction());
+      dispatch(loginAction());
     }
 
     if (loginAction.match(action)) {
+      const state = getState();
+      if (state.app.authToken && state.app.refreshToken) {
+        const result = await graphqlClient
+          .mutation<RefreshTokenMutation, RefreshTokenMutationVariables>(
+            RefreshTokenDocument,
+            { refreshToken: state.app.refreshToken }
+          )
+          .toPromise();
+        if (result.data?.refreshToken) {
+          dispatch(apiLoginSuccessful(result.data.refreshToken));
+          return;
+        }
+        dispatch(apiLoginFailed());
+      }
       (window as any).google.accounts.id.prompt((promt: any) => {
         if (promt.isSkippedMoment() || promt.isNotDisplayed()) {
-          store.dispatch(googleLoginFailed());
+          dispatch(googleLoginFailed());
         }
       });
     }
@@ -49,15 +70,15 @@ export const LoginMiddleware: (
         >(RegisterUserByGoogleIdTokenDocument, { idToken: action.payload })
         .toPromise();
       if (result.error || !result.data?.registerUserByGoogleIdToken) {
-        store.dispatch(googleLoginFailed());
+        dispatch(googleLoginFailed());
         return;
       }
 
-      store.dispatch(appSlice.actions.navigate({ view: View.Lists }));
-      store.dispatch(
+      dispatch(appSlice.actions.navigate({ view: View.Lists }));
+      dispatch(
         apiLoginSuccessful({
           authToken: result.data.registerUserByGoogleIdToken.authToken,
-          refreshToken: result.data.registerUserByGoogleIdToken.authToken,
+          refreshToken: result.data.registerUserByGoogleIdToken.refreshToken,
         })
       );
     }
