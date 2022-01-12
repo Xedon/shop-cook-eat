@@ -36,10 +36,6 @@ export const loginMiddlewareFactory: (
           dispatch(googleLoginSuccessful(resp.credential)),
         auto_select: true,
       });
-      dispatch(loginAction());
-    }
-
-    if (loginAction.match(action)) {
       const state = getState();
       if (state.app.authToken && state.app.refreshToken) {
         const result = await graphqlClient
@@ -54,6 +50,9 @@ export const loginMiddlewareFactory: (
         }
         dispatch(apiLoginFailed());
       }
+    }
+
+    if (apiLoginFailed.match(action)) {
       (window as any).google.accounts.id.prompt((promt: any) => {
         if (promt.isSkippedMoment() || promt.isNotDisplayed()) {
           dispatch(googleLoginFailed());

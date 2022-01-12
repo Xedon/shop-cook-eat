@@ -1,0 +1,15 @@
+@startuml Registration and first Login
+skinparam sequence {
+ArrowFontSize 14
+ArrowFontStyle bold
+}
+
+actor user
+autonumber
+user -> browser:Login
+browser -> google:Login Request
+return Returns Id Token
+browser -> graphql:registerUserByGoogleIdToken
+return Returns\nauthToken(Valid for 1 Day)\nrefreshToken(Valid for 1 Week)
+browser -> user:Show Shopping Lists
+@enduml

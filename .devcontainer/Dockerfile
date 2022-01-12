@@ -10,6 +10,6 @@ ARG NONROOT_USER=node
 RUN su ${NONROOT_USER} -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile  -y && bash -c 'source ~/.cargo/env && cargo install diesel_cli --no-default-features --features postgres'"
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends postgresql-client
+    && apt-get -y install --no-install-recommends postgresql-client default-jre graphviz
 
 

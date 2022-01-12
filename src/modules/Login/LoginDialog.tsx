@@ -3,12 +3,13 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Slide from "@mui/material/Slide";
-import { useDispatch } from "react-redux";
 import React from "react";
 import { TransitionProps } from "@mui/material/transitions";
 import { useNavigation } from "../../state/selectors";
-import { appSlice, View } from "../../state/app";
+import { View } from "../../state/app";
 import { Box } from "@mui/system";
+import { Button, Grid } from "@mui/material";
+import { useGoogleLogin } from "../../tools/useGoogleLogin";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -21,6 +22,7 @@ const Transition = React.forwardRef(function Transition(
 
 export const LoginDialog = () => {
   const { view } = useNavigation();
+  const { login } = useGoogleLogin();
 
   return (
     <Dialog
@@ -30,11 +32,21 @@ export const LoginDialog = () => {
     >
       <AppBar sx={{ position: "relative" }}>
         <Toolbar>
-          <Typography>Login</Typography>
+          <Typography>Login/Registration</Typography>
         </Toolbar>
       </AppBar>
-      <Box sx={(theme) => ({ margin: theme.spacing(2) })}>
-        <Typography>Please login with google.</Typography>
+      <Box sx={(theme) => ({ margin: theme.spacing(2), height: "100%" })}>
+        <Grid sx={{ height: "100%" }} container justifyContent="center">
+          <Grid item>
+            <Button
+              color="secondary"
+              title="Login with Google Account"
+              onClick={login}
+            >
+              Login with Google Account
+            </Button>
+          </Grid>
+        </Grid>
       </Box>
     </Dialog>
   );

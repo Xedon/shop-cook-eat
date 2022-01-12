@@ -1,0 +1,25 @@
+@startuml Registration and first Login
+skinparam sequence {
+ArrowFontSize 14
+ArrowFontStyle bold
+}
+
+actor user
+autonumber
+user -> browser:Open PWA
+browser -> browser:Check if authToken is expired
+
+alt authToken expired
+browser -> browser:Check if refreshToken is expired
+    alt refreshToken expired
+        browser -> google:Login Request
+        return Returns Id Token
+        browser -> graphql:refreshTokenByGoogleIdToken
+        return Returns: new authToken and refreshToken
+    else refreshToken not expired
+        browser -> graphql:refreshToken
+        return Returns: new authToken
+    end
+end
+
+@enduml
