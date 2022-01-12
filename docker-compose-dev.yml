@@ -12,7 +12,7 @@ services:
       PGPASSWORD: dev
       PGHOST: postgres
       PGDATABASE: sce
-      DEV: true
+      DEV: "true"
   postgres:
     image: postgres:14
     environment:

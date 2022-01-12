@@ -8,4 +8,4 @@ fixtures/
 .eslintcache
 .gitignore
 docker-compose-dev.yml
-READEM.md
+README.md

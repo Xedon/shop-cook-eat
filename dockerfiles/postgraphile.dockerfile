@@ -11,15 +11,16 @@ RUN yarn build
 
 FROM node:16-alpine
 
-RUN addgroup app && adduser -D -H -G app app
+WORKDIR /app
+
+RUN addgroup app && adduser -D -H -G app app && chown app:app /app 
 
 USER app
 
-WORKDIR /app
 
 COPY --from=builder --chown=app:app /app/dist /app
 COPY --from=builder --chown=app:app /app/package.json /app/yarn.lock ./
-RUN yarn install --production
+RUN yarn install --production && yarn cache clean
 
 
 EXPOSE 8080
