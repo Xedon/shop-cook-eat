@@ -5,6 +5,7 @@ services:
       context: ".devcontainer"
     volumes:
       - .:/workspace:cached
+      - "certs:/workspace/services/graphql/certs"
     command: sleep infinity
     environment:
       DATABASE_URL: postgres://postgres:dev@postgres:5432/sce
@@ -12,6 +13,8 @@ services:
       PGPASSWORD: dev
       PGHOST: postgres
       PGDATABASE: sce
+      UNPRIVILEGED_PGUSER: graphql
+      UNPRIVILEGED_PGPASSWORD: graphql
       DEV: "true"
   postgres:
     image: postgres:14
@@ -29,6 +32,9 @@ services:
       POSTGRES_PASSWORD: dev
       POSTGRES_HOST: postgres
       POSTGRES_DB: sce
+      GRAPHQL_SERVICE_PASSWORD: graphql
+    volumes:
+      - ./migrations:/migrator/migrations
   postgraphile:
     depends_on:
       - postgres
@@ -40,9 +46,11 @@ services:
       PGPASSWORD: dev
       PGHOST: postgres
       PGDATABASE: sce
+      UNPRIVILEGED_PGUSER: graphql
+      UNPRIVILEGED_PGPASSWORD: graphql
       DEV: true
     env_file:
-      - "services/graphql/.env.development.local"
+      - "services/graphql/.env"
     volumes:
       - "certs:/app/certs"
     ports: ["5001:5000"]

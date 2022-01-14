@@ -8,7 +8,6 @@ import {
 import fastifyJwt from "fastify-jwt";
 import { readFileSync } from "fs";
 import path from "path";
-import cookie from "cookie";
 import fastifyCookie from "fastify-cookie";
 
 import ManyToManyPlugin from "@graphile-contrib/pg-many-to-many";
@@ -16,226 +15,239 @@ import SimplifyInflectorPlugin from "@graphile-contrib/pg-simplify-inflector";
 import ConnectionFilterPlugin from "postgraphile-plugin-connection-filter";
 //@ts-ignore
 import NestedMutationsPlugin from "postgraphile-plugin-nested-mutations";
-import { AuthPlugin } from "./plugins/AuthPlugin";
-import { IncomingMessage, ServerResponse } from "http";
+import {
+  additionalGraphQLContextFromRequest,
+  AuthPlugin,
+} from "./plugins/AuthPlugin";
 import { TokenPayload } from "google-auth-library";
-import { addDays } from "date-fns";
 import fastifyBlipp from "fastify-blipp";
+import fastifyEnv, { fastifyEnvOpt } from "fastify-env";
 
 const fastify = Fastify({ logger: true });
-
-fastify.register(fastifyCookie);
-fastify.register(fastifyBlipp);
-
-fastify.register(fastifyJwt, {
-  cookie: {
-    cookieName: "auth",
-    signed: false,
-  },
-  secret: {
-    private: readFileSync(
-      `${path.join(path.resolve(), "certs")}/private.key`,
-      "utf8"
-    ),
-    public: readFileSync(
-      `${path.join(path.resolve(), "certs")}/public.key`,
-      "utf8"
-    ),
-  },
-  sign: { algorithm: "RS256", sub: "graphql", iss: process.env.JWT_ISS },
-  verify: {
-    algorithms: ["RS256"],
-    allowedSub: "graphql",
-    allowedIss: process.env.JWT_ISS,
-  },
-  decode: { complete: true },
-});
-
-const cleanTokenPayload = ({
-  aud,
-  exp,
-  iat,
-  iss,
-  at_hash,
-  azp,
-  email_verified,
-  hd,
-  nonce,
-  profile,
-  ...rest
-}: TokenPayload) => ({ ...rest });
-
-const createAdditionalContext = (
-  req: IncomingMessage,
-  res: ServerResponse
-) => ({
-  signAuthToken: (payload: TokenPayload) =>
-    fastify.jwt.sign(cleanTokenPayload(payload), {
-      ...fastify.jwt.options.sign,
-      expiresIn: "1d",
-    }),
-  signRefreshToken: (payload: TokenPayload) =>
-    fastify.jwt.sign(cleanTokenPayload(payload), {
-      ...fastify.jwt.options.sign,
-      expiresIn: "7d",
-      sub: "refreshToken",
-    }),
-  decodeJwt: (token: string) =>
-    fastify.jwt.decode<TokenPayload>(token, fastify.jwt.options.decode),
-  verifyAuthToken: () => {
-    const token = fastify.parseCookie(req?.headers?.cookie ?? "")?.auth;
-    return fastify.jwt.verify<TokenPayload>(token, fastify.jwt.options.verify);
-  },
-  verifyRefreshToken: (token: string) =>
-    fastify.jwt.verify<TokenPayload>(token, {
-      ...fastify.jwt.options.verify,
-      allowedSub: "refreshToken",
-    }),
-  setAuthCookies: ({
-    authToken,
-    refreshToken,
-  }: {
-    authToken: string;
-    refreshToken: string;
-  }) => {
-    res.setHeader("Set-Cookie", [
-      cookie.serialize("auth", authToken, {
-        expires: addDays(new Date(), 1),
-        secure: true,
-        sameSite: "strict",
-      }),
-      cookie.serialize("auth_refresh", refreshToken, {
-        expires: addDays(new Date(), 7),
-        secure: true,
-        sameSite: "strict",
-      }),
-    ]);
-  },
-});
-
-export type ContextType = ReturnType<typeof createAdditionalContext>;
-
-async function additionalGraphQLContextFromRequest(
-  req: IncomingMessage,
-  res: ServerResponse
-) {
-  return createAdditionalContext(req, res);
+declare module "fastify" {
+  interface Config {
+    PGHOST: string;
+    PPGPORT: number;
+    PGUSER: string;
+    PGPASSWORD: string;
+    PGDATABASE: string;
+    PGSCHEMA: string;
+    UNPRIVILEGED_PGUSER: string;
+    UNPRIVILEGED_PGPASSWORD: string;
+    JWT_ISS: string;
+    GOOGLE_CLIENT_KEY: string;
+    DEV: boolean;
+  }
+  interface FastifyInstance {
+    config: Config;
+  }
 }
 
-const middleware = postgraphile(
-  {
-    host: process.env.PGHOST,
-    port: Number.parseInt(process.env.PPGPORT ?? "5432", 10),
-    user: process.env.PGUSER,
-    password: process.env.PGPASSWORD,
-    database: process.env.PGDATABASE,
-  },
-  process.env.PGSCHEMA ?? "public",
-  {
-    enhanceGraphiql: Boolean(process.env.DEV),
-    graphiql: Boolean(process.env.DEV),
-    allowExplain: Boolean(process.env.DEV),
-    ignoreRBAC: false,
-    watchPg: true,
-    pgSettings: async (req) => {
-      if (!req.headers.cookie) {
-        return { userId: null };
-      }
-      const token = fastify.parseCookie(req.headers.cookie)["auth"];
-
-      if (!token) {
-        return { userId: null };
-      }
-
-      const decodedToken = fastify.jwt.decode<TokenPayload>(token);
-
-      if (!decodedToken) {
-        return { userId: null };
-      }
-
-      return {
-        userId: decodedToken.sub,
-      };
+const schema = {
+  type: "object",
+  required: [
+    "PGHOST",
+    "PGUSER",
+    "PGPASSWORD",
+    "PGDATABASE",
+    "PGSCHEMA",
+    "UNPRIVILEGED_PGUSER",
+    "UNPRIVILEGED_PGPASSWORD",
+    "JWT_ISS",
+    "GOOGLE_CLIENT_KEY",
+    "DEV",
+  ],
+  properties: {
+    PGHOST: {
+      type: "string",
     },
-    appendPlugins: [
-      ManyToManyPlugin,
-      SimplifyInflectorPlugin,
-      ConnectionFilterPlugin,
-      NestedMutationsPlugin,
-      AuthPlugin,
-    ],
-    additionalGraphQLContextFromRequest,
+    PPGPORT: {
+      type: "number",
+      default: 5432,
+    },
+    PGUSER: {
+      type: "string",
+    },
+    PGPASSWORD: {
+      type: "string",
+    },
+    PGDATABASE: {
+      type: "string",
+    },
+    PGSCHEMA: {
+      type: "string",
+      default: "public",
+    },
+    UNPRIVILEGED_PGUSER: {
+      type: "string",
+    },
+    UNPRIVILEGED_PGPASSWORD: {
+      type: "string",
+    },
+    JWT_ISS: {
+      type: "string",
+    },
+    GOOGLE_CLIENT_KEY: {
+      type: "string",
+    },
+    DEV: {
+      type: "boolean",
+      default: false,
+    },
+  },
+};
+
+const options: fastifyEnvOpt = {
+  schema: schema,
+  dotenv: true,
+  env: true,
+};
+
+fastify.register(fastifyEnv, options).after(() => {
+  fastify.register(fastifyCookie);
+  fastify.register(fastifyBlipp);
+
+  fastify.register(fastifyJwt, {
+    cookie: {
+      cookieName: "auth",
+      signed: false,
+    },
+    secret: {
+      private: readFileSync(
+        `${path.join(path.resolve(), "certs")}/private.key`,
+        "utf8"
+      ),
+      public: readFileSync(
+        `${path.join(path.resolve(), "certs")}/public.key`,
+        "utf8"
+      ),
+    },
+    sign: { algorithm: "RS256", sub: "graphql", iss: fastify.config.JWT_ISS },
+    verify: {
+      algorithms: ["RS256"],
+      allowedSub: "graphql",
+      allowedIss: fastify.config.JWT_ISS,
+    },
+    decode: { complete: true },
+  });
+
+  const middleware = postgraphile(
+    {
+      host: fastify.config.PGHOST,
+      port: fastify.config.PPGPORT,
+      user: fastify.config.PGUSER,
+      password: fastify.config.PGPASSWORD,
+      database: fastify.config.PGDATABASE,
+    },
+    fastify.config.PGSCHEMA,
+    {
+      enhanceGraphiql: fastify.config.DEV,
+      graphiql: fastify.config.DEV,
+      allowExplain: fastify.config.DEV,
+      ignoreRBAC: false,
+      watchPg: fastify.config.DEV,
+      auth: { googleClientKey: fastify.config.GOOGLE_CLIENT_KEY },
+      pgSettings: async (req) => {
+        if (!req.headers.cookie) {
+          return { userId: null };
+        }
+        const token = fastify.parseCookie(req.headers.cookie)["auth"];
+
+        if (!token) {
+          return { userId: null };
+        }
+
+        const decodedToken = fastify.jwt.decode<TokenPayload>(token);
+
+        if (!decodedToken) {
+          return { userId: null };
+        }
+
+        return {
+          userId: decodedToken.sub,
+        };
+      },
+      appendPlugins: [
+        ManyToManyPlugin,
+        SimplifyInflectorPlugin,
+        ConnectionFilterPlugin,
+        NestedMutationsPlugin,
+        AuthPlugin,
+      ],
+      additionalGraphQLContextFromRequest:
+        additionalGraphQLContextFromRequest(fastify),
+    }
+  );
+
+  /**
+   * Converts a PostGraphile route handler into a Fastify request handler.
+   */
+  const convertHandler =
+    (handler: (res: PostGraphileResponse) => Promise<void>) =>
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      return handler(new PostGraphileResponseFastify3(request, reply));
+    };
+
+  // IMPORTANT: do **NOT** change these routes here; if you want to change the
+  // routes, do so in PostGraphile options. If you change the routes here only
+  // then GraphiQL won't know where to find the GraphQL endpoint and the GraphQL
+  // endpoint won't know where to indicate the EventStream for watch mode is.
+  // (There may be other problems too.)
+
+  // OPTIONS requests, for CORS/etc
+  fastify.options(
+    middleware.graphqlRoute,
+    convertHandler(middleware.graphqlRouteHandler)
+  );
+
+  // This is the main middleware
+  fastify.post(
+    middleware.graphqlRoute,
+    convertHandler(middleware.graphqlRouteHandler)
+  );
+
+  // GraphiQL, if you need it
+  if (middleware.options.graphiql) {
+    if (middleware.graphiqlRouteHandler) {
+      fastify.head(
+        middleware.graphiqlRoute,
+        convertHandler(middleware.graphiqlRouteHandler)
+      );
+      fastify.get(
+        middleware.graphiqlRoute,
+        convertHandler(middleware.graphiqlRouteHandler)
+      );
+    }
+    // Remove this if you don't want the PostGraphile logo as your favicon!
+    if (middleware.faviconRouteHandler) {
+      fastify.get(
+        "/favicon.ico",
+        convertHandler(middleware.faviconRouteHandler)
+      );
+    }
   }
-);
 
-/**
- * Converts a PostGraphile route handler into a Fastify request handler.
- */
-const convertHandler =
-  (handler: (res: PostGraphileResponse) => Promise<void>) =>
-  async (request: FastifyRequest, reply: FastifyReply) => {
-    return handler(new PostGraphileResponseFastify3(request, reply));
-  };
-
-// IMPORTANT: do **NOT** change these routes here; if you want to change the
-// routes, do so in PostGraphile options. If you change the routes here only
-// then GraphiQL won't know where to find the GraphQL endpoint and the GraphQL
-// endpoint won't know where to indicate the EventStream for watch mode is.
-// (There may be other problems too.)
-
-// OPTIONS requests, for CORS/etc
-fastify.options(
-  middleware.graphqlRoute,
-  convertHandler(middleware.graphqlRouteHandler)
-);
-
-// This is the main middleware
-fastify.post(
-  middleware.graphqlRoute,
-  convertHandler(middleware.graphqlRouteHandler)
-);
-
-// GraphiQL, if you need it
-if (middleware.options.graphiql) {
-  if (middleware.graphiqlRouteHandler) {
-    fastify.head(
-      middleware.graphiqlRoute,
-      convertHandler(middleware.graphiqlRouteHandler)
-    );
-    fastify.get(
-      middleware.graphiqlRoute,
-      convertHandler(middleware.graphiqlRouteHandler)
-    );
+  // If you need watch mode, this is the route served by the
+  // X-GraphQL-Event-Stream header; see:
+  // https://github.com/graphql/graphql-over-http/issues/48
+  if (middleware.options.watchPg) {
+    if (middleware.eventStreamRouteHandler) {
+      fastify.options(
+        middleware.eventStreamRoute,
+        convertHandler(middleware.eventStreamRouteHandler)
+      );
+      fastify.get(
+        middleware.eventStreamRoute,
+        convertHandler(middleware.eventStreamRouteHandler)
+      );
+    }
   }
-  // Remove this if you don't want the PostGraphile logo as your favicon!
-  if (middleware.faviconRouteHandler) {
-    fastify.get("/favicon.ico", convertHandler(middleware.faviconRouteHandler));
-  }
-}
-
-// If you need watch mode, this is the route served by the
-// X-GraphQL-Event-Stream header; see:
-// https://github.com/graphql/graphql-over-http/issues/48
-if (middleware.options.watchPg) {
-  if (middleware.eventStreamRouteHandler) {
-    fastify.options(
-      middleware.eventStreamRoute,
-      convertHandler(middleware.eventStreamRouteHandler)
-    );
-    fastify.get(
-      middleware.eventStreamRoute,
-      convertHandler(middleware.eventStreamRouteHandler)
-    );
-  }
-}
-
+});
 fastify.listen(5000, "0.0.0.0", (err, address) => {
   if (err) {
     fastify.log.error(String(err));
     process.exit(1);
   }
+  fastify.log.info(`PostGraphile available at ${address}`);
   fastify.blipp();
-  fastify.log.info(
-    `PostGraphiQL available at ${address}${middleware.graphiqlRoute}`
-  );
 });

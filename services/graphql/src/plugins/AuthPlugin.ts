@@ -4,9 +4,21 @@ import {
   makePluginByCombiningPlugins,
   makeWrapResolversPlugin,
 } from "postgraphile";
-import { OAuth2Client } from "google-auth-library";
+import { OAuth2Client, TokenPayload } from "google-auth-library";
 import { GraphQLError } from "graphql";
-import { ContextType } from "..";
+import cookie from "cookie";
+import { IncomingMessage } from "http";
+import { ServerResponse } from "http";
+import { addDays } from "date-fns";
+import { FastifyInstance } from "fastify";
+
+declare module "postgraphile" {
+  interface PostGraphileOptions {
+    auth: {
+      googleClientKey: string;
+    };
+  }
+}
 
 const permissionsPlugin = makeWrapResolversPlugin(
   (ctx) => {
@@ -27,8 +39,8 @@ const permissionsPlugin = makeWrapResolversPlugin(
   }
 );
 
-const googleAuthPlugin = makeExtendSchemaPlugin((_) => {
-  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_KEY);
+const googleAuthPlugin = makeExtendSchemaPlugin((_, options) => {
+  const client = new OAuth2Client(options.GOOGLE_CLIENT_KEY);
   return {
     typeDefs: gql`
       input GoogleLoginInput {
@@ -56,7 +68,7 @@ const googleAuthPlugin = makeExtendSchemaPlugin((_) => {
           async function verify() {
             const ticket = await client.verifyIdToken({
               idToken,
-              audience: process.env.GOOGLE_CLIENT_KEY,
+              audience: options.GOOGLE_CLIENT_KEY,
             });
 
             const payload = ticket.getPayload();
@@ -147,3 +159,73 @@ export const AuthPlugin = makePluginByCombiningPlugins(
   googleAuthPlugin,
   refreshTokenPlugin
 );
+
+const cleanTokenPayload = ({
+  aud,
+  exp,
+  iat,
+  iss,
+  at_hash,
+  azp,
+  email_verified,
+  hd,
+  nonce,
+  profile,
+  ...rest
+}: TokenPayload) => ({ ...rest });
+
+const createAdditionalContext = (
+  req: IncomingMessage,
+  res: ServerResponse,
+  fastify: FastifyInstance
+) => ({
+  signAuthToken: (payload: TokenPayload) =>
+    fastify.jwt.sign(cleanTokenPayload(payload), {
+      ...fastify.jwt.options.sign,
+      expiresIn: "1d",
+    }),
+  signRefreshToken: (payload: TokenPayload) =>
+    fastify.jwt.sign(cleanTokenPayload(payload), {
+      ...fastify.jwt.options.sign,
+      expiresIn: "7d",
+      sub: "refreshToken",
+    }),
+  decodeJwt: (token: string) =>
+    fastify.jwt.decode<TokenPayload>(token, fastify.jwt.options.decode),
+  verifyAuthToken: () => {
+    const token = fastify.parseCookie(req?.headers?.cookie ?? "")?.auth;
+    return fastify.jwt.verify<TokenPayload>(token, fastify.jwt.options.verify);
+  },
+  verifyRefreshToken: (token: string) =>
+    fastify.jwt.verify<TokenPayload>(token, {
+      ...fastify.jwt.options.verify,
+      allowedSub: "refreshToken",
+    }),
+  setAuthCookies: ({
+    authToken,
+    refreshToken,
+  }: {
+    authToken: string;
+    refreshToken: string;
+  }) => {
+    res.setHeader("Set-Cookie", [
+      cookie.serialize("auth", authToken, {
+        expires: addDays(new Date(), 1),
+        secure: true,
+        sameSite: "strict",
+      }),
+      cookie.serialize("auth_refresh", refreshToken, {
+        expires: addDays(new Date(), 7),
+        secure: true,
+        sameSite: "strict",
+      }),
+    ]);
+  },
+});
+
+export type ContextType = ReturnType<typeof createAdditionalContext>;
+
+export const additionalGraphQLContextFromRequest = (fastify: FastifyInstance) =>
+  async function (req: IncomingMessage, res: ServerResponse) {
+    return createAdditionalContext(req, res, fastify);
+  };

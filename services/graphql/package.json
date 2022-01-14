@@ -2,7 +2,7 @@
   "name": "graphql",
   "version": "1.0.0",
   "description": "Graphql Service",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "license": "MIT",
   "private": true,
   "dependencies": {
@@ -28,6 +28,7 @@
     "@typescript-eslint/eslint-plugin": "^5.8.1",
     "@typescript-eslint/parser": "^5.8.1",
     "eslint": "^8.5.0",
+    "fastify-env": "^2.1.1",
     "fastify-tsconfig": "^1.0.1",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
@@ -36,9 +37,9 @@
   },
   "scripts": {
     "watch": "tsc --watch --preserveWatchOutput --pretty",
-    "dev": "source .env.development.local ; nodemon",
+    "dev": "nodemon",
     "format": "prettier --write \"src/**/*.ts\"",
     "build": "rimraf dist && tsc",
-    "start": "source .env.development.local ; node dist/index.js"
+    "start": "node dist/index.js"
   }
 }

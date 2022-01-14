@@ -270,7 +270,7 @@ ajv@^6.10.0, ajv@^6.11.0, ajv@^6.12.4, ajv@^6.12.6:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-ajv@^8.1.0:
+ajv@^8.0.0, ajv@^8.1.0:
   version "8.8.2"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.8.2.tgz#01b4fef2007a28bf75f0b7fc009f62679de4abbb"
   integrity sha512-x9VuX+R/jcFj1DHo/fCp99esgGDWiHENrKxaCENuCxpoMCmAt/COCGVDwA7kleEpEzJjDnvh3yGoOuLu0Dtllw==
@@ -568,6 +568,16 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
+dotenv-expand@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-5.1.0.tgz#3fbaf020bfd794884072ea26b1e9791d45a629f0"
+  integrity sha512-YXQl1DSa4/PQyRfgrv6aoNjhasp/p4qs9FjJ4q4cQk+8m4r6k4ZSiEyytKG8f8W9gi8WsQtIObNmKd+tMzNTmA==
+
+dotenv@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-10.0.0.tgz#3d4227b8fb95f81096cdd2b66653fb2c7085ba81"
+  integrity sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==
+
 ecdsa-sig-formatter@1.0.11, ecdsa-sig-formatter@^1.0.11:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/ecdsa-sig-formatter/-/ecdsa-sig-formatter-1.0.11.tgz#ae0f0fa2d85045ef14a817daa3ce9acd0489e5bf"
@@ -591,6 +601,15 @@ enquirer@^2.3.5:
   integrity sha512-yjNnPr315/FjS4zIsUxYguYUPP2e1NK4d7E7ZOLiyYCcbFBiTMyID+2wvm2w6+pZ/odMA7cRkjhsPbltwBOrLg==
   dependencies:
     ansi-colors "^4.1.1"
+
+env-schema@^3.0.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/env-schema/-/env-schema-3.5.1.tgz#0d9ca21000b32f752754ebad5b2d41f02998a125"
+  integrity sha512-LMqChKRSuEHPdlXVvrxL5JNPUqzTx9dzbHWDqx6f0O1YT9KkaC/mVKSkpEeXCUQ2m+6OzlfCwqU0m2VXANb2wg==
+  dependencies:
+    ajv "^8.0.0"
+    dotenv "^10.0.0"
+    dotenv-expand "^5.1.0"
 
 escape-html@~1.0.3:
   version "1.0.3"
@@ -823,6 +842,14 @@ fastify-cookie@^5.5.0:
   integrity sha512-XhexnjmAR4CUh3Cz6Ko0is+pa8k1bS6+nkf/i3viv4p7R1fwGtGhAXuz+b4nEM0x7pvdi5ApKY73Bp5CELZP7g==
   dependencies:
     cookie-signature "^1.1.0"
+    fastify-plugin "^3.0.0"
+
+fastify-env@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/fastify-env/-/fastify-env-2.1.1.tgz#443cc8f9b443320bfd9330975606fdbb2ba2f799"
+  integrity sha512-5IyYR+d+0/hwae/PpC6oWb+hlMpBqG1MuWWTEbFR2uzGhDXX/rCp4gdBrodt7SndOyvVlF+Z8QZ0fGlXPWtIOw==
+  dependencies:
+    env-schema "^3.0.1"
     fastify-plugin "^3.0.0"
 
 fastify-error@^0.3.0:
