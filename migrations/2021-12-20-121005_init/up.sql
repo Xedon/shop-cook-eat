@@ -1,5 +1,11 @@
 
+CREATE ROLE graphql;
+CREATE USER graphql_service password '{{ get_env(name = "GRAPHQL_SERVICE_PASSWORD") }}';
+GRANT USE ON SCHMEA public TO graphql;
+
+
 CREATE TABLE item_category(id UUID PRIMARY KEY DEFAULT gen_random_uuid(), category_name TEXT NOT NULL);
+GRANT SELECT ON TABLE item_category TO graphql;
 INSERT INTO item_category (category_name)
 VALUES ('Custom');
 
@@ -12,6 +18,7 @@ CREATE TABLE item (
   item_name TEXT NOT NULL UNIQUE,
   category_id UUID REFERENCES item_category
 );
+GRANT SELECT,INSERT,UPDATE,DELETE ON TABLE item TO graphql;
 
 COMMENT ON COLUMN item.id IS '@omit create,update,delete,order';
 COMMENT ON COLUMN item.item_name IS '@name name';
@@ -20,6 +27,7 @@ CREATE TABLE shopping_list(
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   shopping_list_name TEXT NOT NULL UNIQUE
 );
+GRANT SELECT,INSERT,UPDATE,DELETE ON TABLE shopping_list TO graphql;
 
 COMMENT ON COLUMN shopping_list.id IS '@omit create,update,delete,order';
 COMMENT ON COLUMN shopping_list.shopping_list_name IS '@name name';
@@ -31,6 +39,7 @@ CREATE TABLE item_shopping_list(
   additional_informations TEXT,
   PRIMARY KEY(item_id, shopping_list_id)
 );
+GRANT SELECT,INSERT,UPDATE,DELETE ON TABLE item_shopping_list TO graphql;
 
 CREATE TABLE item_shopping_list_history(
   id UUID NOT NULL DEFAULT gen_random_uuid(),
@@ -39,6 +48,7 @@ CREATE TABLE item_shopping_list_history(
   additional_informations TEXT,
   PRIMARY KEY(id,item_id, shopping_list_id)
 );
+GRANT SELECT,INSERT,UPDATE,DELETE ON TABLE item_shopping_list_history TO graphql;
 
 COMMENT ON TABLE item_shopping_list_history IS '@omit create,update,delete';
 
