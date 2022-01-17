@@ -11,6 +11,13 @@ import { IncomingMessage } from "http";
 import { ServerResponse } from "http";
 import { addDays } from "date-fns";
 import { FastifyInstance } from "fastify";
+import { PoolClient } from "pg";
+import {
+  insertGoogleAccoutEntry,
+  insertTokenEntry,
+  selectIsGoogleTokenUsed,
+} from "src/querys";
+import { AuthErrors, buildError } from "src/errors";
 
 declare module "postgraphile" {
   interface PostGraphileOptions {
@@ -41,6 +48,72 @@ const permissionsPlugin = makeWrapResolversPlugin(
 
 const googleAuthPlugin = makeExtendSchemaPlugin((_, options) => {
   const client = new OAuth2Client(options.GOOGLE_CLIENT_KEY);
+  const loginOrRegisterUserByGoogleIdToken =
+    (registration: boolean) =>
+    async (
+      _: any,
+      { input: { idToken } }: { input: { idToken: string } },
+      context: ContextType & { pgClient: PoolClient }
+    ) => {
+      const { setAuthCookies, signAuthToken, signRefreshToken, pgClient } =
+        context;
+
+      const isTokenUsed = await selectIsGoogleTokenUsed(pgClient, {
+        idToken,
+      });
+
+      if (isTokenUsed) {
+        throw buildError(AuthErrors.TOKEN_INVALLID);
+      }
+
+      async function verify() {
+        const ticket = await client.verifyIdToken({
+          idToken,
+          audience: options.GOOGLE_CLIENT_KEY,
+        });
+
+        const payload = ticket.getPayload();
+
+        if (!payload?.email_verified) {
+          throw buildError(AuthErrors.USER_NOT_VERIFIED);
+        }
+
+        if (!payload.name || !payload.email) {
+          throw buildError(AuthErrors.INFORMATIONS_NOT_SUFFICIENT);
+        }
+
+        const authToken = signAuthToken(payload);
+        const refreshToken = signRefreshToken(payload);
+
+        const tokens = {
+          authToken,
+          refreshToken,
+        };
+
+        setAuthCookies(tokens);
+
+        if (registration) {
+          await insertGoogleAccoutEntry(pgClient, {
+            googleId: payload.iss,
+            name: payload.name,
+            email: payload.email,
+            profilePictureUrl: payload.picture ?? null,
+          });
+        }
+
+        await insertTokenEntry(pgClient, { idToken });
+
+        return tokens;
+      }
+      return verify().catch((error) => {
+        if (error instanceof GraphQLError) {
+          return error;
+        }
+
+        throw buildError(AuthErrors.TOKEN_INVALLID);
+      });
+    };
+
   return {
     typeDefs: gql`
       input GoogleLoginInput {
@@ -53,66 +126,14 @@ const googleAuthPlugin = makeExtendSchemaPlugin((_, options) => {
       }
 
       extend type Mutation {
+        loginUserByGoogleIdToken(input: GoogleLoginInput!): TokenPayload
         registerUserByGoogleIdToken(input: GoogleLoginInput!): TokenPayload
       }
     `,
     resolvers: {
       Mutation: {
-        registerUserByGoogleIdToken: async (
-          _query,
-          { input: { idToken } }: { input: { idToken: string } },
-          context: ContextType
-        ) => {
-          const { setAuthCookies, signAuthToken, signRefreshToken } = context;
-
-          async function verify() {
-            const ticket = await client.verifyIdToken({
-              idToken,
-              audience: options.GOOGLE_CLIENT_KEY,
-            });
-
-            const payload = ticket.getPayload();
-
-            if (!payload?.email_verified) {
-              throw new GraphQLError(
-                "Google user is not verified",
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                undefined,
-                { verify: "USER_NOT_VERIFIED" }
-              );
-            }
-
-            const authToken = signAuthToken(payload);
-            const refreshToken = signRefreshToken(payload);
-
-            const tokens = {
-              authToken,
-              refreshToken,
-            };
-
-            setAuthCookies(tokens);
-
-            return tokens;
-          }
-          return verify().catch((error) => {
-            if (error instanceof GraphQLError) {
-              return error;
-            }
-
-            throw new GraphQLError(
-              "Token is invallid",
-              undefined,
-              undefined,
-              undefined,
-              undefined,
-              error,
-              { verify: "TOKEN_INVALLID" }
-            );
-          });
-        },
+        loginUserByGoogleIdToken: loginOrRegisterUserByGoogleIdToken(false),
+        registerUserByGoogleIdToken: loginOrRegisterUserByGoogleIdToken(true),
       },
     },
   };

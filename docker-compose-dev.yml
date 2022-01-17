@@ -48,7 +48,7 @@ services:
       PGDATABASE: sce
       UNPRIVILEGED_PGUSER: graphql
       UNPRIVILEGED_PGPASSWORD: graphql
-      DEV: true
+      DEV: "true"
     env_file:
       - "services/graphql/.env"
     volumes:

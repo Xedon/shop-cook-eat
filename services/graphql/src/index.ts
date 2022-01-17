@@ -103,7 +103,12 @@ const options: fastifyEnvOpt = {
   env: true,
 };
 
-fastify.register(fastifyEnv, options).after(() => {
+fastify.register(fastifyEnv, options).after((err) => {
+  if (err) {
+    fastify.log.error(String(err));
+    process.exit(1);
+  }
+
   fastify.register(fastifyCookie);
   fastify.register(fastifyBlipp);
 
