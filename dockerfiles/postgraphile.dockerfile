@@ -17,8 +17,7 @@ RUN addgroup app && adduser -D -H -G app app && chown app:app /app
 
 USER app
 
-
-COPY --from=builder --chown=app:app /app/dist /app
+COPY --from=builder --chown=app:app /app/dist/ /app/
 COPY --from=builder --chown=app:app /app/package.json /app/yarn.lock ./
 RUN yarn install --production && yarn cache clean
 

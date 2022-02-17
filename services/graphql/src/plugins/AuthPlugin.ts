@@ -16,8 +16,8 @@ import {
   insertGoogleAccoutEntry,
   insertTokenEntry,
   selectIsGoogleTokenUsed,
-} from "src/querys";
-import { AuthErrors, buildError } from "src/errors";
+} from "../querys";
+import { AuthErrors, buildError } from "../errors";
 
 declare module "postgraphile" {
   interface PostGraphileOptions {
