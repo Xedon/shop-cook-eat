@@ -1,7 +1,7 @@
 
 CREATE ROLE graphql;
 CREATE USER graphql_service password '{{ get_env(name = "GRAPHQL_SERVICE_PASSWORD") }}';
-GRANT USE ON SCHMEA public TO graphql;
+GRANT USAGE ON SCHEMA public TO graphql;
 
 
 CREATE TABLE item_category(id UUID PRIMARY KEY DEFAULT gen_random_uuid(), category_name TEXT NOT NULL);

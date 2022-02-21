@@ -6,7 +6,7 @@ CREATE TYPE ORIGIN as enum('GOOGLE','OWN');
 CREATE TABLE account(
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   account_origin ORIGIN NOT NULL,
-  google_id BIGINT UNIQUE,
+  google_id TEXT UNIQUE,
   name TEXT NOT NULL,
   email TEXT NOT NULL,
   profile_picture_url TEXT

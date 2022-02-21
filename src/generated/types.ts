@@ -17,12 +17,192 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /**
+   * A signed eight-byte integer. The upper big integer values are greater than the
+   * max value for a JavaScript number. Therefore all big integers will be output as
+   * strings and not numbers.
+   */
+  BigInt: any;
   /** A location in a connection that can be used for resuming pagination. */
   Cursor: any;
+  /**
+   * A point in time as described by the [ISO
+   * 8601](https://en.wikipedia.org/wiki/ISO_8601) standard. May or may not include a timezone.
+   */
+  Datetime: any;
   /** A builtin object identifier type for a relation name */
   RegClass: any;
   /** A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122). */
   UUID: any;
+};
+
+export type Account = Node & {
+  __typename?: "Account";
+  accountOrigin: Origin;
+  email: Scalars["String"];
+  googleId?: Maybe<Scalars["BigInt"]>;
+  id: Scalars["UUID"];
+  name: Scalars["String"];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars["ID"];
+  profilePictureUrl?: Maybe<Scalars["String"]>;
+};
+
+/** A condition to be used against `Account` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type AccountCondition = {
+  /** Checks for equality with the object’s `accountOrigin` field. */
+  accountOrigin?: InputMaybe<Origin>;
+  /** Checks for equality with the object’s `email` field. */
+  email?: InputMaybe<Scalars["String"]>;
+  /** Checks for equality with the object’s `googleId` field. */
+  googleId?: InputMaybe<Scalars["BigInt"]>;
+  /** Checks for equality with the object’s `id` field. */
+  id?: InputMaybe<Scalars["UUID"]>;
+  /** Checks for equality with the object’s `name` field. */
+  name?: InputMaybe<Scalars["String"]>;
+  /** Checks for equality with the object’s `profilePictureUrl` field. */
+  profilePictureUrl?: InputMaybe<Scalars["String"]>;
+};
+
+/** A filter to be used against `Account` object types. All fields are combined with a logical ‘and.’ */
+export type AccountFilter = {
+  /** Filter by the object’s `accountOrigin` field. */
+  accountOrigin?: InputMaybe<OriginFilter>;
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<AccountFilter>>;
+  /** Filter by the object’s `email` field. */
+  email?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `googleId` field. */
+  googleId?: InputMaybe<BigIntFilter>;
+  /** Filter by the object’s `id` field. */
+  id?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `name` field. */
+  name?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<AccountFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<AccountFilter>>;
+  /** Filter by the object’s `profilePictureUrl` field. */
+  profilePictureUrl?: InputMaybe<StringFilter>;
+};
+
+/** An input for mutations affecting `Account` */
+export type AccountInput = {
+  accountOrigin: Origin;
+  email: Scalars["String"];
+  googleId?: InputMaybe<Scalars["BigInt"]>;
+  id?: InputMaybe<Scalars["UUID"]>;
+  name: Scalars["String"];
+  profilePictureUrl?: InputMaybe<Scalars["String"]>;
+};
+
+/** Represents an update to a `Account`. Fields that are set will be updated. */
+export type AccountPatch = {
+  accountOrigin?: InputMaybe<Origin>;
+  email?: InputMaybe<Scalars["String"]>;
+  googleId?: InputMaybe<Scalars["BigInt"]>;
+  id?: InputMaybe<Scalars["UUID"]>;
+  name?: InputMaybe<Scalars["String"]>;
+  profilePictureUrl?: InputMaybe<Scalars["String"]>;
+};
+
+/** A connection to a list of `Account` values. */
+export type AccountsConnection = {
+  __typename?: "AccountsConnection";
+  /** A list of edges which contains the `Account` and cursor to aid in pagination. */
+  edges: Array<AccountsEdge>;
+  /** A list of `Account` objects. */
+  nodes: Array<Maybe<Account>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Account` you could get from the connection. */
+  totalCount: Scalars["Int"];
+};
+
+/** A `Account` edge in the connection. */
+export type AccountsEdge = {
+  __typename?: "AccountsEdge";
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars["Cursor"]>;
+  /** The `Account` at the end of the edge. */
+  node?: Maybe<Account>;
+};
+
+/** Methods to use when ordering `Account`. */
+export enum AccountsOrderBy {
+  AccountOriginAsc = "ACCOUNT_ORIGIN_ASC",
+  AccountOriginDesc = "ACCOUNT_ORIGIN_DESC",
+  EmailAsc = "EMAIL_ASC",
+  EmailDesc = "EMAIL_DESC",
+  GoogleIdAsc = "GOOGLE_ID_ASC",
+  GoogleIdDesc = "GOOGLE_ID_DESC",
+  IdAsc = "ID_ASC",
+  IdDesc = "ID_DESC",
+  NameAsc = "NAME_ASC",
+  NameDesc = "NAME_DESC",
+  Natural = "NATURAL",
+  PrimaryKeyAsc = "PRIMARY_KEY_ASC",
+  PrimaryKeyDesc = "PRIMARY_KEY_DESC",
+  ProfilePictureUrlAsc = "PROFILE_PICTURE_URL_ASC",
+  ProfilePictureUrlDesc = "PROFILE_PICTURE_URL_DESC",
+}
+
+/** A filter to be used against BigInt fields. All fields are combined with a logical ‘and.’ */
+export type BigIntFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars["BigInt"]>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars["BigInt"]>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars["BigInt"]>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars["BigInt"]>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars["BigInt"]>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars["Boolean"]>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars["BigInt"]>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars["BigInt"]>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars["BigInt"]>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars["BigInt"]>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars["BigInt"]>>;
+};
+
+/** All input for the create `Account` mutation. */
+export type CreateAccountInput = {
+  /** The `Account` to be created by this mutation. */
+  account: AccountInput;
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars["String"]>;
+};
+
+/** The output of our create `Account` mutation. */
+export type CreateAccountPayload = {
+  __typename?: "CreateAccountPayload";
+  /** The `Account` that was created by this mutation. */
+  account?: Maybe<Account>;
+  /** An edge for our `Account`. May be used by Relay 1. */
+  accountEdge?: Maybe<AccountsEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars["String"]>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+/** The output of our create `Account` mutation. */
+export type CreateAccountPayloadAccountEdgeArgs = {
+  orderBy?: InputMaybe<Array<AccountsOrderBy>>;
 };
 
 /** All input for the create `ItemCategory` mutation. */
@@ -157,6 +337,117 @@ export type CreateShoppingListPayload = {
 /** The output of our create `ShoppingList` mutation. */
 export type CreateShoppingListPayloadShoppingListEdgeArgs = {
   orderBy?: InputMaybe<Array<ShoppingListsOrderBy>>;
+};
+
+/** All input for the create `UsedToken` mutation. */
+export type CreateUsedTokenInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars["String"]>;
+  /** The `UsedToken` to be created by this mutation. */
+  usedToken: UsedTokenInput;
+};
+
+/** The output of our create `UsedToken` mutation. */
+export type CreateUsedTokenPayload = {
+  __typename?: "CreateUsedTokenPayload";
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars["String"]>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `UsedToken` that was created by this mutation. */
+  usedToken?: Maybe<UsedToken>;
+  /** An edge for our `UsedToken`. May be used by Relay 1. */
+  usedTokenEdge?: Maybe<UsedTokensEdge>;
+};
+
+/** The output of our create `UsedToken` mutation. */
+export type CreateUsedTokenPayloadUsedTokenEdgeArgs = {
+  orderBy?: InputMaybe<Array<UsedTokensOrderBy>>;
+};
+
+/** A filter to be used against Datetime fields. All fields are combined with a logical ‘and.’ */
+export type DatetimeFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars["Datetime"]>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars["Datetime"]>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars["Datetime"]>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars["Datetime"]>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars["Datetime"]>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars["Boolean"]>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars["Datetime"]>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars["Datetime"]>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars["Datetime"]>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars["Datetime"]>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars["Datetime"]>>;
+};
+
+/** All input for the `deleteAccountByGoogleId` mutation. */
+export type DeleteAccountByGoogleIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars["String"]>;
+  googleId: Scalars["BigInt"];
+};
+
+/** All input for the `deleteAccountByNodeId` mutation. */
+export type DeleteAccountByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars["String"]>;
+  /** The globally unique `ID` which will identify a single `Account` to be deleted. */
+  nodeId: Scalars["ID"];
+};
+
+/** All input for the `deleteAccount` mutation. */
+export type DeleteAccountInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars["String"]>;
+  id: Scalars["UUID"];
+};
+
+/** The output of our delete `Account` mutation. */
+export type DeleteAccountPayload = {
+  __typename?: "DeleteAccountPayload";
+  /** The `Account` that was deleted by this mutation. */
+  account?: Maybe<Account>;
+  /** An edge for our `Account`. May be used by Relay 1. */
+  accountEdge?: Maybe<AccountsEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars["String"]>;
+  deletedAccountNodeId?: Maybe<Scalars["ID"]>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+/** The output of our delete `Account` mutation. */
+export type DeleteAccountPayloadAccountEdgeArgs = {
+  orderBy?: InputMaybe<Array<AccountsOrderBy>>;
 };
 
 /** All input for the `deleteItemByName` mutation. */
@@ -356,6 +647,50 @@ export type DeleteShoppingListPayload = {
 /** The output of our delete `ShoppingList` mutation. */
 export type DeleteShoppingListPayloadShoppingListEdgeArgs = {
   orderBy?: InputMaybe<Array<ShoppingListsOrderBy>>;
+};
+
+/** All input for the `deleteUsedTokenByNodeId` mutation. */
+export type DeleteUsedTokenByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars["String"]>;
+  /** The globally unique `ID` which will identify a single `UsedToken` to be deleted. */
+  nodeId: Scalars["ID"];
+};
+
+/** All input for the `deleteUsedToken` mutation. */
+export type DeleteUsedTokenInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars["String"]>;
+  tokenHash: Scalars["String"];
+  tokenType: Origin;
+};
+
+/** The output of our delete `UsedToken` mutation. */
+export type DeleteUsedTokenPayload = {
+  __typename?: "DeleteUsedTokenPayload";
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars["String"]>;
+  deletedUsedTokenNodeId?: Maybe<Scalars["ID"]>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `UsedToken` that was deleted by this mutation. */
+  usedToken?: Maybe<UsedToken>;
+  /** An edge for our `UsedToken`. May be used by Relay 1. */
+  usedTokenEdge?: Maybe<UsedTokensEdge>;
+};
+
+/** The output of our delete `UsedToken` mutation. */
+export type DeleteUsedTokenPayloadUsedTokenEdgeArgs = {
+  orderBy?: InputMaybe<Array<UsedTokensOrderBy>>;
 };
 
 /** All input for the `dieselManageUpdatedAt` mutation. */
@@ -1426,6 +1761,8 @@ export enum ItemsOrderBy {
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
   __typename?: "Mutation";
+  /** Creates a single `Account`. */
+  createAccount?: Maybe<CreateAccountPayload>;
   /** Creates a single `Item`. */
   createItem?: Maybe<CreateItemPayload>;
   /** Creates a single `ItemCategory`. */
@@ -1434,6 +1771,14 @@ export type Mutation = {
   createItemShoppingList?: Maybe<CreateItemShoppingListPayload>;
   /** Creates a single `ShoppingList`. */
   createShoppingList?: Maybe<CreateShoppingListPayload>;
+  /** Creates a single `UsedToken`. */
+  createUsedToken?: Maybe<CreateUsedTokenPayload>;
+  /** Deletes a single `Account` using a unique key. */
+  deleteAccount?: Maybe<DeleteAccountPayload>;
+  /** Deletes a single `Account` using a unique key. */
+  deleteAccountByGoogleId?: Maybe<DeleteAccountPayload>;
+  /** Deletes a single `Account` using its globally unique id. */
+  deleteAccountByNodeId?: Maybe<DeleteAccountPayload>;
   /** Deletes a single `Item` using a unique key. */
   deleteItem?: Maybe<DeleteItemPayload>;
   /** Deletes a single `Item` using a unique key. */
@@ -1454,9 +1799,20 @@ export type Mutation = {
   deleteShoppingListByName?: Maybe<DeleteShoppingListPayload>;
   /** Deletes a single `ShoppingList` using its globally unique id. */
   deleteShoppingListByNodeId?: Maybe<DeleteShoppingListPayload>;
+  /** Deletes a single `UsedToken` using a unique key. */
+  deleteUsedToken?: Maybe<DeleteUsedTokenPayload>;
+  /** Deletes a single `UsedToken` using its globally unique id. */
+  deleteUsedTokenByNodeId?: Maybe<DeleteUsedTokenPayload>;
   dieselManageUpdatedAt?: Maybe<DieselManageUpdatedAtPayload>;
+  loginUserByGoogleIdToken?: Maybe<TokenPayload>;
   refreshToken?: Maybe<TokenPayload>;
   registerUserByGoogleIdToken?: Maybe<TokenPayload>;
+  /** Updates a single `Account` using a unique key and a patch. */
+  updateAccount?: Maybe<UpdateAccountPayload>;
+  /** Updates a single `Account` using a unique key and a patch. */
+  updateAccountByGoogleId?: Maybe<UpdateAccountPayload>;
+  /** Updates a single `Account` using its globally unique id and a patch. */
+  updateAccountByNodeId?: Maybe<UpdateAccountPayload>;
   /** Updates a single `Item` using a unique key and a patch. */
   updateItem?: Maybe<UpdateItemPayload>;
   /** Updates a single `Item` using a unique key and a patch. */
@@ -1477,6 +1833,15 @@ export type Mutation = {
   updateShoppingListByName?: Maybe<UpdateShoppingListPayload>;
   /** Updates a single `ShoppingList` using its globally unique id and a patch. */
   updateShoppingListByNodeId?: Maybe<UpdateShoppingListPayload>;
+  /** Updates a single `UsedToken` using a unique key and a patch. */
+  updateUsedToken?: Maybe<UpdateUsedTokenPayload>;
+  /** Updates a single `UsedToken` using its globally unique id and a patch. */
+  updateUsedTokenByNodeId?: Maybe<UpdateUsedTokenPayload>;
+};
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateAccountArgs = {
+  input: CreateAccountInput;
 };
 
 /** The root mutation type which contains root level fields which mutate data. */
@@ -1497,6 +1862,26 @@ export type MutationCreateItemShoppingListArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateShoppingListArgs = {
   input: CreateShoppingListInput;
+};
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateUsedTokenArgs = {
+  input: CreateUsedTokenInput;
+};
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAccountArgs = {
+  input: DeleteAccountInput;
+};
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAccountByGoogleIdArgs = {
+  input: DeleteAccountByGoogleIdInput;
+};
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAccountByNodeIdArgs = {
+  input: DeleteAccountByNodeIdInput;
 };
 
 /** The root mutation type which contains root level fields which mutate data. */
@@ -1550,8 +1935,23 @@ export type MutationDeleteShoppingListByNodeIdArgs = {
 };
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteUsedTokenArgs = {
+  input: DeleteUsedTokenInput;
+};
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteUsedTokenByNodeIdArgs = {
+  input: DeleteUsedTokenByNodeIdInput;
+};
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDieselManageUpdatedAtArgs = {
   input: DieselManageUpdatedAtInput;
+};
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationLoginUserByGoogleIdTokenArgs = {
+  input: GoogleLoginInput;
 };
 
 /** The root mutation type which contains root level fields which mutate data. */
@@ -1562,6 +1962,21 @@ export type MutationRefreshTokenArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationRegisterUserByGoogleIdTokenArgs = {
   input: GoogleLoginInput;
+};
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAccountArgs = {
+  input: UpdateAccountInput;
+};
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAccountByGoogleIdArgs = {
+  input: UpdateAccountByGoogleIdInput;
+};
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAccountByNodeIdArgs = {
+  input: UpdateAccountByNodeIdInput;
 };
 
 /** The root mutation type which contains root level fields which mutate data. */
@@ -1614,10 +2029,51 @@ export type MutationUpdateShoppingListByNodeIdArgs = {
   input: UpdateShoppingListByNodeIdInput;
 };
 
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateUsedTokenArgs = {
+  input: UpdateUsedTokenInput;
+};
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateUsedTokenByNodeIdArgs = {
+  input: UpdateUsedTokenByNodeIdInput;
+};
+
 /** An object with a globally unique `ID`. */
 export type Node = {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   nodeId: Scalars["ID"];
+};
+
+export enum Origin {
+  Google = "GOOGLE",
+  Own = "OWN",
+}
+
+/** A filter to be used against Origin fields. All fields are combined with a logical ‘and.’ */
+export type OriginFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Origin>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Origin>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Origin>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Origin>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Origin>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars["Boolean"]>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Origin>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Origin>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Origin>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Origin>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Origin>>;
 };
 
 /** Information about pagination in a connection. */
@@ -1636,6 +2092,12 @@ export type PageInfo = {
 /** The root query type which gives access points into the data universe. */
 export type Query = Node & {
   __typename?: "Query";
+  account?: Maybe<Account>;
+  accountByGoogleId?: Maybe<Account>;
+  /** Reads a single `Account` using its globally unique `ID`. */
+  accountByNodeId?: Maybe<Account>;
+  /** Reads and enables pagination through a set of `Account`. */
+  accounts?: Maybe<AccountsConnection>;
   item?: Maybe<Item>;
   itemByName?: Maybe<Item>;
   /** Reads a single `Item` using its globally unique `ID`. */
@@ -1672,6 +2134,38 @@ export type Query = Node & {
   shoppingListByNodeId?: Maybe<ShoppingList>;
   /** Reads and enables pagination through a set of `ShoppingList`. */
   shoppingLists?: Maybe<ShoppingListsConnection>;
+  usedToken?: Maybe<UsedToken>;
+  /** Reads a single `UsedToken` using its globally unique `ID`. */
+  usedTokenByNodeId?: Maybe<UsedToken>;
+  /** Reads and enables pagination through a set of `UsedToken`. */
+  usedTokens?: Maybe<UsedTokensConnection>;
+};
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAccountArgs = {
+  id: Scalars["UUID"];
+};
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAccountByGoogleIdArgs = {
+  googleId: Scalars["BigInt"];
+};
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAccountByNodeIdArgs = {
+  nodeId: Scalars["ID"];
+};
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAccountsArgs = {
+  after?: InputMaybe<Scalars["Cursor"]>;
+  before?: InputMaybe<Scalars["Cursor"]>;
+  condition?: InputMaybe<AccountCondition>;
+  filter?: InputMaybe<AccountFilter>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+  offset?: InputMaybe<Scalars["Int"]>;
+  orderBy?: InputMaybe<Array<AccountsOrderBy>>;
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -1800,6 +2294,29 @@ export type QueryShoppingListsArgs = {
   last?: InputMaybe<Scalars["Int"]>;
   offset?: InputMaybe<Scalars["Int"]>;
   orderBy?: InputMaybe<Array<ShoppingListsOrderBy>>;
+};
+
+/** The root query type which gives access points into the data universe. */
+export type QueryUsedTokenArgs = {
+  tokenHash: Scalars["String"];
+  tokenType: Origin;
+};
+
+/** The root query type which gives access points into the data universe. */
+export type QueryUsedTokenByNodeIdArgs = {
+  nodeId: Scalars["ID"];
+};
+
+/** The root query type which gives access points into the data universe. */
+export type QueryUsedTokensArgs = {
+  after?: InputMaybe<Scalars["Cursor"]>;
+  before?: InputMaybe<Scalars["Cursor"]>;
+  condition?: InputMaybe<UsedTokenCondition>;
+  filter?: InputMaybe<UsedTokenFilter>;
+  first?: InputMaybe<Scalars["Int"]>;
+  last?: InputMaybe<Scalars["Int"]>;
+  offset?: InputMaybe<Scalars["Int"]>;
+  orderBy?: InputMaybe<Array<UsedTokensOrderBy>>;
 };
 
 export type RefreshTokenInput = {
@@ -2193,6 +2710,64 @@ export type UuidFilter = {
   notIn?: InputMaybe<Array<Scalars["UUID"]>>;
 };
 
+/** All input for the `updateAccountByGoogleId` mutation. */
+export type UpdateAccountByGoogleIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars["String"]>;
+  googleId: Scalars["BigInt"];
+  /** An object where the defined keys will be set on the `Account` being updated. */
+  patch: AccountPatch;
+};
+
+/** All input for the `updateAccountByNodeId` mutation. */
+export type UpdateAccountByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars["String"]>;
+  /** The globally unique `ID` which will identify a single `Account` to be updated. */
+  nodeId: Scalars["ID"];
+  /** An object where the defined keys will be set on the `Account` being updated. */
+  patch: AccountPatch;
+};
+
+/** All input for the `updateAccount` mutation. */
+export type UpdateAccountInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars["String"]>;
+  id: Scalars["UUID"];
+  /** An object where the defined keys will be set on the `Account` being updated. */
+  patch: AccountPatch;
+};
+
+/** The output of our update `Account` mutation. */
+export type UpdateAccountPayload = {
+  __typename?: "UpdateAccountPayload";
+  /** The `Account` that was updated by this mutation. */
+  account?: Maybe<Account>;
+  /** An edge for our `Account`. May be used by Relay 1. */
+  accountEdge?: Maybe<AccountsEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars["String"]>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+/** The output of our update `Account` mutation. */
+export type UpdateAccountPayloadAccountEdgeArgs = {
+  orderBy?: InputMaybe<Array<AccountsOrderBy>>;
+};
+
 /** All input for the `updateItemByName` mutation. */
 export type UpdateItemByNameInput = {
   /**
@@ -2407,6 +2982,140 @@ export type UpdateShoppingListPayload = {
 export type UpdateShoppingListPayloadShoppingListEdgeArgs = {
   orderBy?: InputMaybe<Array<ShoppingListsOrderBy>>;
 };
+
+/** All input for the `updateUsedTokenByNodeId` mutation. */
+export type UpdateUsedTokenByNodeIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars["String"]>;
+  /** The globally unique `ID` which will identify a single `UsedToken` to be updated. */
+  nodeId: Scalars["ID"];
+  /** An object where the defined keys will be set on the `UsedToken` being updated. */
+  patch: UsedTokenPatch;
+};
+
+/** All input for the `updateUsedToken` mutation. */
+export type UpdateUsedTokenInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars["String"]>;
+  /** An object where the defined keys will be set on the `UsedToken` being updated. */
+  patch: UsedTokenPatch;
+  tokenHash: Scalars["String"];
+  tokenType: Origin;
+};
+
+/** The output of our update `UsedToken` mutation. */
+export type UpdateUsedTokenPayload = {
+  __typename?: "UpdateUsedTokenPayload";
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars["String"]>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `UsedToken` that was updated by this mutation. */
+  usedToken?: Maybe<UsedToken>;
+  /** An edge for our `UsedToken`. May be used by Relay 1. */
+  usedTokenEdge?: Maybe<UsedTokensEdge>;
+};
+
+/** The output of our update `UsedToken` mutation. */
+export type UpdateUsedTokenPayloadUsedTokenEdgeArgs = {
+  orderBy?: InputMaybe<Array<UsedTokensOrderBy>>;
+};
+
+export type UsedToken = Node & {
+  __typename?: "UsedToken";
+  fromDate: Scalars["Datetime"];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  nodeId: Scalars["ID"];
+  tokenHash: Scalars["String"];
+  tokenType: Origin;
+};
+
+/**
+ * A condition to be used against `UsedToken` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type UsedTokenCondition = {
+  /** Checks for equality with the object’s `fromDate` field. */
+  fromDate?: InputMaybe<Scalars["Datetime"]>;
+  /** Checks for equality with the object’s `tokenHash` field. */
+  tokenHash?: InputMaybe<Scalars["String"]>;
+  /** Checks for equality with the object’s `tokenType` field. */
+  tokenType?: InputMaybe<Origin>;
+};
+
+/** A filter to be used against `UsedToken` object types. All fields are combined with a logical ‘and.’ */
+export type UsedTokenFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<UsedTokenFilter>>;
+  /** Filter by the object’s `fromDate` field. */
+  fromDate?: InputMaybe<DatetimeFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<UsedTokenFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<UsedTokenFilter>>;
+  /** Filter by the object’s `tokenHash` field. */
+  tokenHash?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `tokenType` field. */
+  tokenType?: InputMaybe<OriginFilter>;
+};
+
+/** An input for mutations affecting `UsedToken` */
+export type UsedTokenInput = {
+  fromDate?: InputMaybe<Scalars["Datetime"]>;
+  tokenHash: Scalars["String"];
+  tokenType: Origin;
+};
+
+/** Represents an update to a `UsedToken`. Fields that are set will be updated. */
+export type UsedTokenPatch = {
+  fromDate?: InputMaybe<Scalars["Datetime"]>;
+  tokenHash?: InputMaybe<Scalars["String"]>;
+  tokenType?: InputMaybe<Origin>;
+};
+
+/** A connection to a list of `UsedToken` values. */
+export type UsedTokensConnection = {
+  __typename?: "UsedTokensConnection";
+  /** A list of edges which contains the `UsedToken` and cursor to aid in pagination. */
+  edges: Array<UsedTokensEdge>;
+  /** A list of `UsedToken` objects. */
+  nodes: Array<Maybe<UsedToken>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `UsedToken` you could get from the connection. */
+  totalCount: Scalars["Int"];
+};
+
+/** A `UsedToken` edge in the connection. */
+export type UsedTokensEdge = {
+  __typename?: "UsedTokensEdge";
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars["Cursor"]>;
+  /** The `UsedToken` at the end of the edge. */
+  node?: Maybe<UsedToken>;
+};
+
+/** Methods to use when ordering `UsedToken`. */
+export enum UsedTokensOrderBy {
+  FromDateAsc = "FROM_DATE_ASC",
+  FromDateDesc = "FROM_DATE_DESC",
+  Natural = "NATURAL",
+  PrimaryKeyAsc = "PRIMARY_KEY_ASC",
+  PrimaryKeyDesc = "PRIMARY_KEY_DESC",
+  TokenHashAsc = "TOKEN_HASH_ASC",
+  TokenHashDesc = "TOKEN_HASH_DESC",
+  TokenTypeAsc = "TOKEN_TYPE_ASC",
+  TokenTypeDesc = "TOKEN_TYPE_DESC",
+}
 
 /** An object where the defined keys will be set on the `itemCategory` being updated. */
 export type UpdateItemCategoryOnItemForItemCategoryIdFkeyPatch = {

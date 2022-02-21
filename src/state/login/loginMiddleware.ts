@@ -3,7 +3,6 @@ import { createAuthChannel, postAuthResponse } from "../../tools/Communication";
 import { appSlice, AppSlice, View } from "../app";
 import {
   initAction,
-  loginAction,
   googleLoginFailed,
   googleLoginSuccessful,
   apiLoginSuccessful,
@@ -28,6 +27,7 @@ export const loginMiddlewareFactory: (
   ({ dispatch, getState }) =>
   (next) =>
   async (action) => {
+    console.log(action);
     next(action);
     if (initAction.match(action)) {
       (window as any).google.accounts.id.initialize({
@@ -38,6 +38,7 @@ export const loginMiddlewareFactory: (
       });
       const state = getState();
       if (state.app.authToken && state.app.refreshToken) {
+        console.log(state);
         const result = await graphqlClient
           .mutation<RefreshTokenMutation, RefreshTokenMutationVariables>(
             RefreshTokenDocument,

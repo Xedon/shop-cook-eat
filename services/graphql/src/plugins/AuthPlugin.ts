@@ -94,7 +94,7 @@ const googleAuthPlugin = makeExtendSchemaPlugin((_, options) => {
 
         if (registration) {
           await insertGoogleAccoutEntry(pgClient, {
-            googleId: payload.iss,
+            googleId: payload.sub,
             name: payload.name,
             email: payload.email,
             profilePictureUrl: payload.picture ?? null,
@@ -105,10 +105,13 @@ const googleAuthPlugin = makeExtendSchemaPlugin((_, options) => {
 
         return tokens;
       }
+
       return verify().catch((error) => {
         if (error instanceof GraphQLError) {
           return error;
         }
+
+        context.log.error(error);
 
         throw buildError(AuthErrors.TOKEN_INVALLID);
       });
@@ -200,6 +203,7 @@ const createAdditionalContext = (
   res: ServerResponse,
   fastify: FastifyInstance
 ) => ({
+  log: fastify.log,
   signAuthToken: (payload: TokenPayload) =>
     fastify.jwt.sign(cleanTokenPayload(payload), {
       ...fastify.jwt.options.sign,

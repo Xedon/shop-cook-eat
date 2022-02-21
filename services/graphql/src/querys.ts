@@ -5,7 +5,7 @@ export const runQueryAsGraphqlAuthRole = async (
   query: string,
   variables: Array<string | null>
 ) => {
-  await pgClient.query("SET ROLE 'graphql_auth");
+  await pgClient.query("SET ROLE 'graphql_auth'");
   return await pgClient.query(query, variables).finally(async () => {
     await pgClient.query("RESET ROLE");
   });
@@ -53,7 +53,7 @@ export const insertGoogleAccoutEntry = async (
 ) => {
   return await runQueryAsGraphqlAuthRole(
     pgClient,
-    "INSERT INTO account (account_origin, google_id, name, email, profile_picture_url) VALUES ('GOOGLE',$1,$2,$3,$4)",
-    [googleId, name, email, profilePictureUrl]
+    "INSERT INTO account(account_origin, google_id, name, email, profile_picture_url) VALUES ($1,$2,$3,$4,$5)",
+    ["GOOGLE", googleId, name, email, profilePictureUrl]
   );
 };

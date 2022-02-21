@@ -21,6 +21,7 @@ const Transition = React.forwardRef(function Transition(
 });
 
 export const LoginDialog = () => {
+  return null;
   const { view } = useNavigation();
   const { login } = useGoogleLogin();
 
