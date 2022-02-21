@@ -39,7 +39,7 @@ export const CreateListDialog = () => {
   );
 
   const onCreate = useCallback(() => {
-    if (name !== "") {
+    if (name) {
       createShoppingList({ name });
     }
   }, [createShoppingList, name]);
@@ -48,15 +48,15 @@ export const CreateListDialog = () => {
     if (
       createShoppingListResult.fetching === false &&
       createShoppingListResult.error === undefined &&
-      name !== ""
+      createShoppingListResult.data
     ) {
       setName("");
       onAbort();
     }
   }, [
+    createShoppingListResult.data,
     createShoppingListResult.error,
     createShoppingListResult.fetching,
-    name,
     onAbort,
   ]);
 
