@@ -16,4 +16,8 @@ name = "docker"
 enabled = true
 
   [analyzers.meta]
-  dockerfile_paths = ["dockerfiles/*"]
+  dockerfile_paths = [
+    "dockerfiles/app.dockerfile",
+    "dockerfiles/postgraphile.dockerfile",
+    "dockerfiles/sql-migration.dockerfile"
+  ]
