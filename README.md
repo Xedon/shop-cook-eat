@@ -9,3 +9,6 @@
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Xedon_shop-cook-eat&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Xedon_shop-cook-eat)  
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Xedon_shop-cook-eat&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Xedon_shop-cook-eat)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Xedon_shop-cook-eat&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Xedon_shop-cook-eat)
+## Deepsource
+
+[![DeepSource](https://deepsource.io/gh/Xedon/shop-cook-eat.svg/?label=active+issues&show_trend=true&token=TDIyRIL9uhZF-GKomnw_2tpi)](https://deepsource.io/gh/Xedon/shop-cook-eat/?ref=repository-badge)
