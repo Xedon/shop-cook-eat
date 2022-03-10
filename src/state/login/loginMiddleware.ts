@@ -1,85 +1,38 @@
 import { AnyAction, Dispatch, Middleware } from "@reduxjs/toolkit";
-import { createAuthChannel, postAuthResponse } from "../../tools/Communication";
+import { Client as GraphqlClient } from "urql";
+import { createAuthChannel } from "../../tools/Communication";
+import { GoogleAuthClient } from "../../tools/GoogleAuthClientWrapper";
 import { appSlice, AppSlice, View } from "../app";
 import {
-  initAction,
-  googleLoginFailed,
-  googleLoginSuccessful,
-  apiLoginSuccessful,
   apiLoginFailed,
+  apiLoginSuccessful,
+  googleLoginFailed,
+  initAction,
+  loginAction,
 } from "../store";
-import { Client as GraphqlClient } from "urql";
-import {
-  RefreshTokenDocument,
-  RefreshTokenMutation,
-  RefreshTokenMutationVariables,
-  RegisterUserByGoogleIdTokenDocument,
-  RegisterUserByGoogleIdTokenMutation,
-  RegisterUserByGoogleIdTokenMutationVariables,
-} from "./mutation.generated";
+import { loginOrRefresh } from "./loginFlow";
 
 const serviceWorkerChannel = createAuthChannel();
 
 export const loginMiddlewareFactory: (
-  graphqlClient: GraphqlClient
+  graphqlClient: GraphqlClient,
+  googleAuthClient: GoogleAuthClient
 ) => Middleware<{}, { app: AppSlice }, Dispatch<AnyAction>> =
-  (graphqlClient) =>
+  (graphqlClient, googleAuthClient) =>
   ({ dispatch, getState }) =>
   (next) =>
   async (action) => {
     console.log(action);
     next(action);
-    if (initAction.match(action)) {
-      (window as any).google.accounts.id.initialize({
-        client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-        callback: (resp: any) =>
-          dispatch(googleLoginSuccessful(resp.credential)),
-        auto_select: true,
-      });
-      const state = getState();
-      if (state.app.authToken && state.app.refreshToken) {
-        console.log(state);
-        const result = await graphqlClient
-          .mutation<RefreshTokenMutation, RefreshTokenMutationVariables>(
-            RefreshTokenDocument,
-            { refreshToken: state.app.refreshToken }
-          )
-          .toPromise();
-        if (result.data?.refreshToken) {
-          dispatch(apiLoginSuccessful(result.data.refreshToken));
-          return;
-        }
-        dispatch(apiLoginFailed());
-      }
+    if (initAction.match(action) || loginAction.match(action)) {
+      loginOrRefresh(googleAuthClient, graphqlClient, getState(), dispatch);
     }
 
-    if (apiLoginFailed.match(action)) {
-      (window as any).google.accounts.id.prompt((promt: any) => {
-        if (promt.isSkippedMoment() || promt.isNotDisplayed()) {
-          dispatch(googleLoginFailed());
-        }
-      });
-    }
-
-    if (googleLoginSuccessful.match(action)) {
-      postAuthResponse(serviceWorkerChannel, action.payload);
-      const result = await graphqlClient
-        .mutation<
-          RegisterUserByGoogleIdTokenMutation,
-          RegisterUserByGoogleIdTokenMutationVariables
-        >(RegisterUserByGoogleIdTokenDocument, { idToken: action.payload })
-        .toPromise();
-      if (result.error || !result.data?.registerUserByGoogleIdToken) {
-        dispatch(googleLoginFailed());
-        return;
-      }
-
+    if (apiLoginSuccessful.match(action)) {
       dispatch(appSlice.actions.navigate({ view: View.Lists }));
-      dispatch(
-        apiLoginSuccessful({
-          authToken: result.data.registerUserByGoogleIdToken.authToken,
-          refreshToken: result.data.registerUserByGoogleIdToken.refreshToken,
-        })
-      );
+    }
+
+    if (googleLoginFailed.match(action) || apiLoginFailed.match(action)) {
+      dispatch(appSlice.actions.navigate({ view: View.Login }));
     }
   };

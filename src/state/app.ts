@@ -35,9 +35,8 @@ export interface NavigationParmeterLogin {
 }
 
 export interface AppSlice {
-  idToken?: string;
-  authToken?: string;
-  refreshToken?: string;
+  authTokenExpirationDate?: string;
+  refreshTokenExpirationDate?: string;
   navigation:
     | NavigationParmeterCooking
     | NavigationParmeterList
@@ -57,12 +56,9 @@ export const appSlice = createSlice({
     },
   },
   extraReducers: (builder) =>
-    builder
-      .addCase(googleLoginSuccessful, (state, action) => {
-        state.idToken = action.payload;
-      })
-      .addCase(apiLoginSuccessful, (state, action) => {
-        state.authToken = action.payload.authToken;
-        state.refreshToken = action.payload.refreshToken;
-      }),
+    builder.addCase(apiLoginSuccessful, (state, action) => {
+      state.authTokenExpirationDate = action.payload.authTokenExpirationDate;
+      state.refreshTokenExpirationDate =
+        action.payload.refreshTokenExpirationDate;
+    }),
 });

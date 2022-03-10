@@ -23,6 +23,7 @@ import {
 } from "./graphql/fragments.generated";
 
 import { v4 as uuid } from "uuid";
+import { GoogleAuthClient } from "./tools/GoogleAuthClientWrapper";
 
 const storage = makeDefaultStorage({
   idbName: "graphcache-v3",
@@ -183,7 +184,7 @@ const cache = offlineExchange({
   },
 });
 
-export const createGraphqlClient = () =>
+export const createGraphqlClient = (googleAuthClient: GoogleAuthClient) =>
   createClient({
     url: `${process.env.PUBLIC_URL ?? "localhost"}/graphql`,
     exchanges: [devtoolsExchange, dedupExchange, cache, fetchExchange],

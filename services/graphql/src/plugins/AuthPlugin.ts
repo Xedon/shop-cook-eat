@@ -15,6 +15,7 @@ import { PoolClient } from "pg";
 import {
   insertGoogleAccoutEntry,
   insertTokenEntry,
+  selectGoogleAccoutEntryExists,
   selectIsGoogleTokenUsed,
 } from "../querys";
 import { AuthErrors, buildError } from "../errors";
@@ -31,7 +32,7 @@ const permissionsPlugin = makeWrapResolversPlugin(
   (ctx) => {
     if (
       (ctx.scope.isRootMutation || ctx.scope.isRootQuery) &&
-      ctx.scope.fieldName !== "registerUserByGoogleIdToken" &&
+      ctx.scope.fieldName !== "loginUserByGoogleIdToken" &&
       ctx.scope.fieldName !== "refreshToken"
     ) {
       return ctx.scope.fieldName;
@@ -49,7 +50,7 @@ const permissionsPlugin = makeWrapResolversPlugin(
 const googleAuthPlugin = makeExtendSchemaPlugin((_, options) => {
   const client = new OAuth2Client(options.GOOGLE_CLIENT_KEY);
   const loginOrRegisterUserByGoogleIdToken =
-    (registration: boolean) =>
+    () =>
     async (
       _: any,
       { input: { idToken } }: { input: { idToken: string } },
@@ -92,7 +93,14 @@ const googleAuthPlugin = makeExtendSchemaPlugin((_, options) => {
 
         setAuthCookies(tokens);
 
-        if (registration) {
+        const accountRegistered = await selectGoogleAccoutEntryExists(
+          pgClient,
+          {
+            googleId: payload.sub,
+          }
+        );
+
+        if (!accountRegistered) {
           await insertGoogleAccoutEntry(pgClient, {
             googleId: payload.sub,
             name: payload.name,
@@ -130,13 +138,11 @@ const googleAuthPlugin = makeExtendSchemaPlugin((_, options) => {
 
       extend type Mutation {
         loginUserByGoogleIdToken(input: GoogleLoginInput!): TokenPayload
-        registerUserByGoogleIdToken(input: GoogleLoginInput!): TokenPayload
       }
     `,
     resolvers: {
       Mutation: {
-        loginUserByGoogleIdToken: loginOrRegisterUserByGoogleIdToken(false),
-        registerUserByGoogleIdToken: loginOrRegisterUserByGoogleIdToken(true),
+        loginUserByGoogleIdToken: loginOrRegisterUserByGoogleIdToken(),
       },
     },
   };
@@ -150,16 +156,33 @@ const refreshTokenPlugin = makeExtendSchemaPlugin((_) => {
       }
 
       extend type Mutation {
-        refreshToken(input: RefreshTokenInput!): TokenPayload
+        """
+        Refresh auth token by providing a refresh token as Input or as auth_refresh cookie
+        To Refresh the Refresh token use  loginUserByGoogleIdToken
+        """
+        refreshToken(input: RefreshTokenInput): TokenPayload
       }
     `,
     resolvers: {
       Mutation: {
         refreshToken: async (
           _query,
-          { input: { refreshToken } }: { input: { refreshToken: string } },
-          { signAuthToken, setAuthCookies, verifyRefreshToken }: ContextType
+          { input }: { input?: { refreshToken: string } },
+          {
+            signAuthToken,
+            setAuthCookies,
+            verifyRefreshToken,
+            getAuthCookies,
+          }: ContextType
         ) => {
+          const refreshToken = input
+            ? input.refreshToken
+            : getAuthCookies().refreshToken;
+
+          if (!refreshToken) {
+            throw buildError(AuthErrors.TOKEN_MISSING);
+          }
+
           const payload = verifyRefreshToken(refreshToken);
 
           const authToken = signAuthToken(payload);
@@ -183,6 +206,9 @@ export const AuthPlugin = makePluginByCombiningPlugins(
   googleAuthPlugin,
   refreshTokenPlugin
 );
+
+const AUTH_COOKIE_NAME = "auth";
+const AUTH_REFRESH_COOKIE_NAME = "auth_refresh";
 
 const cleanTokenPayload = ({
   aud,
@@ -226,6 +252,18 @@ const createAdditionalContext = (
       ...fastify.jwt.options.verify,
       allowedSub: "refreshToken",
     }),
+  getAuthCookies: () => {
+    if (typeof req.headers.cookie !== "string") {
+      return {};
+    }
+
+    const cookies = cookie.parse(req.headers.cookie);
+
+    return {
+      authToken: cookies[AUTH_COOKIE_NAME],
+      refreshToken: cookies[AUTH_REFRESH_COOKIE_NAME],
+    };
+  },
   setAuthCookies: ({
     authToken,
     refreshToken,
@@ -234,12 +272,12 @@ const createAdditionalContext = (
     refreshToken: string;
   }) => {
     res.setHeader("Set-Cookie", [
-      cookie.serialize("auth", authToken, {
+      cookie.serialize(AUTH_COOKIE_NAME, authToken, {
         expires: addDays(new Date(), 1),
         secure: true,
         sameSite: "strict",
       }),
-      cookie.serialize("auth_refresh", refreshToken, {
+      cookie.serialize(AUTH_REFRESH_COOKIE_NAME, refreshToken, {
         expires: addDays(new Date(), 7),
         secure: true,
         sameSite: "strict",
