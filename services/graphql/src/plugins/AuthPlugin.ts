@@ -275,11 +275,13 @@ const createAdditionalContext = (
       cookie.serialize(AUTH_COOKIE_NAME, authToken, {
         expires: addDays(new Date(), 1),
         secure: true,
+        httpOnly: true,
         sameSite: "strict",
       }),
       cookie.serialize(AUTH_REFRESH_COOKIE_NAME, refreshToken, {
         expires: addDays(new Date(), 7),
         secure: true,
+        httpOnly: true,
         sameSite: "strict",
       }),
     ]);
