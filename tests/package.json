@@ -1,0 +1,22 @@
+{
+  "name": "cypress-tests",
+  "version": "1.0.0",
+  "license": "MIT",
+  "devDependencies": {
+    "@testing-library/cypress": "^8.0.2",
+    "cypress": "^9.5.1",
+    "date-fns": "^2.28.0",
+    "jose": "^4.6.0"
+  },
+  "scripts": {
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run --browser chromium"
+  },
+  "dependencies": {
+    "@cypress/code-coverage": "^3.9.12",
+    "@cypress/instrument-cra": "^1.4.0",
+    "@types/node": "^17.0.21",
+    "istanbul-lib-coverage": "^3.2.0",
+    "nyc": "^15.1.0"
+  }
+}

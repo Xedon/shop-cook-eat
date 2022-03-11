@@ -5,7 +5,8 @@ services:
       context: ".devcontainer"
     volumes:
       - .:/workspace:cached
-      - "certs:/workspace/services/graphql/certs"
+      - "./.certs:/workspace/services/graphql/certs"
+      - "./.certs:/workspace/tests/certs"
     command: sleep infinity
     environment:
       DATABASE_URL: postgres://postgres:dev@postgres:5432/sce
@@ -52,18 +53,16 @@ services:
     env_file:
       - "services/graphql/.env"
     volumes:
-      - "certs:/app/certs"
+      - "./.certs:/app/certs"
     ports: ["5001:5000"]
   create_keys:
     image: debian
     volumes:
-      - "certs:/tmp"
+      - "./.certs:/tmp/certs"
     command: bash -c "
       apt-get update &&
       apt-get install openssl &&
-      cd /tmp &&
+      cd /tmp/certs &&
       openssl genpkey -algorithm RSA -out private.key -pkeyopt rsa_keygen_bits:2048 &&
       openssl rsa -pubout -in private.key -out public.key &&
       chmod 777 private.key public.key"
-volumes:
-  certs:
