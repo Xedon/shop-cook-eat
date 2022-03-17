@@ -17,13 +17,13 @@ jobs:
         run: docker-compose -f docker-compose-dev.yml up -d postgres migration postgraphile
       - name: Setup UI
         run: yarn
-      - name: Setup Tests
+      - name: Start UI
         run: yarn start&
       - name: Setup Tests
         run: yarn
         working-directory: ./tests
-      - name: Setup Tests
-        run: yarn cypress:run:test
+      - name: Start UI tests
+        run: yarn dev
         working-directory: ./tests
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
