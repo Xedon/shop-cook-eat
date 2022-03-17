@@ -19,12 +19,23 @@ jobs:
         run: yarn
       - name: Start UI
         run: yarn start&
-      - name: Setup Tests
-        run: yarn
-        working-directory: ./tests
-      - name: Start UI tests
-        run: yarn cypress:run:dev
-        working-directory: ./tests
+      - name: Install Cypress and run tests
+        uses: cypress-io/github-action@v2
+        with:
+          working-directory: tests
+          browser: chromium
+          headless: true
+          config: baseUrl=https://localhost:3000
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: tests/cypress/screenshots
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: cypress-videos
+          path: tests/cypress/videos
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
