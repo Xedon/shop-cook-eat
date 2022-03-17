@@ -22,6 +22,7 @@ services:
     environment:
       POSTGRES_PASSWORD: dev
       POSTGRES_DB: sce
+    restart: unless-stopped
   migration:
     depends_on:
       - postgres
@@ -36,6 +37,7 @@ services:
       GRAPHQL_SERVICE_PASSWORD: graphql
     volumes:
       - ./migrations:/migrator/migrations
+    restart: on-failure
   postgraphile:
     depends_on:
       - postgres
@@ -55,6 +57,7 @@ services:
     volumes:
       - "./.certs:/app/certs"
     ports: ["5001:5000"]
+    restart: unless-stopped
   ui:
     depends_on:
       - postgraphile
@@ -66,6 +69,7 @@ services:
     environment:
       - GOOGLE_CLIENT_KEY=$GOOGLE_CLIENT_KEY
     ports: ["8443:8443"]
+    restart: unless-stopped
   create_keys:
     image: debian
     volumes:
@@ -77,3 +81,4 @@ services:
       openssl genpkey -algorithm RSA -out private.key -pkeyopt rsa_keygen_bits:2048 &&
       openssl rsa -pubout -in private.key -out public.key &&
       chmod 777 private.key public.key"
+    restart: on-failure
