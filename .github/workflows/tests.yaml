@@ -6,15 +6,15 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
-  sonarcloud:
-    name: SonarCloud
+  tests:
+    name: Testing & Reporting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Build Containers
         run: docker-compose -f docker-compose-dev.yml build migration postgraphile
       - name: Start Containers
-        run: docker-compose -f docker-compose-dev.yml up postgres migration postgraphile -d
+        run: docker-compose -f docker-compose-dev.yml up -d postgres migration postgraphile
       - name: Setup UI
         run: yarn
       - name: Setup Tests
