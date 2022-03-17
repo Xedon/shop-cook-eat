@@ -18,7 +18,7 @@ jobs:
       - name: Setup UI
         run: yarn
       - name: Start UI
-        run: yarn start& > ui.log
+        run: REACT_APP_BACKEND=http://localhost:5001/ yarn start > ui.log &
       - name: Install Cypress and run tests
         uses: cypress-io/github-action@v2
         with:
