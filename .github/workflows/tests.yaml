@@ -38,7 +38,8 @@ jobs:
           path: tests/cypress/videos
       - name: Collect container logs
         if: failure()
-        run: docker-compose -f docker-compose-dev.yml ps > container.log
+        run: |
+          docker-compose -f docker-compose-dev.yml ps > container.log
           docker-compose -f docker-compose-dev.yml logs >> container.log
       - uses: actions/upload-artifact@v2
         if: failure()
