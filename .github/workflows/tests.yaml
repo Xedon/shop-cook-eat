@@ -18,7 +18,7 @@ jobs:
       - name: Setup UI
         run: yarn
       - name: Start UI
-        run: yarn start&
+        run: yarn start& > ui.log
       - name: Install Cypress and run tests
         uses: cypress-io/github-action@v2
         with:
@@ -40,12 +40,17 @@ jobs:
         if: failure()
         run: |
           docker-compose -f docker-compose-dev.yml ps > container.log
-          docker-compose -f docker-compose-dev.yml logs >> container.log
+          docker-compose -f docker-compose-dev.yml logs --no-color --timestamps >> container.log
       - uses: actions/upload-artifact@v2
         if: failure()
         with:
           name: container-logs
           path: container.log
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: ui-logs
+          path: ui.log
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
