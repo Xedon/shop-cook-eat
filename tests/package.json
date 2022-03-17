@@ -9,8 +9,10 @@
     "jose": "^4.6.0"
   },
   "scripts": {
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run --browser chromium"
+    "cypress:open:dev": "cypress open --browser chromium --config baseUrl=https://localhost:3000",
+    "cypress:run:dev": "cypress run --browser chromium --config baseUrl=https://localhost:3000",
+    "cypress:open:test": "cypress open --browser chromium --config baseUrl=https://localhost:8443",
+    "cypress:run:test": "cypress run --browser chrome --config baseUrl=https://localhost:8443"
   },
   "dependencies": {
     "@cypress/code-coverage": "^3.9.12",

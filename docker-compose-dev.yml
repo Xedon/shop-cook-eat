@@ -50,11 +50,22 @@ services:
       UNPRIVILEGED_PGUSER: graphql
       UNPRIVILEGED_PGPASSWORD: graphql
       DEV: "true"
-    env_file:
-      - "services/graphql/.env"
+      GOOGLE_CLIENT_KEY: "${GOOGLE_CLIENT_KEY}"
+      JWT_ISS: "localhost"
     volumes:
       - "./.certs:/app/certs"
     ports: ["5001:5000"]
+  ui:
+    depends_on:
+      - postgraphile
+    build:
+      context: .
+      dockerfile: dockerfiles/ui.dockerfile
+      args:
+        - REACT_APP_GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_KEY
+    environment:
+      - GOOGLE_CLIENT_KEY=$GOOGLE_CLIENT_KEY
+    ports: ["8443:8443"]
   create_keys:
     image: debian
     volumes:

@@ -1,0 +1,32 @@
+name: Tests
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Containers
+        run: docker-compose -f docker-compose-dev.yml build migration postgraphile
+      - name: Start Containers
+        run: docker-compose -f docker-compose-dev.yml up postgres migration postgraphile -d
+      - name: Setup UI
+        run: yarn
+      - name: Setup Tests
+        run: yarn start&
+      - name: Setup Tests
+        run: yarn
+        working-directory: ./tests
+      - name: Setup Tests
+        run: yarn cypress:run:test
+        working-directory: ./tests
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

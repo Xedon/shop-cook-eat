@@ -8,14 +8,16 @@ RUN yarn
 
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
-COPY .env.production ./
 COPY public public/
 COPY src src/
 RUN yarn build
 
 # production environment
-FROM nginxinc/nginx-unprivileged:1.18
-COPY --from=builder /app/build /usr/share/nginx/html
-# new
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+FROM caddy:2
+COPY --from=builder /app/build /usr/share/caddy
+RUN cat /etc/caddy/Caddyfile
+COPY dockerfiles/caddy/Caddyfile /etc/caddy/Caddyfile
+
+EXPOSE 8080 
+EXPOSE 8443 
+
