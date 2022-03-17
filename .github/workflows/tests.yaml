@@ -23,7 +23,7 @@ jobs:
         run: yarn
         working-directory: ./tests
       - name: Start UI tests
-        run: yarn dev
+        run: yarn cypress:run:dev
         working-directory: ./tests
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
