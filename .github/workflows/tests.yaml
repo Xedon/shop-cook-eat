@@ -36,6 +36,14 @@ jobs:
         with:
           name: cypress-videos
           path: tests/cypress/videos
+      - name: Collect container logs
+        if: failure()
+        run: docker-compose -f docker-compose-dev.yml logs > container.log
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: container-logs
+          path: container.log
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
