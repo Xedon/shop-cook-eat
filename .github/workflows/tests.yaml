@@ -38,7 +38,7 @@ jobs:
         with:
           name: cypress-videos
           path: tests/cypress/videos
-      - run: sed "s?SF:..?SF:$(pwd)?g" tests/coverage/lcov.info -i
+      - run: sed "s?SF:..?SF:/github/workspace?g" tests/coverage/lcov.info -i
       - name: Collect container logs
         if: failure()
         run: |
