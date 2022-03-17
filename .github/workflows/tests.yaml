@@ -1,0 +1,61 @@
+name: Tests
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  tests:
+    name: Testing & Reporting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Build Containers
+        run: docker-compose -f docker-compose-dev.yml build migration postgraphile
+      - name: Start Containers
+        run: docker-compose -f docker-compose-dev.yml up -d create_keys postgres migration postgraphile
+      - name: Setup UI
+        run: yarn
+      - name: Start UI
+        run: REACT_APP_BACKEND=http://localhost:5001/ yarn start > ui.log &
+      - name: Install Cypress and run tests
+        uses: cypress-io/github-action@v2
+        with:
+          working-directory: tests
+          browser: chromium
+          headless: true
+          config: baseUrl=https://localhost:3000
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: tests/cypress/screenshots
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: cypress-videos
+          path: tests/cypress/videos
+      - run: sed "s?SF:..?SF:/github/workspace?g" tests/coverage/lcov.info -i
+      - name: Collect container logs
+        if: failure()
+        run: |
+          docker-compose -f docker-compose-dev.yml ps > container.log
+          docker-compose -f docker-compose-dev.yml logs --no-color --timestamps >> container.log
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: container-logs
+          path: container.log
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: ui-logs
+          path: ui.log
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

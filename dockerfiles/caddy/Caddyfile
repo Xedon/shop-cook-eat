@@ -1,0 +1,17 @@
+
+{
+    admin off
+}
+localhost:8443, :80 {
+    handle /graphql {
+        reverse_proxy http://postgraphile:5000
+    }
+    handle /google_client_key {
+        respond {$GOOGLE_CLIENT_KEY}
+    }
+    handle {
+        root * /usr/share/caddy
+        try_files {path} /index.html
+        file_server
+    }
+}

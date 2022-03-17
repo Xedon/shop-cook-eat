@@ -9,7 +9,8 @@ import { useNavigation } from "../../state/selectors";
 import { View } from "../../state/app";
 import { Box } from "@mui/system";
 import { Button, Grid } from "@mui/material";
-import { useGoogleLogin } from "../../tools/useGoogleLogin";
+import { useDispatch } from "react-redux";
+import { loginAction } from "../../state/store";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -21,9 +22,8 @@ const Transition = React.forwardRef(function Transition(
 });
 
 export const LoginDialog = () => {
-  return null;
   const { view } = useNavigation();
-  const { login } = useGoogleLogin();
+  const dispatch = useDispatch();
 
   return (
     <Dialog
@@ -42,7 +42,7 @@ export const LoginDialog = () => {
             <Button
               color="secondary"
               title="Login with Google Account"
-              onClick={login}
+              onClick={() => dispatch(loginAction())}
             >
               Login with Google Account
             </Button>

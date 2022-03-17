@@ -33,3 +33,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .eslintcache
+.nyc_output
+certs/
+.certs
+coverage/
+**/cypress/videos/

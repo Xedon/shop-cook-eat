@@ -3,14 +3,14 @@ fragment TokenPayload on TokenPayload {
   refreshToken
 }
 
-mutation registerUserByGoogleIdToken($idToken: String!) {
-  registerUserByGoogleIdToken(input: { idToken: $idToken }) {
+mutation loginUserByGoogleIdToken($idToken: String!) {
+  loginUserByGoogleIdToken(input: { idToken: $idToken }) {
     ...TokenPayload
   }
 }
 
-mutation refreshToken($refreshToken: String!) {
-  refreshToken(input: { refreshToken: $refreshToken }) {
+mutation refreshToken {
+  refreshToken {
     ...TokenPayload
   }
 }

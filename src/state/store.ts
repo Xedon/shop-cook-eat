@@ -1,5 +1,6 @@
 import { configureStore, createAction } from "@reduxjs/toolkit";
 import { Client as GraphqlClient } from "urql";
+import { GoogleAuthClient } from "../tools/GoogleAuthClientWrapper";
 import { appSlice } from "./app";
 import { loginMiddlewareFactory } from "./login/loginMiddleware";
 import {
@@ -16,17 +17,21 @@ export const googleLoginSuccessful = createAction<string>(
 export const googleLoginFailed = createAction("google-login-failed");
 
 export const apiLoginSuccessful = createAction<{
-  authToken: string;
-  refreshToken: string;
+  authTokenExpirationDate?: string;
+  refreshTokenExpirationDate: string;
 }>("api-login-successful");
+
 export const apiLoginFailed = createAction("api-login-failed");
 
-export const createStore = (graphqlClient: GraphqlClient) => {
+export const createStore = (
+  graphqlClient: GraphqlClient,
+  googleAuthClient: GoogleAuthClient
+) => {
   const store = configureStore({
     preloadedState: loadStateFromLocalStorage(),
     middleware: (defaultMiddlewares) => [
       ...defaultMiddlewares(),
-      loginMiddlewareFactory(graphqlClient),
+      loginMiddlewareFactory(graphqlClient, googleAuthClient),
     ],
     reducer: { [appSlice.name]: appSlice.reducer },
   });

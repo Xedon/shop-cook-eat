@@ -5,7 +5,8 @@ services:
       context: ".devcontainer"
     volumes:
       - .:/workspace:cached
-      - "certs:/workspace/services/graphql/certs"
+      - "./.certs:/workspace/services/graphql/certs"
+      - "./.certs:/workspace/tests/certs"
     command: sleep infinity
     environment:
       DATABASE_URL: postgres://postgres:dev@postgres:5432/sce
@@ -21,6 +22,7 @@ services:
     environment:
       POSTGRES_PASSWORD: dev
       POSTGRES_DB: sce
+    restart: unless-stopped
   migration:
     depends_on:
       - postgres
@@ -35,6 +37,7 @@ services:
       GRAPHQL_SERVICE_PASSWORD: graphql
     volumes:
       - ./migrations:/migrator/migrations
+    restart: on-failure
   postgraphile:
     depends_on:
       - postgres
@@ -49,21 +52,33 @@ services:
       UNPRIVILEGED_PGUSER: graphql
       UNPRIVILEGED_PGPASSWORD: graphql
       DEV: "true"
-    env_file:
-      - "services/graphql/.env"
+      GOOGLE_CLIENT_KEY: "${GOOGLE_CLIENT_KEY}"
+      JWT_ISS: "localhost"
     volumes:
-      - "certs:/app/certs"
+      - "./.certs:/app/certs"
     ports: ["5001:5000"]
+    restart: unless-stopped
+  ui:
+    depends_on:
+      - postgraphile
+    build:
+      context: .
+      dockerfile: dockerfiles/ui.dockerfile
+      args:
+        - REACT_APP_GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_KEY
+    environment:
+      - GOOGLE_CLIENT_KEY=$GOOGLE_CLIENT_KEY
+    ports: ["8443:8443"]
+    restart: unless-stopped
   create_keys:
     image: debian
     volumes:
-      - "certs:/tmp"
+      - "./.certs:/tmp/certs"
     command: bash -c "
       apt-get update &&
       apt-get install openssl &&
-      cd /tmp &&
+      cd /tmp/certs &&
       openssl genpkey -algorithm RSA -out private.key -pkeyopt rsa_keygen_bits:2048 &&
       openssl rsa -pubout -in private.key -out public.key &&
       chmod 777 private.key public.key"
-volumes:
-  certs:
+    restart: on-failure

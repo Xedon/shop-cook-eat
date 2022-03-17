@@ -1,12 +1,14 @@
 import { GraphQLError } from "graphql";
 
 export enum AuthErrors {
+  TOKEN_MISSING = "TOKEN_MISSING",
   TOKEN_INVALLID = "TOKEN_INVALLID",
   USER_NOT_VERIFIED = "USER_NOT_VERIFIED",
   INFORMATIONS_NOT_SUFFICIENT = "INFORMATIONS_NOT_SUFFICIENT",
 }
 
 const authErrorsMap: Record<AuthErrors, string> = {
+  TOKEN_MISSING: "Token missing in Request",
   TOKEN_INVALLID: "Token is Invallid",
   USER_NOT_VERIFIED: "Google user is not verified",
   INFORMATIONS_NOT_SUFFICIENT: "Informations not sufficient for registration",

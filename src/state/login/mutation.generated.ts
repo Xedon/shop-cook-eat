@@ -10,20 +10,20 @@ export type TokenPayloadFragment = {
   refreshToken: string;
 };
 
-export type RegisterUserByGoogleIdTokenMutationVariables = Types.Exact<{
+export type LoginUserByGoogleIdTokenMutationVariables = Types.Exact<{
   idToken: Types.Scalars["String"];
 }>;
 
-export type RegisterUserByGoogleIdTokenMutation = {
+export type LoginUserByGoogleIdTokenMutation = {
   __typename?: "Mutation";
-  registerUserByGoogleIdToken?:
+  loginUserByGoogleIdToken?:
     | { __typename?: "TokenPayload"; authToken: string; refreshToken: string }
     | null
     | undefined;
 };
 
 export type RefreshTokenMutationVariables = Types.Exact<{
-  refreshToken: Types.Scalars["String"];
+  [key: string]: never;
 }>;
 
 export type RefreshTokenMutation = {
@@ -40,24 +40,24 @@ export const TokenPayloadFragmentDoc = gql`
     refreshToken
   }
 `;
-export const RegisterUserByGoogleIdTokenDocument = gql`
-  mutation registerUserByGoogleIdToken($idToken: String!) {
-    registerUserByGoogleIdToken(input: { idToken: $idToken }) {
+export const LoginUserByGoogleIdTokenDocument = gql`
+  mutation loginUserByGoogleIdToken($idToken: String!) {
+    loginUserByGoogleIdToken(input: { idToken: $idToken }) {
       ...TokenPayload
     }
   }
   ${TokenPayloadFragmentDoc}
 `;
 
-export function useRegisterUserByGoogleIdTokenMutation() {
+export function useLoginUserByGoogleIdTokenMutation() {
   return Urql.useMutation<
-    RegisterUserByGoogleIdTokenMutation,
-    RegisterUserByGoogleIdTokenMutationVariables
-  >(RegisterUserByGoogleIdTokenDocument);
+    LoginUserByGoogleIdTokenMutation,
+    LoginUserByGoogleIdTokenMutationVariables
+  >(LoginUserByGoogleIdTokenDocument);
 }
 export const RefreshTokenDocument = gql`
-  mutation refreshToken($refreshToken: String!) {
-    refreshToken(input: { refreshToken: $refreshToken }) {
+  mutation refreshToken {
+    refreshToken {
       ...TokenPayload
     }
   }

@@ -6,7 +6,7 @@ export const runQueryAsGraphqlAuthRole = async (
   variables: Array<string | null>
 ) => {
   await pgClient.query("SET ROLE 'graphql_auth'");
-  return await pgClient.query(query, variables).finally(async () => {
+  return pgClient.query(query, variables).finally(async () => {
     await pgClient.query("RESET ROLE");
   });
 };
@@ -30,7 +30,7 @@ export const insertTokenEntry = async (
   pgClient: PoolClient,
   { idToken }: { idToken: string }
 ) => {
-  return await runQueryAsGraphqlAuthRole(
+  return runQueryAsGraphqlAuthRole(
     pgClient,
     "INSERT INTO used_tokens (token_hash,token_type) VALUES (ENCODE(SHA512($1),'hex'),'GOOGLE')",
     [idToken]
@@ -51,9 +51,24 @@ export const insertGoogleAccoutEntry = async (
     profilePictureUrl: string | null;
   }
 ) => {
-  return await runQueryAsGraphqlAuthRole(
+  return runQueryAsGraphqlAuthRole(
     pgClient,
     "INSERT INTO account(account_origin, google_id, name, email, profile_picture_url) VALUES ($1,$2,$3,$4,$5)",
     ["GOOGLE", googleId, name, email, profilePictureUrl]
   );
+};
+
+export const selectGoogleAccoutEntryExists = async (
+  pgClient: PoolClient,
+  {
+    googleId,
+  }: {
+    googleId: string;
+  }
+): Promise<boolean> => {
+  return runQueryAsGraphqlAuthRole(
+    pgClient,
+    "SELECT 1 FROM account WHERE account_origin=$1 and google_id=$2",
+    ["GOOGLE", googleId]
+  ).then((v) => v.rowCount === 1);
 };

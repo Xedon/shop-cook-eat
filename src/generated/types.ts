@@ -17,12 +17,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /**
-   * A signed eight-byte integer. The upper big integer values are greater than the
-   * max value for a JavaScript number. Therefore all big integers will be output as
-   * strings and not numbers.
-   */
-  BigInt: any;
   /** A location in a connection that can be used for resuming pagination. */
   Cursor: any;
   /**
@@ -40,7 +34,7 @@ export type Account = Node & {
   __typename?: "Account";
   accountOrigin: Origin;
   email: Scalars["String"];
-  googleId?: Maybe<Scalars["BigInt"]>;
+  googleId?: Maybe<Scalars["String"]>;
   id: Scalars["UUID"];
   name: Scalars["String"];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
@@ -55,7 +49,7 @@ export type AccountCondition = {
   /** Checks for equality with the object’s `email` field. */
   email?: InputMaybe<Scalars["String"]>;
   /** Checks for equality with the object’s `googleId` field. */
-  googleId?: InputMaybe<Scalars["BigInt"]>;
+  googleId?: InputMaybe<Scalars["String"]>;
   /** Checks for equality with the object’s `id` field. */
   id?: InputMaybe<Scalars["UUID"]>;
   /** Checks for equality with the object’s `name` field. */
@@ -73,7 +67,7 @@ export type AccountFilter = {
   /** Filter by the object’s `email` field. */
   email?: InputMaybe<StringFilter>;
   /** Filter by the object’s `googleId` field. */
-  googleId?: InputMaybe<BigIntFilter>;
+  googleId?: InputMaybe<StringFilter>;
   /** Filter by the object’s `id` field. */
   id?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `name` field. */
@@ -90,7 +84,7 @@ export type AccountFilter = {
 export type AccountInput = {
   accountOrigin: Origin;
   email: Scalars["String"];
-  googleId?: InputMaybe<Scalars["BigInt"]>;
+  googleId?: InputMaybe<Scalars["String"]>;
   id?: InputMaybe<Scalars["UUID"]>;
   name: Scalars["String"];
   profilePictureUrl?: InputMaybe<Scalars["String"]>;
@@ -100,7 +94,7 @@ export type AccountInput = {
 export type AccountPatch = {
   accountOrigin?: InputMaybe<Origin>;
   email?: InputMaybe<Scalars["String"]>;
-  googleId?: InputMaybe<Scalars["BigInt"]>;
+  googleId?: InputMaybe<Scalars["String"]>;
   id?: InputMaybe<Scalars["UUID"]>;
   name?: InputMaybe<Scalars["String"]>;
   profilePictureUrl?: InputMaybe<Scalars["String"]>;
@@ -146,32 +140,6 @@ export enum AccountsOrderBy {
   ProfilePictureUrlAsc = "PROFILE_PICTURE_URL_ASC",
   ProfilePictureUrlDesc = "PROFILE_PICTURE_URL_DESC",
 }
-
-/** A filter to be used against BigInt fields. All fields are combined with a logical ‘and.’ */
-export type BigIntFilter = {
-  /** Not equal to the specified value, treating null like an ordinary value. */
-  distinctFrom?: InputMaybe<Scalars["BigInt"]>;
-  /** Equal to the specified value. */
-  equalTo?: InputMaybe<Scalars["BigInt"]>;
-  /** Greater than the specified value. */
-  greaterThan?: InputMaybe<Scalars["BigInt"]>;
-  /** Greater than or equal to the specified value. */
-  greaterThanOrEqualTo?: InputMaybe<Scalars["BigInt"]>;
-  /** Included in the specified list. */
-  in?: InputMaybe<Array<Scalars["BigInt"]>>;
-  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
-  isNull?: InputMaybe<Scalars["Boolean"]>;
-  /** Less than the specified value. */
-  lessThan?: InputMaybe<Scalars["BigInt"]>;
-  /** Less than or equal to the specified value. */
-  lessThanOrEqualTo?: InputMaybe<Scalars["BigInt"]>;
-  /** Equal to the specified value, treating null like an ordinary value. */
-  notDistinctFrom?: InputMaybe<Scalars["BigInt"]>;
-  /** Not equal to the specified value. */
-  notEqualTo?: InputMaybe<Scalars["BigInt"]>;
-  /** Not included in the specified list. */
-  notIn?: InputMaybe<Array<Scalars["BigInt"]>>;
-};
 
 /** All input for the create `Account` mutation. */
 export type CreateAccountInput = {
@@ -404,7 +372,7 @@ export type DeleteAccountByGoogleIdInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars["String"]>;
-  googleId: Scalars["BigInt"];
+  googleId: Scalars["String"];
 };
 
 /** All input for the `deleteAccountByNodeId` mutation. */
@@ -1805,8 +1773,11 @@ export type Mutation = {
   deleteUsedTokenByNodeId?: Maybe<DeleteUsedTokenPayload>;
   dieselManageUpdatedAt?: Maybe<DieselManageUpdatedAtPayload>;
   loginUserByGoogleIdToken?: Maybe<TokenPayload>;
+  /**
+   * Refresh auth token by providing a refresh token as Input or as auth_refresh cookie
+   * To Refresh the Refresh token use  loginUserByGoogleIdToken
+   */
   refreshToken?: Maybe<TokenPayload>;
-  registerUserByGoogleIdToken?: Maybe<TokenPayload>;
   /** Updates a single `Account` using a unique key and a patch. */
   updateAccount?: Maybe<UpdateAccountPayload>;
   /** Updates a single `Account` using a unique key and a patch. */
@@ -1956,12 +1927,7 @@ export type MutationLoginUserByGoogleIdTokenArgs = {
 
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationRefreshTokenArgs = {
-  input: RefreshTokenInput;
-};
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationRegisterUserByGoogleIdTokenArgs = {
-  input: GoogleLoginInput;
+  input?: InputMaybe<RefreshTokenInput>;
 };
 
 /** The root mutation type which contains root level fields which mutate data. */
@@ -2148,7 +2114,7 @@ export type QueryAccountArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryAccountByGoogleIdArgs = {
-  googleId: Scalars["BigInt"];
+  googleId: Scalars["String"];
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -2717,7 +2683,7 @@ export type UpdateAccountByGoogleIdInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars["String"]>;
-  googleId: Scalars["BigInt"];
+  googleId: Scalars["String"];
   /** An object where the defined keys will be set on the `Account` being updated. */
   patch: AccountPatch;
 };
