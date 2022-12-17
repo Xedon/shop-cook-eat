@@ -30,7 +30,9 @@
     "foxundermoon.shell-format",
     "tim-koehler.helm-intellisense",
     "ms-kubernetes-tools.vscode-kubernetes-tools",
-    "graphql.vscode-graphql"
+    "graphql.vscode-graphql",
+    "GitHub.vscode-pull-request-github",
+    "cschleiden.vscode-github-actions"
   ],
   "dockerComposeFile": ["../docker-compose-dev.yml"],
   "service": "dev_container",

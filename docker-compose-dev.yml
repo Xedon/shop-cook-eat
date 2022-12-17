@@ -52,8 +52,8 @@ services:
       UNPRIVILEGED_PGUSER: graphql
       UNPRIVILEGED_PGPASSWORD: graphql
       DEV: "true"
-      GOOGLE_CLIENT_KEY: "${GOOGLE_CLIENT_KEY}"
-      JWT_ISS: "localhost"
+      GOOGLE_CLIENT_KEY: $GOOGLE_CLIENT_KEY
+      JWT_ISS: $JWT_ISS
     volumes:
       - "./.certs:/app/certs"
     ports: ["5001:5000"]
