@@ -8,21 +8,29 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./theme";
 import { Provider as ClientProvider } from "urql";
-
+import { Auth0Provider } from "@auth0/auth0-react";
 import { boot } from "./bootstrap";
 
 const { store, graphqlClient } = boot();
 
 ReactDOM.render(
   <React.StrictMode>
-    <ClientProvider value={graphqlClient}>
-      <ThemeProvider theme={theme}>
-        <Provider store={store}>
-          <CssBaseline />
-          <App />
-        </Provider>
-      </ThemeProvider>
-    </ClientProvider>
+    <Auth0Provider
+      domain={process.env.REACT_APP_AUTH0_DOMAIN!}
+      clientId={process.env.REACT_APP_CLIENT_ID!}
+      redirectUri={window.location.origin}
+      cacheLocation="localstorage"
+      audience="http://postgraphile:5000"
+    >
+      <ClientProvider value={graphqlClient}>
+        <ThemeProvider theme={theme}>
+          <Provider store={store}>
+            <CssBaseline />
+            <App />
+          </Provider>
+        </ThemeProvider>
+      </ClientProvider>
+    </Auth0Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

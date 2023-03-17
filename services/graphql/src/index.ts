@@ -5,10 +5,7 @@ import {
   PostGraphileResponse,
 } from "postgraphile";
 
-import fastifyJwt from "fastify-jwt";
-import { readFileSync } from "fs";
-import path from "path";
-import fastifyCookie from "fastify-cookie";
+import fastifyAuth0Verify from "fastify-auth0-verify";
 
 import ManyToManyPlugin from "@graphile-contrib/pg-many-to-many";
 import SimplifyInflectorPlugin from "@graphile-contrib/pg-simplify-inflector";
@@ -19,9 +16,9 @@ import {
   additionalGraphQLContextFromRequest,
   AuthPlugin,
 } from "./plugins/AuthPlugin";
-import { TokenPayload } from "google-auth-library";
 import fastifyBlipp from "fastify-blipp";
 import fastifyEnv, { fastifyEnvOpt } from "fastify-env";
+import crypto from "crypto";
 
 const fastify = Fastify({ logger: true });
 declare module "fastify" {
@@ -34,8 +31,9 @@ declare module "fastify" {
     PGSCHEMA: string;
     UNPRIVILEGED_PGUSER: string;
     UNPRIVILEGED_PGPASSWORD: string;
-    JWT_ISS: string;
-    GOOGLE_CLIENT_KEY: string;
+    AUTH0_DOMAIN: string;
+    AUTH0_USER_ENDPOINT: string;
+    GRAPHQL_AUDIENCE: string;
     DEV: boolean;
   }
   interface FastifyInstance {
@@ -53,8 +51,9 @@ const schema = {
     "PGSCHEMA",
     "UNPRIVILEGED_PGUSER",
     "UNPRIVILEGED_PGPASSWORD",
-    "JWT_ISS",
-    "GOOGLE_CLIENT_KEY",
+    "AUTH0_DOMAIN",
+    "AUTH0_USER_ENDPOINT",
+    "GRAPHQL_AUDIENCE",
     "DEV",
   ],
   properties: {
@@ -84,10 +83,13 @@ const schema = {
     UNPRIVILEGED_PGPASSWORD: {
       type: "string",
     },
-    JWT_ISS: {
+    AUTH0_DOMAIN: {
       type: "string",
     },
-    GOOGLE_CLIENT_KEY: {
+    AUTH0_USER_ENDPOINT: {
+      type: "string",
+    },
+    GRAPHQL_AUDIENCE: {
       type: "string",
     },
     DEV: {
@@ -103,38 +105,22 @@ const options: fastifyEnvOpt = {
   env: true,
 };
 
-fastify.register(fastifyEnv, options).after((err) => {
+fastify.register(fastifyEnv, options).after(async (err) => {
   if (err) {
     fastify.log.error(String(err));
     process.exit(1);
   }
 
-  fastify.register(fastifyCookie);
   fastify.register(fastifyBlipp);
 
-  fastify.register(fastifyJwt, {
-    cookie: {
-      cookieName: "auth",
-      signed: false,
-    },
-    secret: {
-      private: readFileSync(
-        `${path.join(path.resolve(), "certs")}/private.key`,
-        "utf8"
-      ),
-      public: readFileSync(
-        `${path.join(path.resolve(), "certs")}/public.key`,
-        "utf8"
-      ),
-    },
-    sign: { algorithm: "RS256", sub: "graphql", iss: fastify.config.JWT_ISS },
-    verify: {
-      algorithms: ["RS256"],
-      allowedSub: "graphql",
-      allowedIss: fastify.config.JWT_ISS,
-    },
-    decode: { complete: true },
+  fastify.register(fastifyAuth0Verify, {
+    domain: fastify.config.AUTH0_DOMAIN,
+    audience: fastify.config.GRAPHQL_AUDIENCE,
+    secretsTtl: 10 * 1000,
   });
+
+  const boundAdditionalGraphQLContextFromRequest =
+    additionalGraphQLContextFromRequest(fastify);
 
   const middleware = postgraphile(
     {
@@ -151,26 +137,20 @@ fastify.register(fastifyEnv, options).after((err) => {
       allowExplain: fastify.config.DEV,
       ignoreRBAC: false,
       watchPg: fastify.config.DEV,
-      auth: { googleClientKey: fastify.config.GOOGLE_CLIENT_KEY },
+      auth0UserEnpoint: fastify.config.AUTH0_USER_ENDPOINT,
       pgSettings: async (req) => {
-        if (!req.headers.cookie) {
-          return { userId: null };
-        }
-        const token = fastify.parseCookie(req.headers.cookie)["auth"];
+        const jwt = (await boundAdditionalGraphQLContextFromRequest(req)).jwt;
 
-        if (!token) {
-          return { userId: null };
+        if (!jwt) {
+          return {};
         }
 
-        const decodedToken = fastify.jwt.decode<TokenPayload>(token);
+        const userId = crypto
+          .createHash("sha256")
+          .update(jwt?.sub ?? "")
+          .digest("hex");
 
-        if (!decodedToken) {
-          return { userId: null };
-        }
-
-        return {
-          userId: decodedToken.sub,
-        };
+        return { "user.id": userId };
       },
       appendPlugins: [
         ManyToManyPlugin,
@@ -180,7 +160,7 @@ fastify.register(fastifyEnv, options).after((err) => {
         AuthPlugin,
       ],
       additionalGraphQLContextFromRequest:
-        additionalGraphQLContextFromRequest(fastify),
+        boundAdditionalGraphQLContextFromRequest,
     }
   );
 
@@ -205,11 +185,13 @@ fastify.register(fastifyEnv, options).after((err) => {
     convertHandler(middleware.graphqlRouteHandler)
   );
 
-  // This is the main middleware
-  fastify.post(
-    middleware.graphqlRoute,
-    convertHandler(middleware.graphqlRouteHandler)
-  );
+  fastify.register(function (instance, _options, done) {
+    instance.post(middleware.graphqlRoute, {
+      handler: convertHandler(middleware.graphqlRouteHandler),
+      // preValidation: instance.authenticate,
+    });
+    done();
+  });
 
   // GraphiQL, if you need it
   if (middleware.options.graphiql) {

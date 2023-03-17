@@ -1,74 +1,64 @@
 import { PoolClient } from "pg";
 
-export const runQueryAsGraphqlAuthRole = async (
+interface Account {
+  auth0Id: string;
+  name: string;
+  email: string;
+  profilePictureUrl?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export const runQueryAsGraphqlAuthRole = async <T = unknown>(
   pgClient: PoolClient,
   query: string,
-  variables: Array<string | null>
+  variables: Array<string | null | undefined>
 ) => {
   await pgClient.query("SET ROLE 'graphql_auth'");
-  return pgClient.query(query, variables).finally(async () => {
+  return pgClient.query<T>(query, variables).finally(async () => {
     await pgClient.query("RESET ROLE");
   });
 };
 
-export const selectIsGoogleTokenUsed = async (
+export const selectAuth0AccountEntry = async (
   pgClient: PoolClient,
-  { idToken }: { idToken: string }
+  { auth0Id }: Pick<Account, "auth0Id">
 ) => {
-  return (
-    (
-      await runQueryAsGraphqlAuthRole(
-        pgClient,
-        "SELECT token_hash FROM used_tokens WHERE token_hash=ENCODE(SHA512($1),'hex') AND token_type = 'GOOGLE'",
-        [idToken]
-      )
-    ).rowCount === 1
-  );
-};
-
-export const insertTokenEntry = async (
-  pgClient: PoolClient,
-  { idToken }: { idToken: string }
-) => {
-  return runQueryAsGraphqlAuthRole(
+  return await runQueryAsGraphqlAuthRole<Account>(
     pgClient,
-    "INSERT INTO used_tokens (token_hash,token_type) VALUES (ENCODE(SHA512($1),'hex'),'GOOGLE')",
-    [idToken]
-  );
+    "SELECT  auth0_id, name, email, profile_picture_url FROM account WHERE auth0_id=$1 AND  account_origin='AUTH0'",
+    [auth0Id]
+  ).then<Account | undefined>((result) => result.rows[0]);
 };
 
-export const insertGoogleAccoutEntry = async (
+export const updateAuth0AccoutEntry = async (
   pgClient: PoolClient,
   {
-    googleId,
+    auth0Id,
     name,
     email,
     profilePictureUrl,
-  }: {
-    googleId: string;
-    name: string;
-    email: string;
-    profilePictureUrl: string | null;
-  }
+  }: Pick<Account, "auth0Id" | "email" | "name" | "profilePictureUrl">
 ) => {
   return runQueryAsGraphqlAuthRole(
     pgClient,
-    "INSERT INTO account(account_origin, google_id, name, email, profile_picture_url) VALUES ($1,$2,$3,$4,$5)",
-    ["GOOGLE", googleId, name, email, profilePictureUrl]
+    "UPDATE account SET (updated_at=CURRENT_TIMESTAMP() ,name=$3, email=$4, profile_picture_url=$5) WHERE account_origin=$1 AND auth0_id=$2)",
+    ["AUTH0", auth0Id, name, email, profilePictureUrl]
   );
 };
 
-export const selectGoogleAccoutEntryExists = async (
+export const insertAuth0AccoutEntry = async (
   pgClient: PoolClient,
   {
-    googleId,
-  }: {
-    googleId: string;
-  }
-): Promise<boolean> => {
+    auth0Id,
+    name,
+    email,
+    profilePictureUrl,
+  }: Pick<Account, "auth0Id" | "email" | "name" | "profilePictureUrl">
+) => {
   return runQueryAsGraphqlAuthRole(
     pgClient,
-    "SELECT 1 FROM account WHERE account_origin=$1 and google_id=$2",
-    ["GOOGLE", googleId]
-  ).then((v) => v.rowCount === 1);
+    "INSERT INTO account(account_origin, auth0_id, name, email, profile_picture_url) VALUES ($1,$2,$3,$4,$5)",
+    ["AUTH0", auth0Id, name, email, profilePictureUrl]
+  );
 };

@@ -24,7 +24,7 @@ export class GoogleAuthClient {
       this.callbacks = [...this.callbacks, resolve];
       (window as any).google.accounts.id.prompt((promt: any) => {
         if (promt.isSkippedMoment() || promt.isNotDisplayed()) {
-          reject();
+          reject(promt.getNotDisplayedReason() ?? promt.getSkippedReason());
         }
       });
     });

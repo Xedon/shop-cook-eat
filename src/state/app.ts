@@ -1,9 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  apiLoginFailed,
-  apiLoginSuccessful,
-  googleLoginSuccessful,
-} from "./store";
+import { apiLoginSuccessful } from "./store";
 
 export enum View {
   Lists = "Lists",

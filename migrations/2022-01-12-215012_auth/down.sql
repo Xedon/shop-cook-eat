@@ -1,2 +1,2 @@
-DROP TABLE account, used_tokens;
+DROP TABLE account;
 DROP TYPE ORIGIN;

@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 it("Login works", () => {
-  cy.login({ view: "Lists" });
+  cy.login();
   cy.visit("/");
   cy.findByText("Add Shopping List");
 });

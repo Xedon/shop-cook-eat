@@ -22,7 +22,6 @@ export const loginMiddlewareFactory: (
   ({ dispatch, getState }) =>
   (next) =>
   async (action) => {
-    console.log(action);
     next(action);
     if (initAction.match(action) || loginAction.match(action)) {
       loginOrRefresh(googleAuthClient, graphqlClient, getState(), dispatch);

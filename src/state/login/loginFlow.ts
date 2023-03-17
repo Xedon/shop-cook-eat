@@ -29,6 +29,7 @@ export const loginOrRefresh = async (
   // Relogin with Google to veryfi that the account is vallid
   if (isGoogleLoginExpired(state)) {
     await loginWithGoogle(googleAuthClient, graphqlClient, dispatch);
+    return;
   }
 
   // Refresh token because session is still ok
@@ -46,6 +47,11 @@ export const loginOrRefresh = async (
     } else {
       dispatch(apiLoginFailed());
     }
+    return;
+  }
+
+  if (state.app.navigation.view === View.Login) {
+    dispatch(appSlice.actions.navigate({ view: View.Lists }));
   }
 };
 
@@ -55,7 +61,6 @@ const loginWithGoogle = async (
   dispatch: AppDispatch
 ) => {
   const idToken = await triggerGoogleLogin(googleAuthClient, dispatch);
-  console.log(idToken);
   if (!idToken) {
     return;
   }

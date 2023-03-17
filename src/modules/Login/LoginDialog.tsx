@@ -3,14 +3,15 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Slide from "@mui/material/Slide";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { TransitionProps } from "@mui/material/transitions";
 import { useNavigation } from "../../state/selectors";
-import { View } from "../../state/app";
+import { appSlice, View } from "../../state/app";
 import { Box } from "@mui/system";
 import { Button, Grid } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { loginAction } from "../../state/store";
+import { useAuth0 } from "@auth0/auth0-react";
+import { Auth0Client } from "@auth0/auth0-spa-js";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -24,6 +25,13 @@ const Transition = React.forwardRef(function Transition(
 export const LoginDialog = () => {
   const { view } = useNavigation();
   const dispatch = useDispatch();
+
+  const { loginWithRedirect, isAuthenticated } = useAuth0();
+  useEffect(() => {
+    if (view === View.Login && isAuthenticated) {
+      dispatch(appSlice.actions.navigate({ view: View.Lists }));
+    }
+  }, [dispatch, isAuthenticated, view]);
 
   return (
     <Dialog
@@ -41,10 +49,10 @@ export const LoginDialog = () => {
           <Grid item>
             <Button
               color="secondary"
-              title="Login with Google Account"
-              onClick={() => dispatch(loginAction())}
+              title="Login/Signup"
+              onClick={() => loginWithRedirect()}
             >
-              Login with Google Account
+              Login/Signup
             </Button>
           </Grid>
         </Grid>
